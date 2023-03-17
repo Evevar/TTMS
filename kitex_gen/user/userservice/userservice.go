@@ -421,14 +421,14 @@ func (p *GetAllUserArgs) IsSetReq() bool {
 }
 
 type GetAllUserResult struct {
-	Success *user.UserLoginResponse
+	Success *user.GetAllUserResponse
 }
 
-var GetAllUserResult_Success_DEFAULT *user.UserLoginResponse
+var GetAllUserResult_Success_DEFAULT *user.GetAllUserResponse
 
 func (p *GetAllUserResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetSuccess() {
-		p.Success = new(user.UserLoginResponse)
+		p.Success = new(user.GetAllUserResponse)
 	}
 	return p.Success.FastRead(buf, _type, number)
 }
@@ -455,7 +455,7 @@ func (p *GetAllUserResult) Marshal(out []byte) ([]byte, error) {
 }
 
 func (p *GetAllUserResult) Unmarshal(in []byte) error {
-	msg := new(user.UserLoginResponse)
+	msg := new(user.GetAllUserResponse)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -463,7 +463,7 @@ func (p *GetAllUserResult) Unmarshal(in []byte) error {
 	return nil
 }
 
-func (p *GetAllUserResult) GetSuccess() *user.UserLoginResponse {
+func (p *GetAllUserResult) GetSuccess() *user.GetAllUserResponse {
 	if !p.IsSetSuccess() {
 		return GetAllUserResult_Success_DEFAULT
 	}
@@ -471,7 +471,7 @@ func (p *GetAllUserResult) GetSuccess() *user.UserLoginResponse {
 }
 
 func (p *GetAllUserResult) SetSuccess(x interface{}) {
-	p.Success = x.(*user.UserLoginResponse)
+	p.Success = x.(*user.GetAllUserResponse)
 }
 
 func (p *GetAllUserResult) IsSetSuccess() bool {
@@ -943,7 +943,7 @@ func (p *kClient) UserLogin(ctx context.Context, Req *user.UserLoginRequest) (r 
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) GetAllUser(ctx context.Context, Req *user.GetAllUserRequest) (r *user.UserLoginResponse, err error) {
+func (p *kClient) GetAllUser(ctx context.Context, Req *user.GetAllUserRequest) (r *user.GetAllUserResponse, err error) {
 	var _args GetAllUserArgs
 	_args.Req = Req
 	var _result GetAllUserResult

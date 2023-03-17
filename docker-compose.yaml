@@ -18,3 +18,9 @@ services:
       - ETCDCTL_API=3
     ports:
       - 2379:2379
+  redis:
+    image: "redis:latest"
+    environment:
+      - REDIS_PASSWORD=redis
+    ports:
+      - 6378:6379

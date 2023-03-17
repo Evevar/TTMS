@@ -7,8 +7,10 @@ import (
 
 func InitRouter() *gin.Engine {
 	r := gin.Default()
-	baseGroup := r.Group("/TTMS")
+	baseGroup := r.Group("/ttms")
 
-	baseGroup.POST("/user/CreateUser/", api.CreateUser)
+	baseGroup.POST("/user/create/", api.CreateUser)
+	baseGroup.POST("/user/login/", api.UserLogin)
+	baseGroup.GET("/user/all/", api.GetAllUser)
 	return r
 }

@@ -5,7 +5,6 @@ import (
 	"TTMS/internal/web/rpc"
 	user "TTMS/kitex_gen/user/userservice"
 	"TTMS/pkg/consts"
-	"TTMS/pkg/middleware"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/limit"
 
@@ -33,8 +32,8 @@ func main() {
 	Init()
 	svr := user.NewServer(new(UserServiceImpl),
 		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: consts.UserServiceName}), // server name
-		server.WithMiddleware(middleware.CommonMiddleware),                                          // middleWare
-		server.WithMiddleware(middleware.ServerMiddleware),
+		//server.WithMiddleware(middleware.CommonMiddleware),                                          // middleWare
+		//server.WithMiddleware(middleware.ServerMiddleware),
 		server.WithServiceAddr(addr),                                       // address
 		server.WithLimit(&limit.Option{MaxConnections: 1000, MaxQPS: 100}), // limit
 		server.WithMuxTransport(),                                          // Multiplex

@@ -13,7 +13,7 @@ import (
 type Client interface {
 	CreateUser(ctx context.Context, Req *user.CreateUserRequest, callOptions ...callopt.Option) (r *user.CreateUserResponse, err error)
 	UserLogin(ctx context.Context, Req *user.UserLoginRequest, callOptions ...callopt.Option) (r *user.UserLoginResponse, err error)
-	GetAllUser(ctx context.Context, Req *user.GetAllUserRequest, callOptions ...callopt.Option) (r *user.UserLoginResponse, err error)
+	GetAllUser(ctx context.Context, Req *user.GetAllUserRequest, callOptions ...callopt.Option) (r *user.GetAllUserResponse, err error)
 	ChangeUserPassword(ctx context.Context, Req *user.ChangeUserPasswordRequest, callOptions ...callopt.Option) (r *user.ChangeUserPasswordResponse, err error)
 	DeleteUser(ctx context.Context, Req *user.DeleteUserRequest, callOptions ...callopt.Option) (r *user.DeleteUserResponse, err error)
 	GetUserInfo(ctx context.Context, Req *user.GetUserInfoRequest, callOptions ...callopt.Option) (r *user.GetUserInfoResponse, err error)
@@ -58,7 +58,7 @@ func (p *kUserServiceClient) UserLogin(ctx context.Context, Req *user.UserLoginR
 	return p.kClient.UserLogin(ctx, Req)
 }
 
-func (p *kUserServiceClient) GetAllUser(ctx context.Context, Req *user.GetAllUserRequest, callOptions ...callopt.Option) (r *user.UserLoginResponse, err error) {
+func (p *kUserServiceClient) GetAllUser(ctx context.Context, Req *user.GetAllUserRequest, callOptions ...callopt.Option) (r *user.GetAllUserResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.GetAllUser(ctx, Req)
 }

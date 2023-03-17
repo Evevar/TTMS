@@ -4,7 +4,6 @@ import (
 	"TTMS/internal/user/service"
 	user "TTMS/kitex_gen/user"
 	"context"
-	"fmt"
 )
 
 // UserServiceImpl implements the last service interface defined in the IDL.
@@ -13,22 +12,23 @@ type UserServiceImpl struct{}
 // CreateUser implements the UserServiceImpl interface.
 func (s *UserServiceImpl) CreateUser(ctx context.Context, req *user.CreateUserRequest) (resp *user.CreateUserResponse, err error) {
 	// TODO: Your code here...
-	//参数较验
 	//获取resp
-	fmt.Println("service.CreateUserService")
-	return service.CreateUserService(ctx, req)
+	resp, err = service.CreateUserService(ctx, req)
+	return resp, err
 }
 
 // UserLogin implements the UserServiceImpl interface.
 func (s *UserServiceImpl) UserLogin(ctx context.Context, req *user.UserLoginRequest) (resp *user.UserLoginResponse, err error) {
 	// TODO: Your code here...
-	return
+
+	return service.UserLoginService(ctx, req)
 }
 
 // GetAllUser implements the UserServiceImpl interface.
-func (s *UserServiceImpl) GetAllUser(ctx context.Context, req *user.GetAllUserRequest) (resp *user.UserLoginResponse, err error) {
+func (s *UserServiceImpl) GetAllUser(ctx context.Context, req *user.GetAllUserRequest) (resp *user.GetAllUserResponse, err error) {
 	// TODO: Your code here...
-	return
+
+	return service.GetAllUserService(ctx, req)
 }
 
 // ChangeUserPassword implements the UserServiceImpl interface.

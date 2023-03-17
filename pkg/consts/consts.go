@@ -8,4 +8,5 @@ const (
 	TicketServiceName = "ticketSvr"
 	MySQLDefaultDSN   = "TTMS:TTMS@tcp(localhost:3306)/TTMS?charset=utf8mb4&parseTime=True"
 	WebServerPort     = "8080"
+	RedisPassword     = "redis"
 )

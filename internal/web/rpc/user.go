@@ -6,7 +6,6 @@ import (
 	"TTMS/pkg/consts"
 	"TTMS/pkg/middleware"
 	"context"
-	"fmt"
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/retry"
 	etcd "github.com/kitex-contrib/registry-etcd"
@@ -40,8 +39,21 @@ func InitUserRPC() {
 }
 
 func CreateUser(ctx context.Context, req *user.CreateUserRequest) (*user.CreateUserResponse, error) {
-	fmt.Println(" rpc.CreateUser ", req)
 	resp, err := userClient.CreateUser(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return resp, err
+}
+func UserLogin(ctx context.Context, req *user.UserLoginRequest) (*user.UserLoginResponse, error) {
+	resp, err := userClient.UserLogin(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return resp, err
+}
+func GetAllUser(ctx context.Context, req *user.GetAllUserRequest) (*user.GetAllUserResponse, error) {
+	resp, err := userClient.GetAllUser(ctx, req)
 	if err != nil {
 		return nil, err
 	}
