@@ -34,17 +34,18 @@ func (s *UserServiceImpl) GetAllUser(ctx context.Context, req *user.GetAllUserRe
 // ChangeUserPassword implements the UserServiceImpl interface.
 func (s *UserServiceImpl) ChangeUserPassword(ctx context.Context, req *user.ChangeUserPasswordRequest) (resp *user.ChangeUserPasswordResponse, err error) {
 	// TODO: Your code here...
-	return
+
+	return service.ChangeUserPasswordService(ctx, req)
 }
 
 // DeleteUser implements the UserServiceImpl interface.
 func (s *UserServiceImpl) DeleteUser(ctx context.Context, req *user.DeleteUserRequest) (resp *user.DeleteUserResponse, err error) {
 	// TODO: Your code here...
-	return
+	return service.DeleteUserService(ctx, req)
 }
 
 // GetUserInfo implements the UserServiceImpl interface.
 func (s *UserServiceImpl) GetUserInfo(ctx context.Context, req *user.GetUserInfoRequest) (resp *user.GetUserInfoResponse, err error) {
 	// TODO: Your code here...
-	return
+	return service.GetUserInfoService(ctx, req)
 }

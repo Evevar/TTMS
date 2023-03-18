@@ -59,3 +59,24 @@ func GetAllUser(ctx context.Context, req *user.GetAllUserRequest) (*user.GetAllU
 	}
 	return resp, err
 }
+func ChangeUserPassword(ctx context.Context, req *user.ChangeUserPasswordRequest) (*user.ChangeUserPasswordResponse, error) {
+	resp, err := userClient.ChangeUserPassword(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return resp, err
+}
+func DeleteUser(ctx context.Context, req *user.DeleteUserRequest) (*user.DeleteUserResponse, error) {
+	resp, err := userClient.DeleteUser(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return resp, err
+}
+func GetUserInfo(ctx context.Context, req *user.GetUserInfoRequest) (*user.GetUserInfoResponse, error) {
+	resp, err := userClient.GetUserInfo(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return resp, err
+}

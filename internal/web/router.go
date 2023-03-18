@@ -12,5 +12,8 @@ func InitRouter() *gin.Engine {
 	baseGroup.POST("/user/create/", api.CreateUser)
 	baseGroup.POST("/user/login/", api.UserLogin)
 	baseGroup.GET("/user/all/", api.GetAllUser)
+	baseGroup.POST("/user/change", api.ChangeUserPassword)
+	baseGroup.POST("/user/delete/", api.DeleteUser)
+	baseGroup.GET("/user/info/", api.GetUserInfo)
 	return r
 }

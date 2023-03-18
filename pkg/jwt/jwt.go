@@ -6,9 +6,9 @@ import (
 	"context"
 	"errors"
 	"github.com/dgrijalva/jwt-go"
-	"github.com/goccy/go-json"
 	"github.com/redis/go-redis/v9"
 	"log"
+	"strings"
 	"time"
 )
 
@@ -42,19 +42,18 @@ func GenToken(userInfo *user.User) (string, error) {
 	if err != nil {
 		log.Panicln(err)
 	}
-	//写入redis
-	userBytes, err := json.Marshal(userInfo)
-	if err != nil {
-		log.Panicln(err)
-	}
-	client.Set(context.Background(), tokenStr, userBytes, JWTOverTime)
+	num, err1 := client.LRem(context.Background(), "black", 0, tokenStr).Result()
+	log.Println("client.LRem return ", num, err1)
 	return tokenStr, err
 }
 
 // 解析JWT.
 func ParseToken(tokenString string) (*MyClaims, error) {
-	if _, err := client.GetEx(context.Background(), tokenString, JWTOverTime).Result(); err != nil {
-		return nil, errors.New("token失效")
+	arr, _ := client.LRange(context.Background(), "black", 0, -1).Result()
+	for _, v := range arr {
+		if strings.Compare(v, tokenString) == 0 { //该token在黑名单中
+			return nil, errors.New("更改密码后需重新登录")
+		}
 	}
 	// 解析token
 	token, err := jwt.ParseWithClaims(tokenString, &MyClaims{}, func(token *jwt.Token) (i any, err error) {
@@ -67,4 +66,12 @@ func ParseToken(tokenString string) (*MyClaims, error) {
 		return claims, nil
 	}
 	return nil, errors.New("JWT 解析错误")
+}
+
+// 废弃JWT(更改密码后)
+func DiscardToken(tokenString string) {
+	_, err := client.LPush(context.Background(), "black", tokenString).Result()
+	if err != nil {
+		log.Println(err)
+	}
 }

@@ -74,3 +74,64 @@ func GetAllUser(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, resp)
 }
+func ChangeUserPassword(c *gin.Context) {
+	req := &user.ChangeUserPasswordRequest{}
+	if err := c.Bind(req); err != nil {
+		c.JSON(http.StatusOK, "bind error")
+		return
+	}
+	//token验证
+	_, err := jwt.ParseToken(req.Token)
+	if err != nil {
+		c.JSON(http.StatusOK, user.ChangeUserPasswordResponse{BaseResp: &user.BaseResp{StatusCode: 1, StatusMessage: err.Error()}})
+		return
+	}
+	//接收resp
+	resp, err := rpc.ChangeUserPassword(context.Background(), req)
+	if err != nil {
+		log.Fatalln(err)
+		c.JSON(http.StatusServiceUnavailable, err)
+	}
+	jwt.DiscardToken(req.Token)
+	c.JSON(http.StatusOK, resp)
+}
+func DeleteUser(c *gin.Context) {
+	req := &user.DeleteUserRequest{}
+	if err := c.Bind(req); err != nil {
+		c.JSON(http.StatusOK, "bind error")
+		return
+	}
+	//token验证
+	_, err := jwt.ParseToken(req.Token)
+	if err != nil {
+		c.JSON(http.StatusOK, user.DeleteUserResponse{BaseResp: &user.BaseResp{StatusCode: 1, StatusMessage: err.Error()}})
+		return
+	}
+	//接收resp
+	resp, err := rpc.DeleteUser(context.Background(), req)
+	if err != nil {
+		log.Fatalln(err)
+		c.JSON(http.StatusServiceUnavailable, err)
+	}
+	c.JSON(http.StatusOK, resp)
+}
+func GetUserInfo(c *gin.Context) {
+	req := &user.GetUserInfoRequest{}
+	if err := c.Bind(req); err != nil {
+		c.JSON(http.StatusOK, "bind error")
+		return
+	}
+	//token验证
+	_, err := jwt.ParseToken(req.Token)
+	if err != nil {
+		c.JSON(http.StatusOK, user.GetUserInfoResponse{BaseResp: &user.BaseResp{StatusCode: 1, StatusMessage: err.Error()}})
+		return
+	}
+	//接收resp
+	resp, err := rpc.GetUserInfo(context.Background(), req)
+	if err != nil {
+		log.Fatalln(err)
+		c.JSON(http.StatusServiceUnavailable, err)
+	}
+	c.JSON(http.StatusOK, resp)
+}
