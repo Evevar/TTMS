@@ -1,12 +1,11 @@
 package main
 
 import (
-	"TTMS/internal/user/dao"
-	user "TTMS/kitex_gen/user/userservice"
+	"TTMS/internal/studio/dao"
+	studio "TTMS/kitex_gen/studio/studioservice"
 	"TTMS/pkg/consts"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/limit"
-
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
 	etcd "github.com/kitex-contrib/registry-etcd"
@@ -19,12 +18,12 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	addr, err := net.ResolveTCPAddr("tcp", "127.0.0.1:10001")
+	addr, err := net.ResolveTCPAddr("tcp", "127.0.0.1:10002")
 	if err != nil {
 		panic(err)
 	}
-	svr := user.NewServer(new(UserServiceImpl),
-		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: consts.UserServiceName}), // server name
+	svr := studio.NewServer(new(StudioServiceImpl),
+		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: consts.StudioServiceName}), // server name
 		//server.WithMiddleware(middleware.CommonMiddleware),                                          // middleWare
 		//server.WithMiddleware(middleware.ServerMiddleware),
 		server.WithServiceAddr(addr),                                       // address

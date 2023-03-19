@@ -4,7 +4,6 @@ import (
 	"TTMS/kitex_gen/user"
 	userservice "TTMS/kitex_gen/user/userservice"
 	"TTMS/pkg/consts"
-	"TTMS/pkg/middleware"
 	"context"
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/retry"
@@ -23,8 +22,8 @@ func InitUserRPC() {
 
 	c, err := userservice.NewClient(
 		consts.UserServiceName,
-		client.WithMiddleware(middleware.CommonMiddleware),
-		client.WithInstanceMW(middleware.ClientMiddleware),
+		//client.WithMiddleware(middleware.CommonMiddleware),
+		//client.WithInstanceMW(middleware.ClientMiddleware),
 		client.WithMuxConnection(1),                       // mux
 		client.WithRPCTimeout(3*time.Second),              // rpc timeout
 		client.WithConnectTimeout(50*time.Millisecond),    // conn timeout
