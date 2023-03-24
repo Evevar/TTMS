@@ -1,9 +1,9 @@
 package main
 
 import (
+	"TTMS/configs/consts"
 	"TTMS/internal/user/dao"
 	user "TTMS/kitex_gen/user/userservice"
-	"TTMS/pkg/consts"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/limit"
 

@@ -1,9 +1,9 @@
 package main
 
 import (
+	"TTMS/configs/consts"
 	"TTMS/internal/studio/dao"
 	studio "TTMS/kitex_gen/studio/studioservice"
-	"TTMS/pkg/consts"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/limit"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"

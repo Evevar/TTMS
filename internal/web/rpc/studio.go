@@ -1,9 +1,9 @@
 package rpc
 
 import (
+	"TTMS/configs/consts"
 	"TTMS/kitex_gen/studio"
 	"TTMS/kitex_gen/studio/studioservice"
-	"TTMS/pkg/consts"
 	"context"
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/retry"

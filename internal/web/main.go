@@ -1,8 +1,8 @@
 package main
 
 import (
+	"TTMS/configs/consts"
 	"TTMS/internal/web/rpc"
-	"TTMS/pkg/consts"
 	"TTMS/pkg/jwt"
 )
 

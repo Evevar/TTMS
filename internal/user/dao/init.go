@@ -1,8 +1,8 @@
 package dao
 
 import (
+	"TTMS/configs/consts"
 	"TTMS/kitex_gen/user"
-	"TTMS/pkg/consts"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"

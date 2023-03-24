@@ -1,8 +1,8 @@
 package jwt
 
 import (
+	"TTMS/configs/consts"
 	"TTMS/kitex_gen/user"
-	"TTMS/pkg/consts"
 	"context"
 	"errors"
 	"github.com/dgrijalva/jwt-go"
