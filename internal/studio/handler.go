@@ -36,23 +36,23 @@ func (s *StudioServiceImpl) DeleteStudio(ctx context.Context, req *studio.Delete
 // AddSeat implements the StudioServiceImpl interface.
 func (s *StudioServiceImpl) AddSeat(ctx context.Context, req *studio.AddSeatRequest) (resp *studio.AddSeatResponse, err error) {
 	// TODO: Your code here...
-	return
+	return service.AddSeatService(ctx, req)
 }
 
 // GetAllSeat implements the StudioServiceImpl interface.
 func (s *StudioServiceImpl) GetAllSeat(ctx context.Context, req *studio.GetAllSeatRequest) (resp *studio.GetAllSeatResponse, err error) {
 	// TODO: Your code here...
-	return
+	return service.GetAllSeatService(ctx, req)
 }
 
 // UpdateSeat implements the StudioServiceImpl interface.
 func (s *StudioServiceImpl) UpdateSeat(ctx context.Context, req *studio.UpdateSeatRequest) (resp *studio.UpdateSeatResponse, err error) {
 	// TODO: Your code here...
-	return
+	return service.UpdateSeatService(ctx, req)
 }
 
 // DeleteSeat implements the StudioServiceImpl interface.
 func (s *StudioServiceImpl) DeleteSeat(ctx context.Context, req *studio.DeleteSeatRequest) (resp *studio.DeleteSeatResponse, err error) {
 	// TODO: Your code here...
-	return
+	return service.DeleteSeatService(ctx, req)
 }

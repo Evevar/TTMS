@@ -6,9 +6,10 @@ import (
 	"errors"
 )
 
-func AddStudio(ctx context.Context, Name string, row, col int64) error {
+func AddStudio(ctx context.Context, Name string, row, col int64) (*studio.Studio, error) {
 	s := studio.Studio{Name: Name, RowsCount: row, ColsCount: col, SeatsCount: row * col}
-	return DB.WithContext(ctx).Create(&s).Error
+	tx := DB.WithContext(ctx).Create(&s)
+	return &s, tx.Error
 }
 func GetAllStudio(ctx context.Context, Current, PageSize int) ([]*studio.Studio, error) {
 	studios := make([]*studio.Studio, PageSize)

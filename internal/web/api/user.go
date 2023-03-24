@@ -25,8 +25,8 @@ func CreateUser(c *gin.Context) {
 
 	resp, err := rpc.CreateUser(context.Background(), req)
 	if err != nil {
-		log.Fatalln(err)
 		c.JSON(http.StatusServiceUnavailable, err)
+		log.Fatalln(err)
 	}
 	c.JSON(http.StatusOK, resp)
 }
@@ -39,8 +39,8 @@ func UserLogin(c *gin.Context) {
 	fmt.Println(" LoginUser ", req)
 	resp, err := rpc.UserLogin(context.Background(), req)
 	if err != nil {
-		log.Fatalln(err)
 		c.JSON(http.StatusServiceUnavailable, err)
+		log.Fatalln(err)
 	}
 	Token, err := jwt.GenToken(resp.UserInfo)
 	if err != nil {
@@ -69,8 +69,8 @@ func GetAllUser(c *gin.Context) {
 	//接收resp
 	resp, err := rpc.GetAllUser(context.Background(), req)
 	if err != nil {
-		log.Fatalln(err)
 		c.JSON(http.StatusServiceUnavailable, err)
+		log.Fatalln(err)
 	}
 	c.JSON(http.StatusOK, resp)
 }
@@ -89,8 +89,8 @@ func ChangeUserPassword(c *gin.Context) {
 	//接收resp
 	resp, err := rpc.ChangeUserPassword(context.Background(), req)
 	if err != nil {
-		log.Fatalln(err)
 		c.JSON(http.StatusServiceUnavailable, err)
+		log.Fatalln(err)
 	}
 	jwt.DiscardToken(req.Token)
 	c.JSON(http.StatusOK, resp)
@@ -110,8 +110,8 @@ func DeleteUser(c *gin.Context) {
 	//接收resp
 	resp, err := rpc.DeleteUser(context.Background(), req)
 	if err != nil {
-		log.Fatalln(err)
 		c.JSON(http.StatusServiceUnavailable, err)
+		log.Fatalln(err)
 	}
 	c.JSON(http.StatusOK, resp)
 }
@@ -130,8 +130,8 @@ func GetUserInfo(c *gin.Context) {
 	//接收resp
 	resp, err := rpc.GetUserInfo(context.Background(), req)
 	if err != nil {
-		log.Fatalln(err)
 		c.JSON(http.StatusServiceUnavailable, err)
+		log.Fatalln(err)
 	}
 	c.JSON(http.StatusOK, resp)
 }
