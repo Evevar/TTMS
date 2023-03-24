@@ -30,3 +30,63 @@ func AddStudio(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, resp)
 }
+func GetAllStudio(c *gin.Context) {
+	req := &studio.GetAllStudioRequest{}
+	if err := c.Bind(req); err != nil {
+		log.Println("err = ", err, " req = ", req)
+		c.JSON(http.StatusOK, "bind error")
+		return
+	}
+	_, err := jwt.ParseToken(req.Token)
+	if err != nil {
+		c.JSON(http.StatusOK, studio.GetAllStudioResponse{BaseResp: &studio.BaseResp{StatusCode: 1, StatusMessage: err.Error()}})
+		return
+	}
+	//fmt.Println(req)
+	resp, err := rpc.GetAllStudio(context.Background(), req)
+	if err != nil {
+		log.Fatalln(err)
+		c.JSON(http.StatusServiceUnavailable, err)
+	}
+	c.JSON(http.StatusOK, resp)
+}
+func UpdateStudio(c *gin.Context) {
+	req := &studio.UpdateStudioRequest{}
+	if err := c.Bind(req); err != nil {
+		log.Println("err = ", err, " req = ", req)
+		c.JSON(http.StatusOK, "bind error")
+		return
+	}
+	_, err := jwt.ParseToken(req.Token)
+	if err != nil {
+		c.JSON(http.StatusOK, studio.UpdateStudioResponse{BaseResp: &studio.BaseResp{StatusCode: 1, StatusMessage: err.Error()}})
+		return
+	}
+
+	resp, err := rpc.UpdateStudio(context.Background(), req)
+	if err != nil {
+		log.Fatalln(err)
+		c.JSON(http.StatusServiceUnavailable, err)
+	}
+	c.JSON(http.StatusOK, resp)
+}
+func DeleteStudio(c *gin.Context) {
+	req := &studio.DeleteStudioRequest{}
+	if err := c.Bind(req); err != nil {
+		log.Println("err = ", err, " req = ", req)
+		c.JSON(http.StatusOK, "bind error")
+		return
+	}
+	_, err := jwt.ParseToken(req.Token)
+	if err != nil {
+		c.JSON(http.StatusOK, studio.DeleteStudioResponse{BaseResp: &studio.BaseResp{StatusCode: 1, StatusMessage: err.Error()}})
+		return
+	}
+
+	resp, err := rpc.DeleteStudio(context.Background(), req)
+	if err != nil {
+		log.Fatalln(err)
+		c.JSON(http.StatusServiceUnavailable, err)
+	}
+	c.JSON(http.StatusOK, resp)
+}

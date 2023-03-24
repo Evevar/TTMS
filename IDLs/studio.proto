@@ -13,13 +13,6 @@ message Studio {
   int64 ColsCount=4;
   int64 SeatsCount=5;
 }
-message Seat{
-  int64 Id=1;
-  int64 StudioId=2; //座位所在的演出厅ID
-  int64 Row=3;
-  int64 Col=4;
-  int64 Status=5;//0-不是座位，1-有座位，9-损坏的座位
-}
 //添加演出厅
 message AddStudioRequest{
   string Name=1;
@@ -63,6 +56,13 @@ message DeleteStudioResponse{
   BaseResp BaseResp=1;
 }
 
+message Seat{
+  int64 Id=1;
+  int64 StudioId=2; //座位所在的演出厅ID
+  int64 Row=3;
+  int64 Col=4;
+  int64 Status=5;//0-不是座位，1-有座位，9-损坏的座位
+}
 //添加指定座位
 message AddSeatRequest{
   int64 StudioId=1;

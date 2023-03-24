@@ -17,5 +17,8 @@ func InitRouter() *gin.Engine {
 	baseGroup.GET("/user/info/", api.GetUserInfo)
 
 	baseGroup.POST("/studio/add/", api.AddStudio)
+	baseGroup.GET("/studio/all/", api.GetAllStudio)
+	baseGroup.POST("/studio/update/", api.UpdateStudio)
+	baseGroup.POST("/studio/delete/", api.DeleteStudio)
 	return r
 }

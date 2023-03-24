@@ -15,7 +15,7 @@ func AddStudioService(ctx context.Context, req *studio.AddStudioRequest) (resp *
 	} else {
 		resp.BaseResp.StatusMessage = "success"
 	}
-	return resp, err
+	return resp, nil
 }
 
 func GetAllStudioService(ctx context.Context, req *studio.GetAllStudioRequest) (resp *studio.GetAllStudioResponse, err error) {
@@ -28,7 +28,7 @@ func GetAllStudioService(ctx context.Context, req *studio.GetAllStudioRequest) (
 		resp.BaseResp.StatusMessage = "success"
 	}
 	resp.List = studios
-	return resp, err
+	return resp, nil
 }
 
 func UpdateStudioService(ctx context.Context, req *studio.UpdateStudioRequest) (resp *studio.UpdateStudioResponse, err error) {
@@ -40,7 +40,7 @@ func UpdateStudioService(ctx context.Context, req *studio.UpdateStudioRequest) (
 	} else {
 		resp.BaseResp.StatusMessage = "success"
 	}
-	return resp, err
+	return resp, nil
 }
 
 func DeleteStudioService(ctx context.Context, req *studio.DeleteStudioRequest) (resp *studio.DeleteStudioResponse, err error) {
@@ -52,5 +52,5 @@ func DeleteStudioService(ctx context.Context, req *studio.DeleteStudioRequest) (
 	} else {
 		resp.BaseResp.StatusMessage = "success"
 	}
-	return resp, err
+	return resp, nil
 }
