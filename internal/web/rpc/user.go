@@ -22,8 +22,6 @@ func InitUserRPC() {
 
 	c, err := userservice.NewClient(
 		consts.UserServiceName,
-		//client.WithMiddleware(middleware.CommonMiddleware),
-		//client.WithInstanceMW(middleware.ClientMiddleware),
 		client.WithMuxConnection(1),                       // mux
 		client.WithRPCTimeout(3*time.Second),              // rpc timeout
 		client.WithConnectTimeout(50*time.Millisecond),    // conn timeout
@@ -74,6 +72,22 @@ func DeleteUser(ctx context.Context, req *user.DeleteUserRequest) (*user.DeleteU
 }
 func GetUserInfo(ctx context.Context, req *user.GetUserInfoRequest) (*user.GetUserInfoResponse, error) {
 	resp, err := userClient.GetUserInfo(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return resp, err
+}
+
+func BindEmail(ctx context.Context, req *user.BindEmailRequest) (*user.BindEmailResponse, error) {
+	resp, err := userClient.BindEmail(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return resp, err
+}
+
+func ForgetPassword(ctx context.Context, req *user.ForgetPasswordRequest) (*user.ForgetPasswordResponse, error) {
+	resp, err := userClient.ForgetPassword(ctx, req)
 	if err != nil {
 		return nil, err
 	}

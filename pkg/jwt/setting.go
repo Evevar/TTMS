@@ -7,8 +7,8 @@ import (
 
 const (
 	JWTSecret = "kangning"
-
-	JWTOverTime = time.Hour * 2
+	// JWTOverTime 先弄成200小时，之后改回来
+	JWTOverTime = time.Hour * 200
 )
 
 type MyClaims struct {

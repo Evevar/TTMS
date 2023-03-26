@@ -49,3 +49,15 @@ func (s *UserServiceImpl) GetUserInfo(ctx context.Context, req *user.GetUserInfo
 	// TODO: Your code here...
 	return service.GetUserInfoService(ctx, req)
 }
+
+// BindEmail implements the UserServiceImpl interface.
+func (s *UserServiceImpl) BindEmail(ctx context.Context, req *user.BindEmailRequest) (resp *user.BindEmailResponse, err error) {
+	// TODO: Your code here...
+	return service.BindEmailService(ctx, req)
+}
+
+// ForgetPassword implements the UserServiceImpl interface.
+func (s *UserServiceImpl) ForgetPassword(ctx context.Context, req *user.ForgetPasswordRequest) (resp *user.ForgetPasswordResponse, err error) {
+	// TODO: Your code here...
+	return service.ForgetPasswordService(ctx, req)
+}

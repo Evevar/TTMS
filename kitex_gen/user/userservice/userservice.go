@@ -28,6 +28,8 @@ func NewServiceInfo() *kitex.ServiceInfo {
 		"ChangeUserPassword": kitex.NewMethodInfo(changeUserPasswordHandler, newChangeUserPasswordArgs, newChangeUserPasswordResult, false),
 		"DeleteUser":         kitex.NewMethodInfo(deleteUserHandler, newDeleteUserArgs, newDeleteUserResult, false),
 		"GetUserInfo":        kitex.NewMethodInfo(getUserInfoHandler, newGetUserInfoArgs, newGetUserInfoResult, false),
+		"BindEmail":          kitex.NewMethodInfo(bindEmailHandler, newBindEmailArgs, newBindEmailResult, false),
+		"ForgetPassword":     kitex.NewMethodInfo(forgetPasswordHandler, newForgetPasswordArgs, newForgetPasswordResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "user",
@@ -913,6 +915,296 @@ func (p *GetUserInfoResult) IsSetSuccess() bool {
 	return p.Success != nil
 }
 
+func bindEmailHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(user.BindEmailRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(user.UserService).BindEmail(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *BindEmailArgs:
+		success, err := handler.(user.UserService).BindEmail(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*BindEmailResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newBindEmailArgs() interface{} {
+	return &BindEmailArgs{}
+}
+
+func newBindEmailResult() interface{} {
+	return &BindEmailResult{}
+}
+
+type BindEmailArgs struct {
+	Req *user.BindEmailRequest
+}
+
+func (p *BindEmailArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(user.BindEmailRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *BindEmailArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *BindEmailArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *BindEmailArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in BindEmailArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *BindEmailArgs) Unmarshal(in []byte) error {
+	msg := new(user.BindEmailRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var BindEmailArgs_Req_DEFAULT *user.BindEmailRequest
+
+func (p *BindEmailArgs) GetReq() *user.BindEmailRequest {
+	if !p.IsSetReq() {
+		return BindEmailArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *BindEmailArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type BindEmailResult struct {
+	Success *user.BindEmailResponse
+}
+
+var BindEmailResult_Success_DEFAULT *user.BindEmailResponse
+
+func (p *BindEmailResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(user.BindEmailResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *BindEmailResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *BindEmailResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *BindEmailResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in BindEmailResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *BindEmailResult) Unmarshal(in []byte) error {
+	msg := new(user.BindEmailResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *BindEmailResult) GetSuccess() *user.BindEmailResponse {
+	if !p.IsSetSuccess() {
+		return BindEmailResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *BindEmailResult) SetSuccess(x interface{}) {
+	p.Success = x.(*user.BindEmailResponse)
+}
+
+func (p *BindEmailResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func forgetPasswordHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(user.ForgetPasswordRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(user.UserService).ForgetPassword(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *ForgetPasswordArgs:
+		success, err := handler.(user.UserService).ForgetPassword(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*ForgetPasswordResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newForgetPasswordArgs() interface{} {
+	return &ForgetPasswordArgs{}
+}
+
+func newForgetPasswordResult() interface{} {
+	return &ForgetPasswordResult{}
+}
+
+type ForgetPasswordArgs struct {
+	Req *user.ForgetPasswordRequest
+}
+
+func (p *ForgetPasswordArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(user.ForgetPasswordRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *ForgetPasswordArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *ForgetPasswordArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *ForgetPasswordArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in ForgetPasswordArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *ForgetPasswordArgs) Unmarshal(in []byte) error {
+	msg := new(user.ForgetPasswordRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var ForgetPasswordArgs_Req_DEFAULT *user.ForgetPasswordRequest
+
+func (p *ForgetPasswordArgs) GetReq() *user.ForgetPasswordRequest {
+	if !p.IsSetReq() {
+		return ForgetPasswordArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *ForgetPasswordArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type ForgetPasswordResult struct {
+	Success *user.ForgetPasswordResponse
+}
+
+var ForgetPasswordResult_Success_DEFAULT *user.ForgetPasswordResponse
+
+func (p *ForgetPasswordResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(user.ForgetPasswordResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *ForgetPasswordResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *ForgetPasswordResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *ForgetPasswordResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in ForgetPasswordResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *ForgetPasswordResult) Unmarshal(in []byte) error {
+	msg := new(user.ForgetPasswordResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *ForgetPasswordResult) GetSuccess() *user.ForgetPasswordResponse {
+	if !p.IsSetSuccess() {
+		return ForgetPasswordResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *ForgetPasswordResult) SetSuccess(x interface{}) {
+	p.Success = x.(*user.ForgetPasswordResponse)
+}
+
+func (p *ForgetPasswordResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -978,6 +1270,26 @@ func (p *kClient) GetUserInfo(ctx context.Context, Req *user.GetUserInfoRequest)
 	_args.Req = Req
 	var _result GetUserInfoResult
 	if err = p.c.Call(ctx, "GetUserInfo", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) BindEmail(ctx context.Context, Req *user.BindEmailRequest) (r *user.BindEmailResponse, err error) {
+	var _args BindEmailArgs
+	_args.Req = Req
+	var _result BindEmailResult
+	if err = p.c.Call(ctx, "BindEmail", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) ForgetPassword(ctx context.Context, Req *user.ForgetPasswordRequest) (r *user.ForgetPasswordResponse, err error) {
+	var _args ForgetPasswordArgs
+	_args.Req = Req
+	var _result ForgetPasswordResult
+	if err = p.c.Call(ctx, "ForgetPassword", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

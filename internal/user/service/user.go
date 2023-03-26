@@ -12,12 +12,16 @@ func CreateUserService(ctx context.Context, req *user.CreateUserRequest) (*user.
 		UserType: req.UserType,
 		UserName: req.UserName,
 		Password: req.Password,
+		Email:    req.Email,
 	}
 	err := dao.CreateUser(ctx, userInfo)
 	resp := &user.CreateUserResponse{BaseResp: &user.BaseResp{}}
-	if err != nil {
+	if err != nil && err.Error() != "警告，您设置了重名用户" {
 		resp.BaseResp.StatusCode = 1
 		resp.BaseResp.StatusMessage = err.Error()
+	} else if err.Error() == "警告，您设置了重名用户" {
+		resp.BaseResp.StatusCode = 0
+		resp.BaseResp.StatusMessage = "[警告] 添加成功，您设置了重名用户"
 	} else {
 		resp.BaseResp.StatusCode = 0
 		resp.BaseResp.StatusMessage = "success"
@@ -27,7 +31,7 @@ func CreateUserService(ctx context.Context, req *user.CreateUserRequest) (*user.
 }
 func UserLoginService(ctx context.Context, req *user.UserLoginRequest) (*user.UserLoginResponse, error) {
 	userInfo := &user.User{
-		UserName: req.UserName,
+		Id:       req.UserId,
 		Password: req.Password,
 	}
 	u, err := dao.UserLogin(ctx, userInfo)
@@ -54,10 +58,10 @@ func GetAllUserService(ctx context.Context, req *user.GetAllUserRequest) (*user.
 		resp.BaseResp.StatusCode = 0
 		resp.BaseResp.StatusMessage = "success"
 	}
-	return resp, err
+	return resp, nil
 }
 func ChangeUserPasswordService(ctx context.Context, req *user.ChangeUserPasswordRequest) (*user.ChangeUserPasswordResponse, error) {
-	err := dao.ChangeUserPassword(ctx, req.UserName, req.Password, req.NewPassword)
+	err := dao.ChangeUserPassword(ctx, int(req.UserId), req.Password, req.NewPassword)
 	resp := &user.ChangeUserPasswordResponse{BaseResp: &user.BaseResp{}}
 	if err != nil {
 		resp.BaseResp.StatusCode = 1
@@ -66,10 +70,10 @@ func ChangeUserPasswordService(ctx context.Context, req *user.ChangeUserPassword
 		resp.BaseResp.StatusCode = 0
 		resp.BaseResp.StatusMessage = "success"
 	}
-	return resp, err
+	return resp, nil
 }
 func DeleteUserService(ctx context.Context, req *user.DeleteUserRequest) (*user.DeleteUserResponse, error) {
-	err := dao.DeleteUser(ctx, req.UserName)
+	err := dao.DeleteUser(ctx, int(req.UserId))
 	resp := &user.DeleteUserResponse{BaseResp: &user.BaseResp{}}
 	if err != nil {
 		resp.BaseResp.StatusCode = 1
@@ -78,10 +82,10 @@ func DeleteUserService(ctx context.Context, req *user.DeleteUserRequest) (*user.
 		resp.BaseResp.StatusCode = 0
 		resp.BaseResp.StatusMessage = "success"
 	}
-	return resp, err
+	return resp, nil
 }
 func GetUserInfoService(ctx context.Context, req *user.GetUserInfoRequest) (*user.GetUserInfoResponse, error) {
-	u, err := dao.GetUserInfo(ctx, req.UserName)
+	u, err := dao.GetUserInfo(ctx, int(req.UserId))
 	resp := &user.GetUserInfoResponse{BaseResp: &user.BaseResp{}}
 	if err != nil {
 		resp.BaseResp.StatusCode = 1
@@ -91,5 +95,30 @@ func GetUserInfoService(ctx context.Context, req *user.GetUserInfoRequest) (*use
 		resp.BaseResp.StatusMessage = "success"
 	}
 	resp.User = u
-	return resp, err
+	return resp, nil
+}
+
+func BindEmailService(ctx context.Context, req *user.BindEmailRequest) (*user.BindEmailResponse, error) {
+	err := dao.BindEmail(ctx, req.UserId, req.GetEmail())
+	resp := &user.BindEmailResponse{BaseResp: &user.BaseResp{}}
+	if err != nil {
+		resp.BaseResp.StatusCode = 1
+		resp.BaseResp.StatusMessage = err.Error()
+	} else {
+		resp.BaseResp.StatusCode = 0
+		resp.BaseResp.StatusMessage = "success"
+	}
+	return resp, nil
+}
+func ForgetPasswordService(ctx context.Context, req *user.ForgetPasswordRequest) (*user.ForgetPasswordResponse, error) {
+	err := dao.ForgetPassword(ctx, req.Email, req.NewPassword)
+	resp := &user.ForgetPasswordResponse{BaseResp: &user.BaseResp{}}
+	if err != nil {
+		resp.BaseResp.StatusCode = 1
+		resp.BaseResp.StatusMessage = err.Error()
+	} else {
+		resp.BaseResp.StatusCode = 0
+		resp.BaseResp.StatusMessage = "success"
+	}
+	return resp, nil
 }

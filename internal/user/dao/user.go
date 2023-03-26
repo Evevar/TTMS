@@ -26,18 +26,19 @@ func PasswordEqual(Password1, Password2 string) error {
 }
 
 // CreateUser 创建用户最后要加上判断 userType=9的条件
-func CreateUser(ctx context.Context, userInfo *user.User) error {
+func CreateUser(ctx context.Context, userInfo *user.User) (err error) {
 	u := user.User{}
 	if DB.Where("user_name = ?", userInfo.UserName).Find(&u); u.Id > 0 {
-		return errors.New("该用户已存在")
+		err = errors.New("警告，您设置了重名用户")
 	}
 	userInfo.Password = string(getPassword(userInfo.Password))
-	return DB.WithContext(ctx).Create(userInfo).Error
+	DB.WithContext(ctx).Create(userInfo)
+	return err
 }
 
 func UserLogin(ctx context.Context, userInfo *user.User) (user.User, error) {
 	u := user.User{}
-	DB.WithContext(ctx).Where("user_name = ?", userInfo.UserName).Find(&u)
+	DB.WithContext(ctx).Where("id = ?", userInfo.Id).Find(&u)
 	if u.Id > 0 {
 		if PasswordEqual(userInfo.Password, u.Password) == nil {
 			return u, nil
@@ -52,21 +53,41 @@ func GetAllUser(ctx context.Context, current, pageSize int) ([]*user.User, error
 	tx := DB.WithContext(ctx).Offset((current - 1) * pageSize).Limit(pageSize).Find(&users)
 	return users, tx.Error
 }
-func ChangeUserPassword(ctx context.Context, UserName string, Password, NewPassword string) error {
+func ChangeUserPassword(ctx context.Context, UserId int, Password, NewPassword string) error {
 	u := user.User{}
-	tx := DB.WithContext(ctx).Where("user_name = ?", UserName).Find(&u)
+	tx := DB.WithContext(ctx).Where("id = ?", UserId).Find(&u)
 	if u.Id > 0 && PasswordEqual(Password, u.Password) == nil {
 		u.Password = string(getPassword(NewPassword))
-		tx = DB.Updates(&u)
+		tx = DB.WithContext(ctx).Updates(&u)
 	}
 	return tx.Error
 }
 
-func DeleteUser(ctx context.Context, UserName string) error {
-	return DB.WithContext(ctx).Where("user_name = ?", UserName).Delete(&user.User{}).Error
+func DeleteUser(ctx context.Context, UserId int) error {
+	return DB.WithContext(ctx).Where("id = ?", UserId).Delete(&user.User{}).Error
 }
-func GetUserInfo(ctx context.Context, UserName string) (*user.User, error) {
+func GetUserInfo(ctx context.Context, UserId int) (*user.User, error) {
 	u := user.User{}
-	tx := DB.Where("user_name = ?", UserName).Find(&u)
+	tx := DB.WithContext(ctx).Where("id = ?", UserId).Find(&u)
 	return &u, tx.Error
+}
+
+func BindEmail(ctx context.Context, id int64, email string) error {
+	u := user.User{}
+	DB.WithContext(ctx).Select("where email = ?", email).Find(&u)
+	if u.Id == 0 { //该邮箱尚未被其他用户绑定
+		return DB.WithContext(ctx).Updates(&user.User{Id: id, Email: email}).Error
+	} else if u.Id != id {
+		return errors.New("该邮箱已经被其他用户绑定")
+	}
+	return nil
+}
+func ForgetPassword(ctx context.Context, Email string, NewPassword string) error {
+	u := user.User{}
+	DB.WithContext(ctx).Where("email = ?", Email).Find(&u)
+	if u.Id > 0 {
+		u.Password = string(getPassword(NewPassword))
+		return DB.WithContext(ctx).Updates(&u).Error
+	}
+	return errors.New("该邮箱尚未绑定")
 }

@@ -16,10 +16,10 @@ const TokenExpireDuration = JWTOverTime
 
 var MySecret = []byte(JWTSecret)
 
-var client *redis.Client
+var Client *redis.Client
 
 func InitRedis() {
-	client = redis.NewClient(&redis.Options{
+	Client = redis.NewClient(&redis.Options{
 		Addr:     "localhost:6378",
 		Password: consts.RedisPassword,
 		DB:       0, // use default DB
@@ -42,14 +42,15 @@ func GenToken(userInfo *user.User) (string, error) {
 	if err != nil {
 		log.Panicln(err)
 	}
-	num, err1 := client.LRem(context.Background(), "black", 0, tokenStr).Result()
-	log.Println("client.LRem return ", num, err1)
+	num, err1 := Client.LRem(context.Background(), "black", 0, tokenStr).Result()
+	log.Println("Client.LRem return ", num, err1)
 	return tokenStr, err
 }
 
-// 解析JWT.
+// ParseToken 解析JWT
 func ParseToken(tokenString string) (*MyClaims, error) {
-	arr, _ := client.LRange(context.Background(), "black", 0, -1).Result()
+	//判断用户是否在黑名单中
+	arr, _ := Client.LRange(context.Background(), "black", 0, -1).Result()
 	for _, v := range arr {
 		if strings.Compare(v, tokenString) == 0 { //该token在黑名单中
 			return nil, errors.New("更改密码后需重新登录")
@@ -68,10 +69,34 @@ func ParseToken(tokenString string) (*MyClaims, error) {
 	return nil, errors.New("JWT 解析错误")
 }
 
-// 废弃JWT(更改密码后)
+// DiscardToken 废弃JWT(更改密码后)
 func DiscardToken(tokenString string) {
-	_, err := client.LPush(context.Background(), "black", tokenString).Result()
+	//用户更改密码之后强制用户重新登录（此时，将用户添加到黑名单中，用户重新登陆之后，把用户从黑名单中移除）
+	_, err := Client.LPush(context.Background(), "black", tokenString).Result()
 	if err != nil {
 		log.Println(err)
 	}
+}
+
+// SetVerification 生成验证码之后加入redis
+func SetVerification(email, verification string) {
+	err := Client.SetNX(context.Background(), email, verification, 5*time.Minute).Err()
+
+	if err != nil {
+		log.Println(err)
+	}
+}
+
+// CheckVerification 验证失败时返回error
+func CheckVerification(email, verification string) error {
+	v, err := Client.Get(context.Background(), email).Result()
+	if err != nil || v != verification {
+		log.Println(err)
+		return errors.New("验证码无效")
+	}
+	err = Client.Del(context.Background(), email).Err()
+	if err != nil {
+		log.Println(err)
+	}
+	return nil
 }
