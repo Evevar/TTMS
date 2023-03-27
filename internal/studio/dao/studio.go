@@ -4,6 +4,7 @@ import (
 	"TTMS/kitex_gen/studio"
 	"context"
 	"errors"
+	"fmt"
 )
 
 func AddStudio(ctx context.Context, Name string, row, col int64) (*studio.Studio, error) {
@@ -17,26 +18,42 @@ func GetAllStudio(ctx context.Context, Current, PageSize int) ([]*studio.Studio,
 	return studios, tx.Error
 }
 
-func UpdateStudio(ctx context.Context, id, row, col int64, Name string) error {
+func UpdateStudio(ctx context.Context, StudioInfo *studio.Studio) error {
 	s := studio.Studio{}
-	DB.WithContext(ctx).Where("id = ?", id).Find(&s)
+	DB.WithContext(ctx).Where("id = ?", StudioInfo.Id).Find(&s)
 	if s.Id > 0 {
-		if row > s.RowsCount || col > s.ColsCount {
+		if StudioInfo.RowsCount > s.RowsCount || StudioInfo.ColsCount > s.ColsCount {
 			return errors.New("座位规模不能比原来更大")
 		}
-		if row != 0 {
-			s.RowsCount = row
+		if StudioInfo.RowsCount == 0 {
+			StudioInfo.RowsCount = s.RowsCount
 		}
-		if col != 0 {
-			s.ColsCount = col
+		if StudioInfo.ColsCount == 0 {
+			StudioInfo.ColsCount = s.ColsCount
 		}
-		if Name != "" {
-			s.Name = Name
+		StudioInfo.SeatsCount = StudioInfo.RowsCount * StudioInfo.ColsCount
+		//if StudioInfo.Name == "" {
+		//	s.Name = StudioInfo.Name
+		//}
+		tx := DB.Begin()
+		fmt.Println(s.SeatsCount, StudioInfo.SeatsCount)
+		if s.SeatsCount > StudioInfo.SeatsCount {
+			err := tx.WithContext(ctx).Where("studio_id=? and (row>? or col>?)", StudioInfo.Id, StudioInfo.RowsCount, StudioInfo.ColsCount).Delete(&studio.Seat{}).Error
+			if err != nil {
+				tx.Rollback()
+				return err
+			}
 		}
-		return DB.WithContext(ctx).Updates(&s).Error
+		err := DB.WithContext(ctx).Model(&studio.Studio{}).Where("id = ?", StudioInfo.Id).Updates(&StudioInfo).Error
+		if err != nil { //修改成功
+			tx.Rollback()
+			return err
+		}
+		tx.Commit()
 	} else {
 		return errors.New("该演出厅不存在")
 	}
+	return nil
 }
 func DeleteStudio(ctx context.Context, id int64) error {
 	s := studio.Studio{}

@@ -36,7 +36,7 @@ func GetAllStudioService(ctx context.Context, req *studio.GetAllStudioRequest) (
 }
 
 func UpdateStudioService(ctx context.Context, req *studio.UpdateStudioRequest) (resp *studio.UpdateStudioResponse, err error) {
-	err = dao.UpdateStudio(ctx, req.Id, req.RowsCount, req.ColsCount, req.Name)
+	err = dao.UpdateStudio(ctx, &studio.Studio{Id: req.Id, Name: req.Name, RowsCount: req.RowsCount, ColsCount: req.ColsCount})
 	resp = &studio.UpdateStudioResponse{BaseResp: &studio.BaseResp{}}
 	if err != nil {
 		resp.BaseResp.StatusCode = 1

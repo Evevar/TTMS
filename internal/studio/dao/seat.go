@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"gorm.io/gorm"
 )
 
 func AddBatchSeat(ctx context.Context, studioInfo *studio.Studio) error {
@@ -40,6 +41,9 @@ func UpdateSeat(ctx context.Context, seatInfo *studio.Seat) error {
 	s := studio.Seat{}
 	if DB.WithContext(ctx).Where("studio_id = ? and row = ? and col = ? ", seatInfo.StudioId, seatInfo.Row, seatInfo.Col).Find(&s); s.Id > 0 {
 		return DB.WithContext(ctx).Model(&s).Where("studio_id = ? and row = ? and col = ? ", seatInfo.StudioId, seatInfo.Row, seatInfo.Col).Update("status", seatInfo.Status).Error
+	}
+	if seatInfo.Status == 0 { //删除了一个座位
+		DB.WithContext(ctx).Model(&studio.Studio{}).Where("id = ?", seatInfo.StudioId).UpdateColumn("seats_count", gorm.Expr("seats_count - 1"))
 	}
 	return errors.New("该位置上无座位，修改失败")
 }
