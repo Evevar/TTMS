@@ -51,3 +51,6 @@ func DeleteSeat(ctx context.Context, seatInfo *studio.Seat) error {
 	seatInfo.Status = 0
 	return UpdateSeat(ctx, seatInfo)
 }
+func RealDeleteSeat(studioId, row, col int) error {
+	return DB.Where("studio_id=? and (row>? or col>?)", studioId, row, col).Delete(&studio.Seat{}).Error
+}

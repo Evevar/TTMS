@@ -7,12 +7,8 @@ import (
 )
 
 func AddStudioService(ctx context.Context, req *studio.AddStudioRequest) (resp *studio.AddStudioResponse, err error) {
-	s, err := dao.AddStudio(ctx, req.Name, req.RowsCount, req.ColsCount)
+	err = dao.AddStudio(ctx, req.Name, req.RowsCount, req.ColsCount)
 	resp = &studio.AddStudioResponse{BaseResp: &studio.BaseResp{}}
-	if err == nil {
-		//全部位置默认都放上座位
-		err = dao.AddBatchSeat(ctx, s)
-	}
 	if err != nil {
 		resp.BaseResp.StatusCode = 1
 		resp.BaseResp.StatusMessage = err.Error()

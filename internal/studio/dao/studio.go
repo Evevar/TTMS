@@ -4,17 +4,19 @@ import (
 	"TTMS/kitex_gen/studio"
 	"context"
 	"errors"
-	"fmt"
 )
 
-func AddStudio(ctx context.Context, Name string, row, col int64) (*studio.Studio, error) {
-	s := studio.Studio{Name: Name, RowsCount: row, ColsCount: col, SeatsCount: row * col}
+func AddStudio(ctx context.Context, Name string, row, col int64) error {
+	s := studio.Studio{Name: Name, RowsCount: row, ColsCount: col}
 	tx := DB.WithContext(ctx).Create(&s)
-	return &s, tx.Error
+	if tx.Error != nil {
+		return tx.Error
+	}
+	return AddBatchSeat(ctx, &s)
 }
 func GetAllStudio(ctx context.Context, Current, PageSize int) ([]*studio.Studio, error) {
 	studios := make([]*studio.Studio, PageSize)
-	tx := DB.WithContext(ctx).Offset((Current - 1) * PageSize).Limit(PageSize).Find(&studios)
+	tx := DB.WithContext(ctx).Select("").Offset((Current - 1) * PageSize).Limit(PageSize).Find(&studios)
 	return studios, tx.Error
 }
 
@@ -31,14 +33,16 @@ func UpdateStudio(ctx context.Context, StudioInfo *studio.Studio) error {
 		if StudioInfo.ColsCount == 0 {
 			StudioInfo.ColsCount = s.ColsCount
 		}
-		StudioInfo.SeatsCount = StudioInfo.RowsCount * StudioInfo.ColsCount
-		//if StudioInfo.Name == "" {
-		//	s.Name = StudioInfo.Name
-		//}
 		tx := DB.Begin()
-		fmt.Println(s.SeatsCount, StudioInfo.SeatsCount)
-		if s.SeatsCount > StudioInfo.SeatsCount {
-			err := tx.WithContext(ctx).Where("studio_id=? and (row>? or col>?)", StudioInfo.Id, StudioInfo.RowsCount, StudioInfo.ColsCount).Delete(&studio.Seat{}).Error
+		if StudioInfo.RowsCount > 0 || StudioInfo.ColsCount > 0 { //演出厅规模变小之后删除座位
+			var err error
+			for i := 1; i <= int(s.RowsCount); i++ {
+				for j := 1; j <= int(s.ColsCount); j++ {
+					if i > int(StudioInfo.RowsCount) || j > int(StudioInfo.ColsCount) {
+						err = RealDeleteSeat(int(StudioInfo.Id), i, j)
+					}
+				}
+			}
 			if err != nil {
 				tx.Rollback()
 				return err

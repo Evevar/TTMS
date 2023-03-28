@@ -163,6 +163,8 @@ func GetVerification(c *gin.Context) {
 			go gmail.Send(mail, verification)
 			jwt.SetVerification(mail, verification)
 		} else if t < time.Minute*4 { //距离上次请求发送邮箱验证码已经过去了1分钟,但还不足5分钟，复用之前的验证码
+			verification, _ := jwt.Client.Get(context.Background(), mail).Result()
+			go gmail.Send(mail, verification)
 			jwt.Client.Expire(context.Background(), mail, 5*time.Minute)
 		} else { //距离上次请求发送邮箱验证码不足了1分钟,拒绝
 			resp.BaseResp.StatusCode = 1

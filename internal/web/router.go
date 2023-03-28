@@ -29,5 +29,14 @@ func InitRouter() *gin.Engine {
 	baseGroup.POST("/seat/delete/", api.DeleteSeat)
 	baseGroup.GET("/seat/all/", api.GetAllSeat)
 
+	baseGroup.POST("/play/add/", api.AddPlay)
+	baseGroup.POST("/play/update/", api.UpdatePlay)
+	baseGroup.POST("/play/delete/", api.DeletePlay)
+	baseGroup.GET("/play/all/", api.GetAllPlay)
+
+	baseGroup.POST("/schedule/add/", api.AddSchedule)
+	baseGroup.POST("/schedule/update/", api.UpdateSchedule)
+	baseGroup.POST("/schedule/delete/", api.DeleteSchedule)
+	baseGroup.GET("/schedule/all/", api.GetAllSchedule)
 	return r
 }

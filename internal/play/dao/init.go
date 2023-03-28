@@ -2,18 +2,11 @@ package dao
 
 import (
 	"TTMS/configs/consts"
-	"TTMS/kitex_gen/studio"
+	"TTMS/kitex_gen/play"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
-
-type Studio struct {
-	Id        int64
-	Name      string
-	RowsCount int64
-	ColsCount int64
-}
 
 var DB *gorm.DB
 
@@ -29,7 +22,7 @@ func Init() {
 	if err != nil {
 		panic(err)
 	}
-	err = DB.AutoMigrate(&studio.Studio{}, &studio.Seat{})
+	err = DB.AutoMigrate(&play.Play{}, &play.Schedule{})
 	if err != nil {
 		panic(err)
 	}

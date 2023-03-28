@@ -28,7 +28,7 @@ message AddStudioResponse{
 message GetAllStudioRequest{
   int32 Current = 1;//当前页
   int32 PageSize = 2; //一页数据条数
-  string Token=4;
+  string Token=3;
 }
 message GetAllStudioResponse{
   BaseResp BaseResp = 1;
