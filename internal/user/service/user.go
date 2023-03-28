@@ -9,22 +9,22 @@ import (
 
 func CreateUserService(ctx context.Context, req *user.CreateUserRequest) (*user.CreateUserResponse, error) {
 	userInfo := &user.User{
-		UserType: req.UserType,
-		UserName: req.UserName,
+		Type:     req.Type,
+		Name:     req.Name,
 		Password: req.Password,
 		Email:    req.Email,
 	}
 	err := dao.CreateUser(ctx, userInfo)
 	resp := &user.CreateUserResponse{BaseResp: &user.BaseResp{}}
-	if err != nil && err.Error() != "警告，您设置了重名用户" {
+	if err != nil && err.Error() != "[警告] 添加成功，您设置了重名用户" {
 		resp.BaseResp.StatusCode = 1
 		resp.BaseResp.StatusMessage = err.Error()
-	} else if err.Error() == "警告，您设置了重名用户" {
-		resp.BaseResp.StatusCode = 0
-		resp.BaseResp.StatusMessage = "[警告] 添加成功，您设置了重名用户"
-	} else {
+	} else if err == nil {
 		resp.BaseResp.StatusCode = 0
 		resp.BaseResp.StatusMessage = "success"
+	} else {
+		resp.BaseResp.StatusCode = 0
+		resp.BaseResp.StatusMessage = "[警告] 添加成功，您设置了重名用户"
 	}
 	log.Println("resp = ", resp)
 	return resp, nil
@@ -39,11 +39,11 @@ func UserLoginService(ctx context.Context, req *user.UserLoginRequest) (*user.Us
 	if err != nil {
 		resp.BaseResp.StatusCode = 1
 		resp.BaseResp.StatusMessage = err.Error()
-		resp.UserInfo = &u
+		resp.UserInfo = u
 	} else {
 		resp.BaseResp.StatusCode = 0
 		resp.BaseResp.StatusMessage = "success"
-		resp.UserInfo = &u
+		resp.UserInfo = u
 	}
 	return resp, nil
 }

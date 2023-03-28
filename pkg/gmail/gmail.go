@@ -10,17 +10,6 @@ import (
 	"strconv"
 )
 
-type mail struct {
-	user   string
-	passwd string
-}
-
-func check(err error) {
-	if err != nil {
-		log.Panic(err)
-	}
-}
-
 var Mail *email.Email
 
 // New 初始化用户名和密码

@@ -6,9 +6,10 @@ import (
 	"TTMS/pkg/jwt"
 	"context"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 func AddSeat(c *gin.Context) {

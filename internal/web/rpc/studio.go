@@ -5,11 +5,12 @@ import (
 	"TTMS/kitex_gen/studio"
 	"TTMS/kitex_gen/studio/studioservice"
 	"context"
+	"time"
+
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/retry"
 	etcd "github.com/kitex-contrib/registry-etcd"
 	trace "github.com/kitex-contrib/tracer-opentracing"
-	"time"
 )
 
 var studioClient studioservice.Client

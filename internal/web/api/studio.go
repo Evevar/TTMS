@@ -5,9 +5,10 @@ import (
 	"TTMS/kitex_gen/studio"
 	"TTMS/pkg/jwt"
 	"context"
-	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 func AddStudio(c *gin.Context) {

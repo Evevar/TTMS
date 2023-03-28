@@ -4,6 +4,7 @@ package studio
 
 import (
 	fmt "fmt"
+
 	fastpb "github.com/cloudwego/fastpb"
 )
 
@@ -69,6 +70,11 @@ func (x *Studio) FastRead(buf []byte, _type int8, number int32) (offset int, err
 		if err != nil {
 			goto ReadFieldError
 		}
+	case 5:
+		offset, err = x.fastReadField5(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
 	default:
 		offset, err = fastpb.Skip(buf, _type, number)
 		if err != nil {
@@ -99,6 +105,11 @@ func (x *Studio) fastReadField3(buf []byte, _type int8) (offset int, err error) 
 
 func (x *Studio) fastReadField4(buf []byte, _type int8) (offset int, err error) {
 	x.ColsCount, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
+}
+
+func (x *Studio) fastReadField5(buf []byte, _type int8) (offset int, err error) {
+	x.SeatsCount, offset, err = fastpb.ReadInt64(buf, _type)
 	return offset, err
 }
 
@@ -910,6 +921,7 @@ func (x *Studio) FastWrite(buf []byte) (offset int) {
 	offset += x.fastWriteField2(buf[offset:])
 	offset += x.fastWriteField3(buf[offset:])
 	offset += x.fastWriteField4(buf[offset:])
+	offset += x.fastWriteField5(buf[offset:])
 	return offset
 }
 
@@ -942,6 +954,14 @@ func (x *Studio) fastWriteField4(buf []byte) (offset int) {
 		return offset
 	}
 	offset += fastpb.WriteInt64(buf[offset:], 4, x.ColsCount)
+	return offset
+}
+
+func (x *Studio) fastWriteField5(buf []byte) (offset int) {
+	if x.SeatsCount == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 5, x.SeatsCount)
 	return offset
 }
 
@@ -1524,6 +1544,7 @@ func (x *Studio) Size() (n int) {
 	n += x.sizeField2()
 	n += x.sizeField3()
 	n += x.sizeField4()
+	n += x.sizeField5()
 	return n
 }
 
@@ -1556,6 +1577,14 @@ func (x *Studio) sizeField4() (n int) {
 		return n
 	}
 	n += fastpb.SizeInt64(4, x.ColsCount)
+	return n
+}
+
+func (x *Studio) sizeField5() (n int) {
+	if x.SeatsCount == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(5, x.SeatsCount)
 	return n
 }
 
@@ -2115,6 +2144,7 @@ var fieldIDToName_Studio = map[int32]string{
 	2: "Name",
 	3: "RowsCount",
 	4: "ColsCount",
+	5: "SeatsCount",
 }
 
 var fieldIDToName_AddStudioRequest = map[int32]string{

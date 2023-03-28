@@ -9,15 +9,15 @@ message BaseResp {
 
 message User{
   int64 Id = 1;   //用户ID
-  int32 UserType = 2; //用户类型，1-销售员，2-经理，9-系统管理员
-  string UserName = 3; //用户名称
+  int32 Type = 2; //用户类型，1-销售员，2-经理，9-系统管理员
+  string Name = 3; //用户名称
   string Password = 4;  //用户密码
   string Email = 5;//电子邮箱
 }
 //创建用户
 message CreateUserRequest{
-  int32 UserType = 1; //用户类型，1-销售员，2-经理，9-系统管理员
-  string UserName = 2; //用户名称
+  int32 Type = 1; //用户类型，1-销售员，2-经理，9-系统管理员
+  string Name = 2; //用户名称
   string Password = 3;  //用户密码
   string Email = 4;
   string Token = 5;

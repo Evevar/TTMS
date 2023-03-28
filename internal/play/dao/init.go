@@ -2,7 +2,7 @@ package dao
 
 import (
 	"TTMS/configs/consts"
-	"TTMS/kitex_gen/play"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -19,10 +19,6 @@ func Init() {
 			Logger:                 logger.Default.LogMode(logger.Info), //打印sql语句
 		},
 	)
-	if err != nil {
-		panic(err)
-	}
-	err = DB.AutoMigrate(&play.Play{}, &play.Schedule{})
 	if err != nil {
 		panic(err)
 	}

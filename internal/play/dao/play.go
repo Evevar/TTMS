@@ -41,13 +41,10 @@ func DeletePlay(ctx context.Context, id int64) error {
 	}
 }
 func AddSchedule(ctx context.Context, SInfo *play.Schedule) error {
-	var num int64
-	DB.Model(&studio.Seat{}).Where("studio_id = ? and status=1", SInfo.StudioId).Count(&num)
-	SInfo.SeatCount = int32(num)
 	tx := DB.Begin()
 	var s []map[string]string
 	var m map[string]string
-	tx.WithContext(ctx).Table("schedules").Select("schedules.show_time as start,plays.duration as dur").Joins("join plays on schedules.play_id=plays.id").Where("schedules.StudioId=?", SInfo.StudioId).Find(&s)
+	tx.WithContext(ctx).Table("schedules").Select("schedules.show_time as start,plays.duration as dur").Joins("join plays on schedules.play_id=plays.id").Where("schedules.studio_id=?", SInfo.StudioId).Find(&s)
 	tx.WithContext(ctx).Where("id = ?", SInfo.PlayId).Select("duration").Find(&m)
 	m["start"] = SInfo.ShowTime
 	if IsConflict(m, s) { //时间有冲突
@@ -56,7 +53,6 @@ func AddSchedule(ctx context.Context, SInfo *play.Schedule) error {
 	}
 	s1 := studio.Studio{}
 	tx.WithContext(ctx).Where("id = ?", SInfo.StudioId).Find(&s1)
-	SInfo.SeatCount = int32(s1.SeatsCount)
 	tx.WithContext(ctx).Create(&SInfo)
 	//生成演出票(还没有写)
 	tx.Commit()

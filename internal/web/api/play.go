@@ -5,9 +5,10 @@ import (
 	"TTMS/kitex_gen/play"
 	"TTMS/pkg/jwt"
 	"context"
-	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 func AddPlay(c *gin.Context) {

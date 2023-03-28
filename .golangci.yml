@@ -1,0 +1,16 @@
+linters:
+  enable:
+    - errcheck
+    - gofmt
+    - goimports
+    - ineffassign
+    - staticcheck
+    - unused
+  disable:
+    - exhaustivestruct
+    - nakedret
+
+linters-settings:
+  errcheck:
+    check-nil-return: false
+

@@ -4,6 +4,7 @@ package user
 
 import (
 	fmt "fmt"
+
 	fastpb "github.com/cloudwego/fastpb"
 )
 
@@ -93,12 +94,12 @@ func (x *User) fastReadField1(buf []byte, _type int8) (offset int, err error) {
 }
 
 func (x *User) fastReadField2(buf []byte, _type int8) (offset int, err error) {
-	x.UserType, offset, err = fastpb.ReadInt32(buf, _type)
+	x.Type, offset, err = fastpb.ReadInt32(buf, _type)
 	return offset, err
 }
 
 func (x *User) fastReadField3(buf []byte, _type int8) (offset int, err error) {
-	x.UserName, offset, err = fastpb.ReadString(buf, _type)
+	x.Name, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
 
@@ -153,12 +154,12 @@ ReadFieldError:
 }
 
 func (x *CreateUserRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
-	x.UserType, offset, err = fastpb.ReadInt32(buf, _type)
+	x.Type, offset, err = fastpb.ReadInt32(buf, _type)
 	return offset, err
 }
 
 func (x *CreateUserRequest) fastReadField2(buf []byte, _type int8) (offset int, err error) {
-	x.UserName, offset, err = fastpb.ReadString(buf, _type)
+	x.Name, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
 
@@ -888,18 +889,18 @@ func (x *User) fastWriteField1(buf []byte) (offset int) {
 }
 
 func (x *User) fastWriteField2(buf []byte) (offset int) {
-	if x.UserType == 0 {
+	if x.Type == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt32(buf[offset:], 2, x.UserType)
+	offset += fastpb.WriteInt32(buf[offset:], 2, x.Type)
 	return offset
 }
 
 func (x *User) fastWriteField3(buf []byte) (offset int) {
-	if x.UserName == "" {
+	if x.Name == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 3, x.UserName)
+	offset += fastpb.WriteString(buf[offset:], 3, x.Name)
 	return offset
 }
 
@@ -932,18 +933,18 @@ func (x *CreateUserRequest) FastWrite(buf []byte) (offset int) {
 }
 
 func (x *CreateUserRequest) fastWriteField1(buf []byte) (offset int) {
-	if x.UserType == 0 {
+	if x.Type == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt32(buf[offset:], 1, x.UserType)
+	offset += fastpb.WriteInt32(buf[offset:], 1, x.Type)
 	return offset
 }
 
 func (x *CreateUserRequest) fastWriteField2(buf []byte) (offset int) {
-	if x.UserName == "" {
+	if x.Name == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 2, x.UserName)
+	offset += fastpb.WriteString(buf[offset:], 2, x.Name)
 	return offset
 }
 
@@ -1453,18 +1454,18 @@ func (x *User) sizeField1() (n int) {
 }
 
 func (x *User) sizeField2() (n int) {
-	if x.UserType == 0 {
+	if x.Type == 0 {
 		return n
 	}
-	n += fastpb.SizeInt32(2, x.UserType)
+	n += fastpb.SizeInt32(2, x.Type)
 	return n
 }
 
 func (x *User) sizeField3() (n int) {
-	if x.UserName == "" {
+	if x.Name == "" {
 		return n
 	}
-	n += fastpb.SizeString(3, x.UserName)
+	n += fastpb.SizeString(3, x.Name)
 	return n
 }
 
@@ -1497,18 +1498,18 @@ func (x *CreateUserRequest) Size() (n int) {
 }
 
 func (x *CreateUserRequest) sizeField1() (n int) {
-	if x.UserType == 0 {
+	if x.Type == 0 {
 		return n
 	}
-	n += fastpb.SizeInt32(1, x.UserType)
+	n += fastpb.SizeInt32(1, x.Type)
 	return n
 }
 
 func (x *CreateUserRequest) sizeField2() (n int) {
-	if x.UserName == "" {
+	if x.Name == "" {
 		return n
 	}
-	n += fastpb.SizeString(2, x.UserName)
+	n += fastpb.SizeString(2, x.Name)
 	return n
 }
 
@@ -1979,15 +1980,15 @@ var fieldIDToName_BaseResp = map[int32]string{
 
 var fieldIDToName_User = map[int32]string{
 	1: "Id",
-	2: "UserType",
-	3: "UserName",
+	2: "Type",
+	3: "Name",
 	4: "Password",
 	5: "Email",
 }
 
 var fieldIDToName_CreateUserRequest = map[int32]string{
-	1: "UserType",
-	2: "UserName",
+	1: "Type",
+	2: "Name",
 	3: "Password",
 	4: "Email",
 	5: "Token",

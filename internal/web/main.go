@@ -12,5 +12,8 @@ func main() {
 	jwt.InitRedis()
 	gmail.New()
 	r := InitRouter()
-	r.Run("127.0.0.1:" + consts.WebServerPort)
+	err := r.Run("127.0.0.1:" + consts.WebServerPort)
+	if err != nil {
+		panic(err)
+	}
 }

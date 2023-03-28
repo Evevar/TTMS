@@ -5,11 +5,12 @@ import (
 	"TTMS/kitex_gen/play"
 	"TTMS/kitex_gen/play/playservice"
 	"context"
+	"time"
+
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/retry"
 	etcd "github.com/kitex-contrib/registry-etcd"
 	trace "github.com/kitex-contrib/tracer-opentracing"
-	"time"
 )
 
 var playClient playservice.Client

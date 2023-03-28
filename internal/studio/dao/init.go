@@ -2,7 +2,7 @@ package dao
 
 import (
 	"TTMS/configs/consts"
-	"TTMS/kitex_gen/studio"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -26,10 +26,6 @@ func Init() {
 			Logger:                 logger.Default.LogMode(logger.Info), //打印sql语句
 		},
 	)
-	if err != nil {
-		panic(err)
-	}
-	err = DB.AutoMigrate(&studio.Studio{}, &studio.Seat{})
 	if err != nil {
 		panic(err)
 	}

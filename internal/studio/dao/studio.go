@@ -7,7 +7,7 @@ import (
 )
 
 func AddStudio(ctx context.Context, Name string, row, col int64) error {
-	s := studio.Studio{Name: Name, RowsCount: row, ColsCount: col}
+	s := Studio{Name: Name, RowsCount: row, ColsCount: col}
 	tx := DB.WithContext(ctx).Create(&s)
 	if tx.Error != nil {
 		return tx.Error
@@ -16,7 +16,7 @@ func AddStudio(ctx context.Context, Name string, row, col int64) error {
 }
 func GetAllStudio(ctx context.Context, Current, PageSize int) ([]*studio.Studio, error) {
 	studios := make([]*studio.Studio, PageSize)
-	tx := DB.WithContext(ctx).Select("").Offset((Current - 1) * PageSize).Limit(PageSize).Find(&studios)
+	tx := DB.WithContext(ctx).Select("studios.*,count(s.studio_id) as seats_count").Joins("join seats as s on studios.id=s.studio_id").Where("s.status=1").Group("studios.id").Offset((Current - 1) * PageSize).Limit(PageSize).Find(&studios)
 	return studios, tx.Error
 }
 

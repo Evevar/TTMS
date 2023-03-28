@@ -5,10 +5,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
+
 	"gorm.io/gorm"
 )
 
-func AddBatchSeat(ctx context.Context, studioInfo *studio.Studio) error {
+func AddBatchSeat(ctx context.Context, studioInfo *Studio) error {
 	id, row, col := int(studioInfo.Id), int(studioInfo.RowsCount), int(studioInfo.ColsCount)
 	seats := make([]*studio.Seat, 0, row*col)
 	for i := 1; i <= row; i++ {
@@ -52,5 +53,5 @@ func DeleteSeat(ctx context.Context, seatInfo *studio.Seat) error {
 	return UpdateSeat(ctx, seatInfo)
 }
 func RealDeleteSeat(studioId, row, col int) error {
-	return DB.Where("studio_id=? and (row>? or col>?)", studioId, row, col).Delete(&studio.Seat{}).Error
+	return DB.Where("studio_id=? and row=? and col=?", studioId, row, col).Delete(&studio.Seat{}).Error
 }

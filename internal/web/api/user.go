@@ -7,11 +7,12 @@ import (
 	"TTMS/pkg/jwt"
 	"context"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
 	"regexp"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 func CreateUser(c *gin.Context) {
@@ -25,7 +26,7 @@ func CreateUser(c *gin.Context) {
 	//	c.JSON(http.StatusOK, user.CreateUserResponse{BaseResp: &user.BaseResp{StatusCode: 1, StatusMessage: err.Error()}})
 	//	return
 	//}
-
+	fmt.Println(req)
 	resp, err := rpc.CreateUser(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
@@ -95,7 +96,7 @@ func ChangeUserPassword(c *gin.Context) {
 		c.JSON(http.StatusServiceUnavailable, err)
 		log.Fatalln(err)
 	}
-	jwt.DiscardToken(req.Token)
+	jwt.DiscardToken(int(req.UserId), req.Token)
 	c.JSON(http.StatusOK, resp)
 }
 func DeleteUser(c *gin.Context) {
