@@ -43,6 +43,7 @@ func GenToken(userInfo *user.User) (string, error) {
 	if err != nil {
 		log.Panicln(err)
 	}
+	//从黑名单中取出token,该想法不合适，已禁止
 	//num, err1 := Client.HDel(context.Background(), "black", strconv.Itoa(int(userInfo.Id))).Result()
 	//log.Println("Client.LRem return ", num, err1)
 	return tokenStr, err
@@ -70,8 +71,10 @@ func ParseToken(tokenString string) (*MyClaims, error) {
 
 // DiscardToken 废弃JWT(更改密码后)
 func DiscardToken(id int, tokenString string) {
-	//用户更改密码之后强制用户重新登录（此时，将用户添加到黑名单中，用户重新登陆之后，把用户从黑名单中移除）
+	//用户更改密码之后强制用户重新登录-->右边为之前不太恰当的一个想法，原因请查看两行后的注释 （此时，将用户添加到黑名单中，用户重新登陆之后，把用户从黑名单中移除）
 	_, err := Client.HSet(context.Background(), "black", strconv.Itoa(id), tokenString).Result()
+	//为黑名单添加过期时间，因为用户重新登录之后，之前的token还不能从黑名单中取出来，否则之前过期的token就又可以重新使用了（这种情况不允许）
+	err = Client.Expire(context.Background(), "black", JWTOverTime).Err()
 	if err != nil {
 		log.Println(err)
 	}

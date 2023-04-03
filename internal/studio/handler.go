@@ -21,6 +21,12 @@ func (s *StudioServiceImpl) GetAllStudio(ctx context.Context, req *studio.GetAll
 	return service.GetAllStudioService(ctx, req)
 }
 
+// GetStudio implements the StudioServiceImpl interface.
+func (s *StudioServiceImpl) GetStudio(ctx context.Context, req *studio.GetStudioRequest) (resp *studio.GetStudioResponse, err error) {
+	// TODO: Your code here...
+	return service.GetStudioService(ctx, req)
+}
+
 // UpdateStudio implements the StudioServiceImpl interface.
 func (s *StudioServiceImpl) UpdateStudio(ctx context.Context, req *studio.UpdateStudioRequest) (resp *studio.UpdateStudioResponse, err error) {
 	// TODO: Your code here...

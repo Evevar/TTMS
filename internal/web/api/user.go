@@ -2,7 +2,7 @@ package api
 
 import (
 	"TTMS/internal/web/rpc"
-	user "TTMS/kitex_gen/user"
+	"TTMS/kitex_gen/user"
 	"TTMS/pkg/gmail"
 	"TTMS/pkg/jwt"
 	"context"
@@ -117,6 +117,7 @@ func DeleteUser(c *gin.Context) {
 		c.JSON(http.StatusServiceUnavailable, err)
 		log.Fatalln(err)
 	}
+	jwt.DiscardToken(int(req.UserId), req.Token)
 	c.JSON(http.StatusOK, resp)
 }
 func GetUserInfo(c *gin.Context) {

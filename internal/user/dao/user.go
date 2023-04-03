@@ -29,7 +29,7 @@ func PasswordEqual(Password1, Password2 string) error {
 // CreateUser 创建用户最后要加上判断 userType=9的条件
 func CreateUser(ctx context.Context, userInfo *user.User) (err error) {
 	u := user.User{Id: -1}
-	if DB.Where("name = ?", userInfo.Name).Find(&u); u.Id > 0 {
+	if DB.Where("name = ?", userInfo.Name).Limit(1).Find(&u); u.Id > 0 {
 		err = errors.New("[警告] 添加成功，您设置了重名用户")
 	}
 	userInfo.Password = string(getPassword(userInfo.Password))
@@ -40,7 +40,7 @@ func CreateUser(ctx context.Context, userInfo *user.User) (err error) {
 
 func UserLogin(ctx context.Context, userInfo *user.User) (*user.User, error) {
 	u := user.User{}
-	DB.WithContext(ctx).Where("id = ?", userInfo.Id).Find(&u)
+	DB.WithContext(ctx).Where("id = ?", userInfo.Id).Limit(1).Find(&u)
 	if u.Id > 0 {
 		if PasswordEqual(userInfo.Password, u.Password) == nil {
 			return &u, nil
@@ -58,7 +58,7 @@ func GetAllUser(ctx context.Context, current, pageSize int) ([]*user.User, error
 }
 func ChangeUserPassword(ctx context.Context, UserId int, Password, NewPassword string) error {
 	u := user.User{}
-	DB.WithContext(ctx).Where("id = ?", UserId).Find(&u)
+	DB.WithContext(ctx).Where("id = ?", UserId).Limit(1).Find(&u)
 	if u.Id > 0 {
 		if PasswordEqual(Password, u.Password) == nil {
 			u.Password = string(getPassword(NewPassword))
@@ -76,13 +76,13 @@ func DeleteUser(ctx context.Context, UserId int) error {
 }
 func GetUserInfo(ctx context.Context, UserId int) (*user.User, error) {
 	u := user.User{}
-	tx := DB.WithContext(ctx).Where("id = ?", UserId).Find(&u)
+	tx := DB.WithContext(ctx).Where("id = ?", UserId).Limit(1).Find(&u)
 	return &u, tx.Error
 }
 
 func BindEmail(ctx context.Context, id int64, email string) error {
 	u := user.User{}
-	DB.WithContext(ctx).Where("email = ?", email).Find(&u)
+	DB.WithContext(ctx).Where("email = ?", email).Limit(1).Find(&u)
 	if u.Id == 0 { //该邮箱尚未被其他用户绑定
 		return DB.WithContext(ctx).Updates(&user.User{Id: id, Email: email}).Error
 	} else if u.Id != id {
@@ -92,7 +92,7 @@ func BindEmail(ctx context.Context, id int64, email string) error {
 }
 func ForgetPassword(ctx context.Context, Email string, NewPassword string) error {
 	u := user.User{}
-	DB.WithContext(ctx).Where("email = ?", Email).Find(&u)
+	DB.WithContext(ctx).Where("email = ?", Email).Limit(1).Find(&u)
 	if u.Id > 0 {
 		u.Password = string(getPassword(NewPassword))
 		return DB.WithContext(ctx).Updates(&u).Error

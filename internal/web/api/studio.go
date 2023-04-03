@@ -51,6 +51,26 @@ func GetAllStudio(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, resp)
 }
+func GetStudio(c *gin.Context) {
+	req := &studio.GetStudioRequest{}
+	if err := c.Bind(req); err != nil {
+		log.Println("err = ", err, " req = ", req)
+		c.JSON(http.StatusOK, "bind error")
+		return
+	}
+	_, err := jwt.ParseToken(req.Token)
+	if err != nil {
+		c.JSON(http.StatusOK, studio.GetStudioResponse{BaseResp: &studio.BaseResp{StatusCode: 1, StatusMessage: err.Error()}})
+		return
+	}
+	//fmt.Println(req)
+	resp, err := rpc.GetStudio(context.Background(), req)
+	if err != nil {
+		c.JSON(http.StatusServiceUnavailable, err)
+		log.Fatalln(err)
+	}
+	c.JSON(http.StatusOK, resp)
+}
 func UpdateStudio(c *gin.Context) {
 	req := &studio.UpdateStudioRequest{}
 	if err := c.Bind(req); err != nil {

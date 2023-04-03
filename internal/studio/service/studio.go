@@ -31,6 +31,19 @@ func GetAllStudioService(ctx context.Context, req *studio.GetAllStudioRequest) (
 	return resp, nil
 }
 
+func GetStudioService(ctx context.Context, req *studio.GetStudioRequest) (resp *studio.GetStudioResponse, err error) {
+	s, err := dao.GetStudio(ctx, int(req.Id))
+	resp = &studio.GetStudioResponse{BaseResp: &studio.BaseResp{}}
+	if err != nil {
+		resp.BaseResp.StatusCode = 1
+		resp.BaseResp.StatusMessage = err.Error()
+	} else {
+		resp.BaseResp.StatusMessage = "success"
+	}
+	resp.Result = s
+	return resp, nil
+}
+
 func UpdateStudioService(ctx context.Context, req *studio.UpdateStudioRequest) (resp *studio.UpdateStudioResponse, err error) {
 	err = dao.UpdateStudio(ctx, &studio.Studio{Id: req.Id, Name: req.Name, RowsCount: req.RowsCount, ColsCount: req.ColsCount})
 	resp = &studio.UpdateStudioResponse{BaseResp: &studio.BaseResp{}}

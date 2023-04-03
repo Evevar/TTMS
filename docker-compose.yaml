@@ -1,26 +1,54 @@
 version: "3"
 
 services:
-#  mysql:
-#    image: "mysql:latest"
-#    ports:
-#      - 9910:3307
-#    environment:
-#      - MYSQL_DATABASE=TTMS
-#      - MYSQL_USER=kangning
-#      - MYSQL_PASSWORD=kangning
-#      - MYSQL_RANDOM_ROOT_PASSWORD="yes"
+  #  mysql:
+  #    image: "mysql:latest"
+  #    ports:
+  #      - 9910:3307
+  #    environment:
+  #      - MYSQL_DATABASE=TTMS
+  #      - MYSQL_USER=kangning
+  #      - MYSQL_PASSWORD=kangning
+  #      - MYSQL_RANDOM_ROOT_PASSWORD="yes"
   Etcd:
     image: "quay.io/coreos/etcd:v3.5.5"
     environment:
       - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
       - ETCD_ADVERTISE_CLIENT_URLS=http://0.0.0.0:2379
-      - ETCDCTL_API=3
+      - ETCD CTL_API=3
     ports:
-      - 2379:2379
+      - "2379:2379"
   redis:
     image: "redis:latest"
     environment:
       - REDIS_PASSWORD=redis
     ports:
-      - 6378:6379
+      - "6378:6379"
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    hostname: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SERVER_ROOT_URL=http://grafana:3000
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=9264wkn.
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    hostname: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./configs/prometheus:/etc/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    depends_on:
+      - grafana
+  prometheus-exporter:
+    image: prom/node-exporter
+    container_name: prometheus-exporter
+    hostname: prometheus-exporter
+    ports:
+      - "9100:9100"

@@ -5,7 +5,6 @@ package studioservice
 import (
 	studio "TTMS/kitex_gen/studio"
 	"context"
-
 	client "github.com/cloudwego/kitex/client"
 	callopt "github.com/cloudwego/kitex/client/callopt"
 )
@@ -20,6 +19,7 @@ type Client interface {
 	GetAllSeat(ctx context.Context, Req *studio.GetAllSeatRequest, callOptions ...callopt.Option) (r *studio.GetAllSeatResponse, err error)
 	UpdateSeat(ctx context.Context, Req *studio.UpdateSeatRequest, callOptions ...callopt.Option) (r *studio.UpdateSeatResponse, err error)
 	DeleteSeat(ctx context.Context, Req *studio.DeleteSeatRequest, callOptions ...callopt.Option) (r *studio.DeleteSeatResponse, err error)
+	GetStudio(ctx context.Context, Req *studio.GetStudioRequest, callOptions ...callopt.Option) (r *studio.GetStudioResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -89,4 +89,9 @@ func (p *kStudioServiceClient) UpdateSeat(ctx context.Context, Req *studio.Updat
 func (p *kStudioServiceClient) DeleteSeat(ctx context.Context, Req *studio.DeleteSeatRequest, callOptions ...callopt.Option) (r *studio.DeleteSeatResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.DeleteSeat(ctx, Req)
+}
+
+func (p *kStudioServiceClient) GetStudio(ctx context.Context, Req *studio.GetStudioRequest, callOptions ...callopt.Option) (r *studio.GetStudioResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetStudio(ctx, Req)
 }

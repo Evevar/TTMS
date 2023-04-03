@@ -16,13 +16,23 @@ func AddStudio(ctx context.Context, Name string, row, col int64) error {
 }
 func GetAllStudio(ctx context.Context, Current, PageSize int) ([]*studio.Studio, error) {
 	studios := make([]*studio.Studio, PageSize)
-	tx := DB.WithContext(ctx).Select("studios.*,count(s.studio_id) as seats_count").Joins("join seats as s on studios.id=s.studio_id").Where("s.status=1").Group("studios.id").Offset((Current - 1) * PageSize).Limit(PageSize).Find(&studios)
+	tx := DB.WithContext(ctx).Select("studios.*,count(s.studio_id) as seats_count").
+		Joins("join seats as s on studios.id=s.studio_id").Where("s.status=1").
+		Group("studios.id").Offset((Current - 1) * PageSize).Limit(PageSize).Find(&studios)
 	return studios, tx.Error
+}
+
+func GetStudio(ctx context.Context, id int) (*studio.Studio, error) {
+	var s studio.Studio
+	tx := DB.WithContext(ctx).Table("studios as s1").Select("s1.*,count(s2.studio_id) as seats_count").
+		Joins("join seats as s2 on s1.id=s2.studio_id").Where("s2.status=1 and s1.id = ?", id).
+		Group("s2.studio_id").Limit(1).Find(&s)
+	return &s, tx.Error
 }
 
 func UpdateStudio(ctx context.Context, StudioInfo *studio.Studio) error {
 	s := studio.Studio{}
-	DB.WithContext(ctx).Where("id = ?", StudioInfo.Id).Find(&s)
+	DB.WithContext(ctx).Where("id = ?", StudioInfo.Id).Limit(1).Find(&s)
 	if s.Id > 0 {
 		if StudioInfo.RowsCount > s.RowsCount || StudioInfo.ColsCount > s.ColsCount {
 			return errors.New("座位规模不能比原来更大")
@@ -61,7 +71,7 @@ func UpdateStudio(ctx context.Context, StudioInfo *studio.Studio) error {
 }
 func DeleteStudio(ctx context.Context, id int64) error {
 	s := studio.Studio{}
-	DB.WithContext(ctx).Where("id  = ?", id).Find(&s)
+	DB.WithContext(ctx).Where("id  = ?", id).Limit(1).Find(&s)
 	if s.Id > 0 {
 		return DB.WithContext(ctx).Delete(&s).Error
 	} else {

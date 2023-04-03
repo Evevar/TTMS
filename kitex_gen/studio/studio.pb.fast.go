@@ -4,7 +4,6 @@ package studio
 
 import (
 	fmt "fmt"
-
 	fastpb "github.com/cloudwego/fastpb"
 )
 
@@ -285,6 +284,86 @@ func (x *GetAllStudioResponse) fastReadField2(buf []byte, _type int8) (offset in
 		return offset, err
 	}
 	x.List = append(x.List, &v)
+	return offset, nil
+}
+
+func (x *GetStudioRequest) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 2:
+		offset, err = x.fastReadField2(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_GetStudioRequest[number], err)
+}
+
+func (x *GetStudioRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.Id, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
+}
+
+func (x *GetStudioRequest) fastReadField2(buf []byte, _type int8) (offset int, err error) {
+	x.Token, offset, err = fastpb.ReadString(buf, _type)
+	return offset, err
+}
+
+func (x *GetStudioResponse) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 2:
+		offset, err = x.fastReadField2(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_GetStudioResponse[number], err)
+}
+
+func (x *GetStudioResponse) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	var v BaseResp
+	offset, err = fastpb.ReadMessage(buf, _type, &v)
+	if err != nil {
+		return offset, err
+	}
+	x.BaseResp = &v
+	return offset, nil
+}
+
+func (x *GetStudioResponse) fastReadField2(buf []byte, _type int8) (offset int, err error) {
+	var v Studio
+	offset, err = fastpb.ReadMessage(buf, _type, &v)
+	if err != nil {
+		return offset, err
+	}
+	x.Result = &v
 	return offset, nil
 }
 
@@ -1085,6 +1164,56 @@ func (x *GetAllStudioResponse) fastWriteField2(buf []byte) (offset int) {
 	return offset
 }
 
+func (x *GetStudioRequest) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	offset += x.fastWriteField2(buf[offset:])
+	return offset
+}
+
+func (x *GetStudioRequest) fastWriteField1(buf []byte) (offset int) {
+	if x.Id == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.Id)
+	return offset
+}
+
+func (x *GetStudioRequest) fastWriteField2(buf []byte) (offset int) {
+	if x.Token == "" {
+		return offset
+	}
+	offset += fastpb.WriteString(buf[offset:], 2, x.Token)
+	return offset
+}
+
+func (x *GetStudioResponse) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	offset += x.fastWriteField2(buf[offset:])
+	return offset
+}
+
+func (x *GetStudioResponse) fastWriteField1(buf []byte) (offset int) {
+	if x.BaseResp == nil {
+		return offset
+	}
+	offset += fastpb.WriteMessage(buf[offset:], 1, x.BaseResp)
+	return offset
+}
+
+func (x *GetStudioResponse) fastWriteField2(buf []byte) (offset int) {
+	if x.Result == nil {
+		return offset
+	}
+	offset += fastpb.WriteMessage(buf[offset:], 2, x.Result)
+	return offset
+}
+
 func (x *UpdateStudioRequest) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
@@ -1708,6 +1837,56 @@ func (x *GetAllStudioResponse) sizeField2() (n int) {
 	return n
 }
 
+func (x *GetStudioRequest) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	n += x.sizeField2()
+	return n
+}
+
+func (x *GetStudioRequest) sizeField1() (n int) {
+	if x.Id == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(1, x.Id)
+	return n
+}
+
+func (x *GetStudioRequest) sizeField2() (n int) {
+	if x.Token == "" {
+		return n
+	}
+	n += fastpb.SizeString(2, x.Token)
+	return n
+}
+
+func (x *GetStudioResponse) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	n += x.sizeField2()
+	return n
+}
+
+func (x *GetStudioResponse) sizeField1() (n int) {
+	if x.BaseResp == nil {
+		return n
+	}
+	n += fastpb.SizeMessage(1, x.BaseResp)
+	return n
+}
+
+func (x *GetStudioResponse) sizeField2() (n int) {
+	if x.Result == nil {
+		return n
+	}
+	n += fastpb.SizeMessage(2, x.Result)
+	return n
+}
+
 func (x *UpdateStudioRequest) Size() (n int) {
 	if x == nil {
 		return n
@@ -2167,6 +2346,16 @@ var fieldIDToName_GetAllStudioRequest = map[int32]string{
 var fieldIDToName_GetAllStudioResponse = map[int32]string{
 	1: "BaseResp",
 	2: "List",
+}
+
+var fieldIDToName_GetStudioRequest = map[int32]string{
+	1: "Id",
+	2: "Token",
+}
+
+var fieldIDToName_GetStudioResponse = map[int32]string{
+	1: "BaseResp",
+	2: "Result",
 }
 
 var fieldIDToName_UpdateStudioRequest = map[int32]string{

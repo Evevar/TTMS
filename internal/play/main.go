@@ -3,6 +3,7 @@ package main
 import (
 	"TTMS/configs/consts"
 	"TTMS/internal/play/dao"
+	"TTMS/internal/play/service"
 	play "TTMS/kitex_gen/play/playservice"
 	"net"
 
@@ -34,6 +35,7 @@ func main() {
 		server.WithRegistry(r),                                             // registry
 	)
 	dao.Init()
+	service.InitStudioRPC()
 	err = svr.Run()
 	if err != nil {
 		klog.Fatal(err)

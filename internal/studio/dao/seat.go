@@ -21,7 +21,8 @@ func AddBatchSeat(ctx context.Context, studioInfo *Studio) error {
 }
 func AddSeat(ctx context.Context, seatInfo *studio.Seat) error {
 	s := studio.Seat{}
-	if DB.WithContext(ctx).Where("studio_id = ? and row = ? and col = ?", seatInfo.StudioId, seatInfo.Row, seatInfo.Col).Find(&s); s.Id > 0 && s.Status > 0 {
+	if DB.WithContext(ctx).Where("studio_id = ? and row = ? and col = ?", seatInfo.StudioId, seatInfo.Row, seatInfo.Col).
+		Limit(1).Find(&s); s.Id > 0 && s.Status > 0 {
 		fmt.Println("不允许的行为：同一位置重复加入座位")
 		return errors.New("不允许的行为：同一位置重复加入座位")
 	} else if s.Id == 0 {
@@ -35,16 +36,20 @@ func AddSeat(ctx context.Context, seatInfo *studio.Seat) error {
 }
 func GetAllSeat(ctx context.Context, studioId, Current, PageSize int) ([]*studio.Seat, error) {
 	seats := make([]*studio.Seat, PageSize)
-	tx := DB.WithContext(ctx).Where("studio_id = ?", studioId).Order("row").Order("col").Offset((Current - 1) * PageSize).Limit(PageSize).Find(&seats)
+	tx := DB.WithContext(ctx).Where("studio_id = ?", studioId).Order("row").
+		Order("col").Offset((Current - 1) * PageSize).Limit(PageSize).Find(&seats)
 	return seats, tx.Error
 }
 func UpdateSeat(ctx context.Context, seatInfo *studio.Seat) error {
 	s := studio.Seat{}
-	if DB.WithContext(ctx).Where("studio_id = ? and row = ? and col = ? ", seatInfo.StudioId, seatInfo.Row, seatInfo.Col).Find(&s); s.Id > 0 {
-		return DB.WithContext(ctx).Model(&s).Where("studio_id = ? and row = ? and col = ? ", seatInfo.StudioId, seatInfo.Row, seatInfo.Col).Update("status", seatInfo.Status).Error
+	if DB.WithContext(ctx).Where("studio_id = ? and row = ? and col = ? ", seatInfo.StudioId,
+		seatInfo.Row, seatInfo.Col).Limit(1).Find(&s); s.Id > 0 {
+		return DB.WithContext(ctx).Model(&s).Where("studio_id = ? and row = ? and col = ? ",
+			seatInfo.StudioId, seatInfo.Row, seatInfo.Col).Update("status", seatInfo.Status).Error
 	}
 	if seatInfo.Status == 0 { //删除了一个座位
-		DB.WithContext(ctx).Model(&studio.Studio{}).Where("id = ?", seatInfo.StudioId).UpdateColumn("seats_count", gorm.Expr("seats_count - 1"))
+		DB.WithContext(ctx).Model(&studio.Studio{}).Where("id = ?", seatInfo.StudioId).
+			UpdateColumn("seats_count", gorm.Expr("seats_count - 1"))
 	}
 	return errors.New("该位置上无座位，修改失败")
 }

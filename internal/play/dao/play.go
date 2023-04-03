@@ -9,6 +9,11 @@ import (
 	"time"
 )
 
+type result struct {
+	Start string
+	Dur   string
+}
+
 func AddPlay(ctx context.Context, PlayInfo *play.Play) error {
 	p := play.Play{}
 	if DB.WithContext(ctx).Where("name = ?", PlayInfo.Name).Find(&p); p.Id > 0 { //该剧目已经存在
@@ -42,11 +47,15 @@ func DeletePlay(ctx context.Context, id int64) error {
 }
 func AddSchedule(ctx context.Context, SInfo *play.Schedule) error {
 	tx := DB.Begin()
-	var s []map[string]string
-	var m map[string]string
-	tx.WithContext(ctx).Table("schedules").Select("schedules.show_time as start,plays.duration as dur").Joins("join plays on schedules.play_id=plays.id").Where("schedules.studio_id=?", SInfo.StudioId).Find(&s)
-	tx.WithContext(ctx).Where("id = ?", SInfo.PlayId).Select("duration").Find(&m)
-	m["start"] = SInfo.ShowTime
+	var s []result
+	var m result
+	tx.WithContext(ctx).Table("schedules").Select("schedules.show_time as start,plays.duration as dur").
+		Joins("join plays on schedules.play_id=plays.id").Where("schedules.studio_id=?", SInfo.StudioId).Find(&s)
+	tx.WithContext(ctx).Table("plays").Where("id = ?", SInfo.PlayId).Select("duration as dur").Find(&m)
+	if m.Dur == "" {
+		return errors.New("演出计划中的剧目不存在")
+	}
+	m.Start = SInfo.ShowTime
 	if IsConflict(m, s) { //时间有冲突
 		tx.Rollback()
 		return errors.New("时间有冲突")
@@ -58,15 +67,15 @@ func AddSchedule(ctx context.Context, SInfo *play.Schedule) error {
 	tx.Commit()
 	return tx.Error
 }
-func IsConflict(m map[string]string, S []map[string]string) bool {
-	ms, _ := time.Parse("2006-01-02 15:04:05", m["start"])
-	duration, _ := time.ParseDuration(m["duration"])
+func IsConflict(m result, S []result) bool {
+	ms, _ := time.Parse("2006-01-02 15:04:05", m.Start)
+	duration, _ := time.ParseDuration(m.Dur)
 	md := ms.Add(duration)
 	for _, v := range S {
-		as, _ := time.Parse("2006-01-02 15:04:05", v["start"])
-		d, _ := time.ParseDuration(v["dur"])
+		as, _ := time.Parse("2006-01-02 15:04:05", v.Start)
+		d, _ := time.ParseDuration(v.Dur)
 		ad := as.Add(d)
-		if (as.Before(ms) && ad.After(ms)) || (as.Before(md) && ad.After(md)) || (as.Before(ms) && ad.After(md)) || (as.After(ms) && ad.Before(md)) {
+		if (as.Equal(ms) && ad.Equal(md)) || (as.Before(ms) && ad.After(ms)) || (as.Before(md) && ad.After(md)) || (as.Before(ms) && ad.After(md)) || (as.After(ms) && ad.Before(md)) {
 			//时间上有冲突
 			fmt.Println("my ", ms, md)
 			fmt.Println("they ", as, ad)
@@ -83,16 +92,24 @@ func GetAllSchedule(ctx context.Context, Current, PageSize int) ([]*play.Schedul
 
 func UpdateSchedule(ctx context.Context, SInfo *play.Schedule) error {
 	tx := DB.Begin()
-	err := tx.Where("id = ?", SInfo.Id).Updates(SInfo).Error
+	err := tx.Updates(&SInfo).Error
 	if err != nil {
 		tx.Rollback()
 		return err
 	}
-	var s []map[string]string
-	var m map[string]string
-	DB.WithContext(ctx).Table("schedules").Select("schedules.show_time as start,plays.duration as dur").Joins("join plays on schedules.play_id=plays.id").Where("schedules.StudioId=?", SInfo.StudioId).Find(&s)
-	DB.WithContext(ctx).Where("id = ?", SInfo.PlayId).Select("duration").Find(&m)
-	m["start"] = SInfo.ShowTime
+
+	if SInfo.Id == 0 {
+		tx.Rollback()
+		return errors.New("该演出计划不存在")
+	}
+	tx.Where("id = ?", SInfo.Id).Limit(1).Find(&SInfo)
+	fmt.Println(SInfo)
+	var s []result
+	var m result
+	DB.WithContext(ctx).Table("schedules").Select("schedules.show_time as start,plays.duration as dur").
+		Joins("join plays on schedules.play_id=plays.id").Where("schedules.studio_id=?", SInfo.StudioId).Find(&s)
+	DB.WithContext(ctx).Table("plays").Where("id = ?", SInfo.PlayId).Select("duration as dur").Find(&m)
+	m.Start = SInfo.ShowTime
 	if IsConflict(m, s) { //时间有冲突
 		tx.Rollback()
 		return errors.New("时间有冲突")

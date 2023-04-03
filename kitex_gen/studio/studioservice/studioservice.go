@@ -6,7 +6,6 @@ import (
 	studio "TTMS/kitex_gen/studio"
 	"context"
 	"fmt"
-
 	client "github.com/cloudwego/kitex/client"
 	kitex "github.com/cloudwego/kitex/pkg/serviceinfo"
 	streaming "github.com/cloudwego/kitex/pkg/streaming"
@@ -31,6 +30,7 @@ func NewServiceInfo() *kitex.ServiceInfo {
 		"GetAllSeat":   kitex.NewMethodInfo(getAllSeatHandler, newGetAllSeatArgs, newGetAllSeatResult, false),
 		"UpdateSeat":   kitex.NewMethodInfo(updateSeatHandler, newUpdateSeatArgs, newUpdateSeatResult, false),
 		"DeleteSeat":   kitex.NewMethodInfo(deleteSeatHandler, newDeleteSeatArgs, newDeleteSeatResult, false),
+		"GetStudio":    kitex.NewMethodInfo(getStudioHandler, newGetStudioArgs, newGetStudioResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "studio",
@@ -1206,6 +1206,151 @@ func (p *DeleteSeatResult) IsSetSuccess() bool {
 	return p.Success != nil
 }
 
+func getStudioHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(studio.GetStudioRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(studio.StudioService).GetStudio(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *GetStudioArgs:
+		success, err := handler.(studio.StudioService).GetStudio(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*GetStudioResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newGetStudioArgs() interface{} {
+	return &GetStudioArgs{}
+}
+
+func newGetStudioResult() interface{} {
+	return &GetStudioResult{}
+}
+
+type GetStudioArgs struct {
+	Req *studio.GetStudioRequest
+}
+
+func (p *GetStudioArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(studio.GetStudioRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *GetStudioArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *GetStudioArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *GetStudioArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in GetStudioArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *GetStudioArgs) Unmarshal(in []byte) error {
+	msg := new(studio.GetStudioRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var GetStudioArgs_Req_DEFAULT *studio.GetStudioRequest
+
+func (p *GetStudioArgs) GetReq() *studio.GetStudioRequest {
+	if !p.IsSetReq() {
+		return GetStudioArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *GetStudioArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type GetStudioResult struct {
+	Success *studio.GetStudioResponse
+}
+
+var GetStudioResult_Success_DEFAULT *studio.GetStudioResponse
+
+func (p *GetStudioResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(studio.GetStudioResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *GetStudioResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *GetStudioResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *GetStudioResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in GetStudioResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *GetStudioResult) Unmarshal(in []byte) error {
+	msg := new(studio.GetStudioResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *GetStudioResult) GetSuccess() *studio.GetStudioResponse {
+	if !p.IsSetSuccess() {
+		return GetStudioResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *GetStudioResult) SetSuccess(x interface{}) {
+	p.Success = x.(*studio.GetStudioResponse)
+}
+
+func (p *GetStudioResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -1291,6 +1436,16 @@ func (p *kClient) DeleteSeat(ctx context.Context, Req *studio.DeleteSeatRequest)
 	_args.Req = Req
 	var _result DeleteSeatResult
 	if err = p.c.Call(ctx, "DeleteSeat", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) GetStudio(ctx context.Context, Req *studio.GetStudioRequest) (r *studio.GetStudioResponse, err error) {
+	var _args GetStudioArgs
+	_args.Req = Req
+	var _result GetStudioResult
+	if err = p.c.Call(ctx, "GetStudio", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

@@ -1,10 +1,44 @@
 package service
 
 import (
+	"TTMS/configs/consts"
 	"TTMS/internal/play/dao"
 	"TTMS/kitex_gen/play"
+	"TTMS/kitex_gen/studio"
+	"TTMS/kitex_gen/studio/studioservice"
 	"context"
+	"errors"
+	"github.com/cloudwego/kitex/client"
+	"github.com/cloudwego/kitex/pkg/retry"
+	etcd "github.com/kitex-contrib/registry-etcd"
+	trace "github.com/kitex-contrib/tracer-opentracing"
+	"time"
 )
+
+var studioClient studioservice.Client
+
+func InitStudioRPC() {
+	r, err := etcd.NewEtcdResolver([]string{consts.EtcdAddress})
+	if err != nil {
+		panic(err)
+	}
+
+	c, err := studioservice.NewClient(
+		consts.StudioServiceName,
+		//client.WithMiddleware(middleware.CommonMiddleware),
+		//client.WithInstanceMW(middleware.ClientMiddleware),
+		client.WithMuxConnection(1),                       // mux
+		client.WithRPCTimeout(3*time.Second),              // rpc timeout
+		client.WithConnectTimeout(50*time.Millisecond),    // conn timeout
+		client.WithFailureRetry(retry.NewFailurePolicy()), // retry
+		client.WithSuite(trace.NewDefaultClientSuite()),   // tracer
+		client.WithResolver(r),                            // resolver
+	)
+	if err != nil {
+		panic(err)
+	}
+	studioClient = c
+}
 
 func AddPlayService(ctx context.Context, req *play.AddPlayRequest) (resp *play.AddPlayResponse, err error) {
 	PlayInfo := &play.Play{Name: req.Name, Type: req.Type, Area: req.Area,
@@ -59,9 +93,16 @@ func GetAllPlayService(ctx context.Context, req *play.GetAllPlayRequest) (resp *
 }
 
 func AddScheduleService(ctx context.Context, req *play.AddScheduleRequest) (resp *play.AddScheduleResponse, err error) {
+	resp = &play.AddScheduleResponse{BaseResp: &play.BaseResp{}}
+	resp0, err := studioClient.GetStudio(ctx, &studio.GetStudioRequest{Id: req.StudioId})
+	if resp0.Result.Id == 0 { //判断演出厅是否存在
+		resp.BaseResp.StatusCode = 1
+		resp.BaseResp.StatusMessage = errors.New("计划中的演出厅不存在").Error()
+		return resp, nil
+	}
 	SInfo := &play.Schedule{PlayId: req.PlayId, StudioId: req.StudioId, ShowTime: req.ShowTime}
 	err = dao.AddSchedule(ctx, SInfo)
-	resp = &play.AddScheduleResponse{BaseResp: &play.BaseResp{}}
+
 	if err != nil {
 		resp.BaseResp.StatusCode = 1
 		resp.BaseResp.StatusMessage = err.Error()
@@ -72,7 +113,7 @@ func AddScheduleService(ctx context.Context, req *play.AddScheduleRequest) (resp
 }
 
 func UpdateScheduleService(ctx context.Context, req *play.UpdateScheduleRequest) (resp *play.UpdateScheduleResponse, err error) {
-	SInfo := &play.Schedule{PlayId: req.PlayId, StudioId: req.StudioId, ShowTime: req.ShowTime}
+	SInfo := &play.Schedule{Id: req.Id, PlayId: req.PlayId, StudioId: req.StudioId, ShowTime: req.ShowTime}
 	err = dao.UpdateSchedule(ctx, SInfo)
 	resp = &play.UpdateScheduleResponse{BaseResp: &play.BaseResp{}}
 	if err != nil {
