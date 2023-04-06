@@ -24,31 +24,42 @@ services:
       - REDIS_PASSWORD=redis
     ports:
       - "6378:6379"
-  grafana:
-    image: grafana/grafana
-    container_name: grafana
-    hostname: grafana
+  #启动时有几秒的时间不能工作，吓我一跳，还以为配置哪里错了
+  nats1:
+    container_name: nats1
+    image: nats:latest
+#    entrypoint: /nats-server
+    command: --name nats1 --cluster_name JSC --js  --sd /data --cluster nats://0.0.0.0:4245 --routes nats://nats1:4245,nats://nats2:4245,nats://nats3:4245 -p 4222
+    networks:
+      - nats
     ports:
-      - "3000:3000"
-    environment:
-      - GF_SERVER_ROOT_URL=http://grafana:3000
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=9264wkn.
-  prometheus:
-    image: prom/prometheus
-    container_name: prometheus
-    hostname: prometheus
-    ports:
-      - "9090:9090"
+      - "4222:4222"
     volumes:
-      - ./configs/prometheus:/etc/prometheus
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-    depends_on:
-      - grafana
-  prometheus-exporter:
-    image: prom/node-exporter
-    container_name: prometheus-exporter
-    hostname: prometheus-exporter
+      - ./jetstream-cluster/nats1:/data
+
+  nats2:
+    container_name: nats2
+    image: nats:latest
+#    entrypoint: /nats-server
+    command: --name nats2 --cluster_name JSC --js --sd /data --cluster nats://0.0.0.0:4245 --routes nats://nats1:4245,nats://nats2:4245,nats://nats3:4245 -p 4222
+    networks:
+      - nats
     ports:
-      - "9100:9100"
+      - "4223:4222"
+    volumes:
+      - ./jetstream-cluster/nats2:/data
+
+  nats3:
+    container_name: nats3
+    image: nats:latest
+#    entrypoint: /nats-server
+    command: --name nats3 --cluster_name JSC --js --sd /data --cluster nats://0.0.0.0:4245 --routes nats://nats1:4245,nats://nats2:4245,nats://nats3:4245 -p 4222
+    networks:
+      - nats
+    ports:
+      - "4224:4222"
+    volumes:
+      - ./jetstream-cluster/nats3:/data
+
+networks:
+  nats: { }
