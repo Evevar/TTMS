@@ -4,8 +4,6 @@ import (
 	"TTMS/configs/consts"
 	"TTMS/internal/user/dao"
 	user "TTMS/kitex_gen/user/userservice"
-	prometheus "github.com/kitex-contrib/monitor-prometheus"
-
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/limit"
 
@@ -30,7 +28,6 @@ func main() {
 		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: consts.UserServiceName}), // server name
 		//server.WithMiddleware(middleware.CommonMiddleware),                                          // middleWare
 		//server.WithMiddleware(middleware.ServerMiddleware),
-		server.WithTracer(prometheus.NewServerTracer(":9092", "/kitexserver")),
 		server.WithServiceAddr(addr),                                       // address
 		server.WithLimit(&limit.Option{MaxConnections: 1000, MaxQPS: 100}), // limit
 		server.WithMuxTransport(),                                          // 开启多路复用

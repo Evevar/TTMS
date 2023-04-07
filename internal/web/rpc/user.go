@@ -3,9 +3,8 @@ package rpc
 import (
 	"TTMS/configs/consts"
 	"TTMS/kitex_gen/user"
-	userservice "TTMS/kitex_gen/user/userservice"
+	"TTMS/kitex_gen/user/userservice"
 	"context"
-	prometheus "github.com/kitex-contrib/monitor-prometheus"
 	"time"
 
 	"github.com/cloudwego/kitex/client"
@@ -24,14 +23,14 @@ func InitUserRPC() {
 
 	c, err := userservice.NewClient(
 		consts.UserServiceName,
-		client.WithTracer(prometheus.NewClientTracer(":9091", "/kitexclient")),
 		client.WithMuxConnection(1),                       // 开启多路复用
 		client.WithRPCTimeout(3*time.Second),              // rpc timeout
 		client.WithConnectTimeout(50*time.Millisecond),    // conn timeout
 		client.WithFailureRetry(retry.NewFailurePolicy()), // retry
-		client.WithSuite(trace.NewDefaultClientSuite()),   // tracer
+		client.WithSuite(trace.NewDefaultClientSuite()),   // tracer 默认OpenTracing链路追踪
 		client.WithResolver(r),                            // resolver
 	)
+
 	if err != nil {
 		panic(err)
 	}

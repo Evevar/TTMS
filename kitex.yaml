@@ -1,8 +1,4 @@
 kitexinfo:
-   ServiceName: 'User'
+   ServiceName: 'playservice'
    ToolVersion: 'v0.4.4'
-dispatcher:
-   routes:
-      - path: /user
-        methods: [GET, POST]
-        handler: user
+

@@ -64,6 +64,8 @@ func GetAllUser(c *gin.Context) {
 		c.JSON(http.StatusOK, "bind error")
 		return
 	}
+	token := c.Query("Token")
+	fmt.Println("找到token = ", token)
 	//token验证
 	_, err := jwt.ParseToken(req.Token)
 	if err != nil {

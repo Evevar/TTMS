@@ -4,7 +4,6 @@ package play
 
 import (
 	fmt "fmt"
-
 	fastpb "github.com/cloudwego/fastpb"
 )
 
@@ -139,12 +138,12 @@ func (x *Play) fastReadField6(buf []byte, _type int8) (offset int, err error) {
 }
 
 func (x *Play) fastReadField7(buf []byte, _type int8) (offset int, err error) {
-	x.StartData, offset, err = fastpb.ReadString(buf, _type)
+	x.StartDate, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
 
 func (x *Play) fastReadField8(buf []byte, _type int8) (offset int, err error) {
-	x.EndData, offset, err = fastpb.ReadString(buf, _type)
+	x.EndDate, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
 
@@ -239,12 +238,12 @@ func (x *AddPlayRequest) fastReadField5(buf []byte, _type int8) (offset int, err
 }
 
 func (x *AddPlayRequest) fastReadField6(buf []byte, _type int8) (offset int, err error) {
-	x.StartData, offset, err = fastpb.ReadString(buf, _type)
+	x.StartDate, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
 
 func (x *AddPlayRequest) fastReadField7(buf []byte, _type int8) (offset int, err error) {
-	x.EndData, offset, err = fastpb.ReadString(buf, _type)
+	x.EndDate, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
 
@@ -384,12 +383,12 @@ func (x *UpdatePlayRequest) fastReadField6(buf []byte, _type int8) (offset int, 
 }
 
 func (x *UpdatePlayRequest) fastReadField7(buf []byte, _type int8) (offset int, err error) {
-	x.StartData, offset, err = fastpb.ReadString(buf, _type)
+	x.StartDate, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
 
 func (x *UpdatePlayRequest) fastReadField8(buf []byte, _type int8) (offset int, err error) {
-	x.EndData, offset, err = fastpb.ReadString(buf, _type)
+	x.EndDate, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
 
@@ -933,6 +932,101 @@ func (x *GetAllScheduleRequest) fastReadField3(buf []byte, _type int8) (offset i
 	return offset, err
 }
 
+func (x *Result) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 2:
+		offset, err = x.fastReadField2(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 3:
+		offset, err = x.fastReadField3(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 4:
+		offset, err = x.fastReadField4(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 5:
+		offset, err = x.fastReadField5(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 6:
+		offset, err = x.fastReadField6(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 7:
+		offset, err = x.fastReadField7(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 8:
+		offset, err = x.fastReadField8(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_Result[number], err)
+}
+
+func (x *Result) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.Id, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
+}
+
+func (x *Result) fastReadField2(buf []byte, _type int8) (offset int, err error) {
+	x.PlayName, offset, err = fastpb.ReadString(buf, _type)
+	return offset, err
+}
+
+func (x *Result) fastReadField3(buf []byte, _type int8) (offset int, err error) {
+	x.Area, offset, err = fastpb.ReadString(buf, _type)
+	return offset, err
+}
+
+func (x *Result) fastReadField4(buf []byte, _type int8) (offset int, err error) {
+	x.Rating, offset, err = fastpb.ReadUint32(buf, _type)
+	return offset, err
+}
+
+func (x *Result) fastReadField5(buf []byte, _type int8) (offset int, err error) {
+	x.Duration, offset, err = fastpb.ReadString(buf, _type)
+	return offset, err
+}
+
+func (x *Result) fastReadField6(buf []byte, _type int8) (offset int, err error) {
+	x.ShowTime, offset, err = fastpb.ReadString(buf, _type)
+	return offset, err
+}
+
+func (x *Result) fastReadField7(buf []byte, _type int8) (offset int, err error) {
+	x.Price, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
+}
+
+func (x *Result) fastReadField8(buf []byte, _type int8) (offset int, err error) {
+	x.StudioName, offset, err = fastpb.ReadString(buf, _type)
+	return offset, err
+}
+
 func (x *GetAllScheduleResponse) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
 	switch number {
 	case 1:
@@ -969,7 +1063,7 @@ func (x *GetAllScheduleResponse) fastReadField1(buf []byte, _type int8) (offset 
 }
 
 func (x *GetAllScheduleResponse) fastReadField2(buf []byte, _type int8) (offset int, err error) {
-	var v Schedule
+	var v Result
 	offset, err = fastpb.ReadMessage(buf, _type, &v)
 	if err != nil {
 		return offset, err
@@ -1068,18 +1162,18 @@ func (x *Play) fastWriteField6(buf []byte) (offset int) {
 }
 
 func (x *Play) fastWriteField7(buf []byte) (offset int) {
-	if x.StartData == "" {
+	if x.StartDate == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 7, x.StartData)
+	offset += fastpb.WriteString(buf[offset:], 7, x.StartDate)
 	return offset
 }
 
 func (x *Play) fastWriteField8(buf []byte) (offset int) {
-	if x.EndData == "" {
+	if x.EndDate == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 8, x.EndData)
+	offset += fastpb.WriteString(buf[offset:], 8, x.EndDate)
 	return offset
 }
 
@@ -1148,18 +1242,18 @@ func (x *AddPlayRequest) fastWriteField5(buf []byte) (offset int) {
 }
 
 func (x *AddPlayRequest) fastWriteField6(buf []byte) (offset int) {
-	if x.StartData == "" {
+	if x.StartDate == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 6, x.StartData)
+	offset += fastpb.WriteString(buf[offset:], 6, x.StartDate)
 	return offset
 }
 
 func (x *AddPlayRequest) fastWriteField7(buf []byte) (offset int) {
-	if x.EndData == "" {
+	if x.EndDate == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 7, x.EndData)
+	offset += fastpb.WriteString(buf[offset:], 7, x.EndDate)
 	return offset
 }
 
@@ -1261,18 +1355,18 @@ func (x *UpdatePlayRequest) fastWriteField6(buf []byte) (offset int) {
 }
 
 func (x *UpdatePlayRequest) fastWriteField7(buf []byte) (offset int) {
-	if x.StartData == "" {
+	if x.StartDate == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 7, x.StartData)
+	offset += fastpb.WriteString(buf[offset:], 7, x.StartDate)
 	return offset
 }
 
 func (x *UpdatePlayRequest) fastWriteField8(buf []byte) (offset int) {
-	if x.EndData == "" {
+	if x.EndDate == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 8, x.EndData)
+	offset += fastpb.WriteString(buf[offset:], 8, x.EndDate)
 	return offset
 }
 
@@ -1655,6 +1749,85 @@ func (x *GetAllScheduleRequest) fastWriteField3(buf []byte) (offset int) {
 	return offset
 }
 
+func (x *Result) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	offset += x.fastWriteField2(buf[offset:])
+	offset += x.fastWriteField3(buf[offset:])
+	offset += x.fastWriteField4(buf[offset:])
+	offset += x.fastWriteField5(buf[offset:])
+	offset += x.fastWriteField6(buf[offset:])
+	offset += x.fastWriteField7(buf[offset:])
+	offset += x.fastWriteField8(buf[offset:])
+	return offset
+}
+
+func (x *Result) fastWriteField1(buf []byte) (offset int) {
+	if x.Id == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.Id)
+	return offset
+}
+
+func (x *Result) fastWriteField2(buf []byte) (offset int) {
+	if x.PlayName == "" {
+		return offset
+	}
+	offset += fastpb.WriteString(buf[offset:], 2, x.PlayName)
+	return offset
+}
+
+func (x *Result) fastWriteField3(buf []byte) (offset int) {
+	if x.Area == "" {
+		return offset
+	}
+	offset += fastpb.WriteString(buf[offset:], 3, x.Area)
+	return offset
+}
+
+func (x *Result) fastWriteField4(buf []byte) (offset int) {
+	if x.Rating == 0 {
+		return offset
+	}
+	offset += fastpb.WriteUint32(buf[offset:], 4, x.Rating)
+	return offset
+}
+
+func (x *Result) fastWriteField5(buf []byte) (offset int) {
+	if x.Duration == "" {
+		return offset
+	}
+	offset += fastpb.WriteString(buf[offset:], 5, x.Duration)
+	return offset
+}
+
+func (x *Result) fastWriteField6(buf []byte) (offset int) {
+	if x.ShowTime == "" {
+		return offset
+	}
+	offset += fastpb.WriteString(buf[offset:], 6, x.ShowTime)
+	return offset
+}
+
+func (x *Result) fastWriteField7(buf []byte) (offset int) {
+	if x.Price == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 7, x.Price)
+	return offset
+}
+
+func (x *Result) fastWriteField8(buf []byte) (offset int) {
+	if x.StudioName == "" {
+		return offset
+	}
+	offset += fastpb.WriteString(buf[offset:], 8, x.StudioName)
+	return offset
+}
+
 func (x *GetAllScheduleResponse) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
@@ -1772,18 +1945,18 @@ func (x *Play) sizeField6() (n int) {
 }
 
 func (x *Play) sizeField7() (n int) {
-	if x.StartData == "" {
+	if x.StartDate == "" {
 		return n
 	}
-	n += fastpb.SizeString(7, x.StartData)
+	n += fastpb.SizeString(7, x.StartDate)
 	return n
 }
 
 func (x *Play) sizeField8() (n int) {
-	if x.EndData == "" {
+	if x.EndDate == "" {
 		return n
 	}
-	n += fastpb.SizeString(8, x.EndData)
+	n += fastpb.SizeString(8, x.EndDate)
 	return n
 }
 
@@ -1852,18 +2025,18 @@ func (x *AddPlayRequest) sizeField5() (n int) {
 }
 
 func (x *AddPlayRequest) sizeField6() (n int) {
-	if x.StartData == "" {
+	if x.StartDate == "" {
 		return n
 	}
-	n += fastpb.SizeString(6, x.StartData)
+	n += fastpb.SizeString(6, x.StartDate)
 	return n
 }
 
 func (x *AddPlayRequest) sizeField7() (n int) {
-	if x.EndData == "" {
+	if x.EndDate == "" {
 		return n
 	}
-	n += fastpb.SizeString(7, x.EndData)
+	n += fastpb.SizeString(7, x.EndDate)
 	return n
 }
 
@@ -1965,18 +2138,18 @@ func (x *UpdatePlayRequest) sizeField6() (n int) {
 }
 
 func (x *UpdatePlayRequest) sizeField7() (n int) {
-	if x.StartData == "" {
+	if x.StartDate == "" {
 		return n
 	}
-	n += fastpb.SizeString(7, x.StartData)
+	n += fastpb.SizeString(7, x.StartDate)
 	return n
 }
 
 func (x *UpdatePlayRequest) sizeField8() (n int) {
-	if x.EndData == "" {
+	if x.EndDate == "" {
 		return n
 	}
-	n += fastpb.SizeString(8, x.EndData)
+	n += fastpb.SizeString(8, x.EndDate)
 	return n
 }
 
@@ -2359,6 +2532,85 @@ func (x *GetAllScheduleRequest) sizeField3() (n int) {
 	return n
 }
 
+func (x *Result) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	n += x.sizeField2()
+	n += x.sizeField3()
+	n += x.sizeField4()
+	n += x.sizeField5()
+	n += x.sizeField6()
+	n += x.sizeField7()
+	n += x.sizeField8()
+	return n
+}
+
+func (x *Result) sizeField1() (n int) {
+	if x.Id == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(1, x.Id)
+	return n
+}
+
+func (x *Result) sizeField2() (n int) {
+	if x.PlayName == "" {
+		return n
+	}
+	n += fastpb.SizeString(2, x.PlayName)
+	return n
+}
+
+func (x *Result) sizeField3() (n int) {
+	if x.Area == "" {
+		return n
+	}
+	n += fastpb.SizeString(3, x.Area)
+	return n
+}
+
+func (x *Result) sizeField4() (n int) {
+	if x.Rating == 0 {
+		return n
+	}
+	n += fastpb.SizeUint32(4, x.Rating)
+	return n
+}
+
+func (x *Result) sizeField5() (n int) {
+	if x.Duration == "" {
+		return n
+	}
+	n += fastpb.SizeString(5, x.Duration)
+	return n
+}
+
+func (x *Result) sizeField6() (n int) {
+	if x.ShowTime == "" {
+		return n
+	}
+	n += fastpb.SizeString(6, x.ShowTime)
+	return n
+}
+
+func (x *Result) sizeField7() (n int) {
+	if x.Price == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(7, x.Price)
+	return n
+}
+
+func (x *Result) sizeField8() (n int) {
+	if x.StudioName == "" {
+		return n
+	}
+	n += fastpb.SizeString(8, x.StudioName)
+	return n
+}
+
 func (x *GetAllScheduleResponse) Size() (n int) {
 	if x == nil {
 		return n
@@ -2398,8 +2650,8 @@ var fieldIDToName_Play = map[int32]string{
 	4: "Area",
 	5: "Rating",
 	6: "Duration",
-	7: "StartData",
-	8: "EndData",
+	7: "StartDate",
+	8: "EndDate",
 	9: "Price",
 }
 
@@ -2409,8 +2661,8 @@ var fieldIDToName_AddPlayRequest = map[int32]string{
 	3: "Area",
 	4: "Rating",
 	5: "Duration",
-	6: "StartData",
-	7: "EndData",
+	6: "StartDate",
+	7: "EndDate",
 	8: "Price",
 	9: "Token",
 }
@@ -2426,8 +2678,8 @@ var fieldIDToName_UpdatePlayRequest = map[int32]string{
 	4:  "Area",
 	5:  "Rating",
 	6:  "Duration",
-	7:  "StartData",
-	8:  "EndData",
+	7:  "StartDate",
+	8:  "EndDate",
 	9:  "Price",
 	10: "Token",
 }
@@ -2499,6 +2751,17 @@ var fieldIDToName_GetAllScheduleRequest = map[int32]string{
 	1: "Current",
 	2: "PageSize",
 	3: "Token",
+}
+
+var fieldIDToName_Result = map[int32]string{
+	1: "Id",
+	2: "PlayName",
+	3: "Area",
+	4: "Rating",
+	5: "Duration",
+	6: "ShowTime",
+	7: "Price",
+	8: "StudioName",
 }
 
 var fieldIDToName_GetAllScheduleResponse = map[int32]string{

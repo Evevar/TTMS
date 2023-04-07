@@ -26,7 +26,11 @@ func GetAllPlay(ctx context.Context, Current, PageSize int) ([]*play.Play, error
 	tx := DB.WithContext(ctx).Offset((Current - 1) * PageSize).Limit(PageSize).Find(&plays)
 	return plays, tx.Error
 }
-
+func GetPlayById(Id int64) (*play.Play, error) {
+	p := &play.Play{Id: Id}
+	err := DB.Find(p).Error
+	return p, err
+}
 func UpdatePlay(ctx context.Context, PlayInfo *play.Play) error {
 	s := play.Play{}
 	DB.WithContext(ctx).Where("id = ?", PlayInfo.Id).Find(&s)
@@ -86,7 +90,7 @@ func IsConflict(m result, S []result) bool {
 }
 func GetAllSchedule(ctx context.Context, Current, PageSize int) ([]*play.Schedule, error) {
 	schedules := make([]*play.Schedule, PageSize)
-	tx := DB.WithContext(ctx).Offset((Current - 1) * PageSize).Limit(PageSize).Find(&schedules)
+	tx := DB.WithContext(ctx).Order("show_time desc").Offset((Current - 1) * PageSize).Limit(PageSize).Find(&schedules)
 	return schedules, tx.Error
 }
 

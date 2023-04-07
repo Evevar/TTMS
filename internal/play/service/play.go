@@ -8,6 +8,7 @@ import (
 	"TTMS/kitex_gen/studio/studioservice"
 	"context"
 	"errors"
+	"fmt"
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/retry"
 	etcd "github.com/kitex-contrib/registry-etcd"
@@ -42,7 +43,7 @@ func InitStudioRPC() {
 
 func AddPlayService(ctx context.Context, req *play.AddPlayRequest) (resp *play.AddPlayResponse, err error) {
 	PlayInfo := &play.Play{Name: req.Name, Type: req.Type, Area: req.Area,
-		Rating: req.Rating, Duration: req.Duration, StartData: req.StartData, EndData: req.EndData, Price: req.Price}
+		Rating: req.Rating, Duration: req.Duration, StartDate: req.StartDate, EndDate: req.EndDate, Price: req.Price}
 	err = dao.AddPlay(ctx, PlayInfo)
 	resp = &play.AddPlayResponse{BaseResp: &play.BaseResp{}}
 	if err != nil {
@@ -56,7 +57,7 @@ func AddPlayService(ctx context.Context, req *play.AddPlayRequest) (resp *play.A
 
 func UpdatePlayService(ctx context.Context, req *play.UpdatePlayRequest) (resp *play.UpdatePlayResponse, err error) {
 	PlayInfo := &play.Play{Id: req.Id, Name: req.Name, Type: req.Type, Area: req.Area,
-		Rating: req.Rating, Duration: req.Duration, StartData: req.StartData, EndData: req.EndData, Price: req.Price}
+		Rating: req.Rating, Duration: req.Duration, StartDate: req.StartDate, EndDate: req.EndDate, Price: req.Price}
 	err = dao.UpdatePlay(ctx, PlayInfo)
 	resp = &play.UpdatePlayResponse{BaseResp: &play.BaseResp{}}
 	if err != nil {
@@ -138,7 +139,27 @@ func DeleteScheduleService(ctx context.Context, req *play.DeleteScheduleRequest)
 }
 func GetAllScheduleService(ctx context.Context, req *play.GetAllScheduleRequest) (resp *play.GetAllScheduleResponse, err error) {
 	resp = &play.GetAllScheduleResponse{BaseResp: &play.BaseResp{}}
-	resp.List, err = dao.GetAllSchedule(ctx, int(req.Current), int(req.PageSize))
+	resp.List = make([]*play.Result, 0, req.PageSize)
+	schedules, err := dao.GetAllSchedule(ctx, int(req.Current), int(req.PageSize))
+	fmt.Println("schedule = ", schedules)
+	for i, sch := range schedules {
+		p, _ := dao.GetPlayById(sch.PlayId)
+		resp1, _ := studioClient.GetStudio(ctx, &studio.GetStudioRequest{Id: sch.StudioId})
+		fmt.Println("play = ", p)
+		fmt.Println("studio = ", resp1.Result)
+		//fmt.Println("i = ", i, "resp.List[i] = ", resp.List[i])
+		resp.List = append(resp.List, new(play.Result))
+		resp.List[i].Id = sch.Id
+		resp.List[i].PlayName = p.Name
+		resp.List[i].Area = p.Area
+		resp.List[i].Rating = p.Rating
+		resp.List[i].Duration = p.Duration
+		resp.List[i].ShowTime = sch.ShowTime
+		resp.List[i].Price = p.Price
+		resp.List[i].StudioName = resp1.Result.Name
+		fmt.Println("Result = ", resp.List)
+	}
+	fmt.Println("Result = ", resp.List)
 	if err != nil {
 		resp.BaseResp.StatusCode = 1
 		resp.BaseResp.StatusMessage = err.Error()

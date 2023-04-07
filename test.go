@@ -1,38 +1,35 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
+
+var ticketId2Timer map[int64]time.Timer
 
 func main() {
-	f0()
-	fmt.Println("======================")
-	f1()
-	fmt.Println("======================")
-	f2()
+	ticketId2Timer = make(map[int64]time.Timer)
+	var ticket int64 = 1
+	f1(ticket, time.Now())
+	time.Sleep(time.Second * 5) //3秒模拟用户3分钟之后支付
+	t := ticketId2Timer[ticket]
+	t.Stop()
 }
-func f0() {
-	e := []int32{1, 2, 3}
-	fmt.Println("cap of e before:", cap(e))
-	e = append(e, 4, 5, 6, 7)
-	fmt.Println("cap of e after:", cap(e))
-}
-func f1() {
-	//3->6->12
-	e := []int32{1, 2, 3}
-	fmt.Println("cap of e before:", cap(e))
-	e = append(e, 4, 5)
-	fmt.Println("cap of e after:", cap(e))
-	e = append(e, 6, 7)
-	fmt.Println("cap of e after:", cap(e))
-}
-func f2() {
-	e := []int32{1, 2, 3}
-	fmt.Println("cap of e before:", cap(e))
-	e = append(e, 4)
-	fmt.Println("cap of e after:", cap(e))
-	e = append(e, 5)
-	fmt.Println("cap of e after:", cap(e))
-	e = append(e, 6)
-	fmt.Println("cap of e after:", cap(e))
-	e = append(e, 7)
-	fmt.Println("cap of e after:", cap(e))
+func f1(ticket int64, buy time.Time) { //buy 下单时间
+	fmt.Println(buy.String())
+	time.Sleep(time.Second * 1) //模拟异步执行创建订单所消耗的时间
+	now := time.Now()
+	dur := now.Sub(buy)                      //相对于抢票时间推迟10分钟作为最晚下单时间
+	t := time.NewTimer(time.Second*10 - dur) //10秒相当于等待用户付款的10分钟
+	ticketId2Timer[ticket] = *t
+	t.Stop()
+	select {
+	case <-t.C: //距离抢票时间已经过去了10分钟，如果用户还未付款，则删除订单
+		//模拟删除订单
+		now = time.Now()
+		fmt.Println("now = ", now)
+		fmt.Println("buy = ", buy)
+		fmt.Println("duration = ", now.Sub(buy))
+	}
+
 }
