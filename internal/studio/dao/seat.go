@@ -35,7 +35,8 @@ func AddSeat(ctx context.Context, seatInfo *studio.Seat) error {
 
 }
 func GetAllSeat(ctx context.Context, studioId, Current, PageSize int) ([]*studio.Seat, error) {
-	seats := make([]*studio.Seat, PageSize)
+	//seats := make([]*studio.Seat, PageSize)
+	var seats []*studio.Seat
 	tx := DB.WithContext(ctx).Where("studio_id = ?", studioId).Order("row").
 		Order("col").Offset((Current - 1) * PageSize).Limit(PageSize).Find(&seats)
 	return seats, tx.Error

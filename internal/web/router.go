@@ -40,5 +40,10 @@ func InitRouter() *gin.Engine {
 	baseGroup.POST("/schedule/update/", api.UpdateSchedule)
 	baseGroup.POST("/schedule/delete/", api.DeleteSchedule)
 	baseGroup.GET("/schedule/all/", api.GetAllSchedule)
+
+	baseGroup.POST("/ticket/update/", api.UpdateTicket)
+	baseGroup.GET("/ticket/all/", api.GetAllTicket)
+	baseGroup.POST("/ticket/buy/", api.BuyTicket)
+	baseGroup.POST("/ticket/return/", api.ReturnTicket)
 	return r
 }

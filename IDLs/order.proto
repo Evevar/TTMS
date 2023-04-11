@@ -10,17 +10,21 @@ message BaseResp {
 message Order{
   int64 Id = 1;//销售记录ID
   int64 UserId = 2;//买票人
-  int64 TicketId = 3;
-  string Date = 4;//订单处理时间 按照示例格式：2006-01-02 15:04:05（\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}:\d{2}）
-  int32 Value = 5;//票价
-  int32 Type = 6;//交易类型，1-买票，-1-退票
+  int64 ScheduleId = 3;//演出计划ID
+  int32 SeatRow = 4;//座位行数
+  int32 SeatCol = 5;//座位列数
+  string Date = 6;//订单处理时间 按照示例格式：2006-01-02 15:04:05（\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}:\d{2}）
+  int32 Value = 7;//票价
+  int32 Type = 8;//交易类型，1-买票，-1-退票
 }
 //用户抢到了票，创建订单，默认是买票行为
 message AddOrderRequest{
   int64 UserId = 1;
-  int64 TicketId = 2;
-  string Data = 3;//下单时间
-  int32 Value = 4;//票价
+  int64 ScheduleId = 2;//演出计划ID
+  int32 SeatRow = 3;//座位行数
+  int32 SeatCol = 4;//座位列数
+  string Data = 5;//下单时间
+  int32 Value = 6;//票价
 }
 message AddOrderResponse{
   BaseResp BaseResp = 1;
@@ -67,7 +71,7 @@ message GetOrderAnalysisRequest{
 }
 message GetOrderAnalysisResponse{
   BaseResp BaseResp = 1;
-  OrderAnalysis OrderAnalysis=2;
+  OrderAnalysis OrderAnalysis = 2;
 }
 
 service OrderService{

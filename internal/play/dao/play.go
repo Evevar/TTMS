@@ -49,7 +49,7 @@ func DeletePlay(ctx context.Context, id int64) error {
 		return errors.New("该剧目不存在")
 	}
 }
-func AddSchedule(ctx context.Context, SInfo *play.Schedule) error {
+func AddSchedule(ctx context.Context, SInfo *play.Schedule) (int64, error) {
 	tx := DB.Begin()
 	var s []result
 	var m result
@@ -57,19 +57,19 @@ func AddSchedule(ctx context.Context, SInfo *play.Schedule) error {
 		Joins("join plays on schedules.play_id=plays.id").Where("schedules.studio_id=?", SInfo.StudioId).Find(&s)
 	tx.WithContext(ctx).Table("plays").Where("id = ?", SInfo.PlayId).Select("duration as dur").Find(&m)
 	if m.Dur == "" {
-		return errors.New("演出计划中的剧目不存在")
+		return 0, errors.New("演出计划中的剧目不存在")
 	}
 	m.Start = SInfo.ShowTime
 	if IsConflict(m, s) { //时间有冲突
 		tx.Rollback()
-		return errors.New("时间有冲突")
+		return 0, errors.New("时间有冲突")
 	}
 	s1 := studio.Studio{}
 	tx.WithContext(ctx).Where("id = ?", SInfo.StudioId).Find(&s1)
 	tx.WithContext(ctx).Create(&SInfo)
 	//生成演出票(还没有写)
 	tx.Commit()
-	return tx.Error
+	return SInfo.Id, tx.Error
 }
 func IsConflict(m result, S []result) bool {
 	ms, _ := time.Parse("2006-01-02 15:04:05", m.Start)

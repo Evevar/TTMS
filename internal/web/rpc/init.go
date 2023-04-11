@@ -4,4 +4,5 @@ func InitRPC() {
 	InitUserRPC()
 	InitStudioRPC()
 	InitPlayRPC()
+	InitTicketRPC()
 }

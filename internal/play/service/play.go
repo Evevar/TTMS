@@ -6,6 +6,8 @@ import (
 	"TTMS/kitex_gen/play"
 	"TTMS/kitex_gen/studio"
 	"TTMS/kitex_gen/studio/studioservice"
+	"TTMS/kitex_gen/ticket"
+	"TTMS/kitex_gen/ticket/ticketservice"
 	"context"
 	"errors"
 	"fmt"
@@ -17,6 +19,7 @@ import (
 )
 
 var studioClient studioservice.Client
+var ticketClient ticketservice.Client
 
 func InitStudioRPC() {
 	r, err := etcd.NewEtcdResolver([]string{consts.EtcdAddress})
@@ -40,7 +43,26 @@ func InitStudioRPC() {
 	}
 	studioClient = c
 }
+func InitTicketRPC() {
+	r, err := etcd.NewEtcdResolver([]string{consts.EtcdAddress})
+	if err != nil {
+		panic(err)
+	}
 
+	c, err := ticketservice.NewClient(
+		consts.TicketServiceName,
+		client.WithMuxConnection(1),                       // mux
+		client.WithRPCTimeout(3*time.Second),              // rpc timeout
+		client.WithConnectTimeout(50*time.Millisecond),    // conn timeout
+		client.WithFailureRetry(retry.NewFailurePolicy()), // retry
+		client.WithSuite(trace.NewDefaultClientSuite()),   // tracer
+		client.WithResolver(r),                            // resolver
+	)
+	if err != nil {
+		panic(err)
+	}
+	ticketClient = c
+}
 func AddPlayService(ctx context.Context, req *play.AddPlayRequest) (resp *play.AddPlayResponse, err error) {
 	PlayInfo := &play.Play{Name: req.Name, Type: req.Type, Area: req.Area,
 		Rating: req.Rating, Duration: req.Duration, StartDate: req.StartDate, EndDate: req.EndDate, Price: req.Price}
@@ -102,13 +124,23 @@ func AddScheduleService(ctx context.Context, req *play.AddScheduleRequest) (resp
 		return resp, nil
 	}
 	SInfo := &play.Schedule{PlayId: req.PlayId, StudioId: req.StudioId, ShowTime: req.ShowTime}
-	err = dao.AddSchedule(ctx, SInfo)
+	id, err := dao.AddSchedule(ctx, SInfo)
 
+	if err != nil {
+		resp.BaseResp.StatusCode = 1
+		resp.BaseResp.StatusMessage = err.Error()
+		return resp, nil
+	}
+	re, _ := studioClient.GetAllSeat(ctx, &studio.GetAllSeatRequest{StudioId: req.StudioId, Current: 0, PageSize: 1000})
+	p, err := dao.GetPlayById(req.PlayId)
+	//fmt.Println(re.List)
+	_, err = ticketClient.BatchAddTicket(ctx, &ticket.BatchAddTicketRequest{ScheduleId: id, StudioId: req.StudioId, Price: int32(p.Price), PlayName: p.Name, List: re.List})
 	if err != nil {
 		resp.BaseResp.StatusCode = 1
 		resp.BaseResp.StatusMessage = err.Error()
 	} else {
 		resp.BaseResp.StatusMessage = "success"
+
 	}
 	return resp, nil
 }

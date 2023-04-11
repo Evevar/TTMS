@@ -44,3 +44,27 @@ CREATE TABLE IF NOT EXISTS `schedules` (
     `show_time` VARCHAR(255) NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS `tickets` (
+    `id` INTEGER NOT NULL auto_increment,
+    `schedule_id` INTEGER NOT NULL COMMENT '演出计划ID',
+    `seat_row` INTEGER NOT NULL COMMENT '座位行数',
+    `seat_col` INTEGER NOT NULL COMMENT '座位列数',
+    `price` INTEGER NOT NULL COMMENT '价格',
+    `play_name` VARCHAR(255) NOT NULL,
+    `studio_id` INTEGER NOT NULL,
+    `status` INTEGER NOT NULL COMMENT '0-待售（未被预定），1-已售（已付款），9-预留（已预订，还未付款）',
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS `orders` (
+    `id` INTEGER NOT NULL auto_increment,
+    `user_id` INTEGER NOT NULL COMMENT '买票人',
+    `schedule_id` INTEGER NOT NULL,
+    `seat_row` INTEGER NOT NULL,
+    `seat_col` INTEGER NOT NULL,
+    `date` VARCHAR(255) NOT NULL COMMENT '订单处理时间，2006-01-02 15:04:05',
+    `value` INTEGER NOT NULL COMMENT '票价',
+    `type` INTEGER NOT NULL COMMENT '交易类型，1-买票，-1-退票',
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
