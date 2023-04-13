@@ -30,6 +30,7 @@ func NewServiceInfo() *kitex.ServiceInfo {
 		"UpdateSchedule": kitex.NewMethodInfo(updateScheduleHandler, newUpdateScheduleArgs, newUpdateScheduleResult, false),
 		"DeleteSchedule": kitex.NewMethodInfo(deleteScheduleHandler, newDeleteScheduleArgs, newDeleteScheduleResult, false),
 		"GetAllSchedule": kitex.NewMethodInfo(getAllScheduleHandler, newGetAllScheduleArgs, newGetAllScheduleResult, false),
+		"PlayToSchedule": kitex.NewMethodInfo(playToScheduleHandler, newPlayToScheduleArgs, newPlayToScheduleResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "play",
@@ -1205,6 +1206,151 @@ func (p *GetAllScheduleResult) IsSetSuccess() bool {
 	return p.Success != nil
 }
 
+func playToScheduleHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(play.PlayToScheduleRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(play.PlayService).PlayToSchedule(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *PlayToScheduleArgs:
+		success, err := handler.(play.PlayService).PlayToSchedule(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*PlayToScheduleResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newPlayToScheduleArgs() interface{} {
+	return &PlayToScheduleArgs{}
+}
+
+func newPlayToScheduleResult() interface{} {
+	return &PlayToScheduleResult{}
+}
+
+type PlayToScheduleArgs struct {
+	Req *play.PlayToScheduleRequest
+}
+
+func (p *PlayToScheduleArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(play.PlayToScheduleRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *PlayToScheduleArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *PlayToScheduleArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *PlayToScheduleArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in PlayToScheduleArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *PlayToScheduleArgs) Unmarshal(in []byte) error {
+	msg := new(play.PlayToScheduleRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var PlayToScheduleArgs_Req_DEFAULT *play.PlayToScheduleRequest
+
+func (p *PlayToScheduleArgs) GetReq() *play.PlayToScheduleRequest {
+	if !p.IsSetReq() {
+		return PlayToScheduleArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *PlayToScheduleArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type PlayToScheduleResult struct {
+	Success *play.PlayToScheduleResponse
+}
+
+var PlayToScheduleResult_Success_DEFAULT *play.PlayToScheduleResponse
+
+func (p *PlayToScheduleResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(play.PlayToScheduleResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *PlayToScheduleResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *PlayToScheduleResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *PlayToScheduleResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in PlayToScheduleResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *PlayToScheduleResult) Unmarshal(in []byte) error {
+	msg := new(play.PlayToScheduleResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *PlayToScheduleResult) GetSuccess() *play.PlayToScheduleResponse {
+	if !p.IsSetSuccess() {
+		return PlayToScheduleResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *PlayToScheduleResult) SetSuccess(x interface{}) {
+	p.Success = x.(*play.PlayToScheduleResponse)
+}
+
+func (p *PlayToScheduleResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -1290,6 +1436,16 @@ func (p *kClient) GetAllSchedule(ctx context.Context, Req *play.GetAllScheduleRe
 	_args.Req = Req
 	var _result GetAllScheduleResult
 	if err = p.c.Call(ctx, "GetAllSchedule", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) PlayToSchedule(ctx context.Context, Req *play.PlayToScheduleRequest) (r *play.PlayToScheduleResponse, err error) {
+	var _args PlayToScheduleArgs
+	_args.Req = Req
+	var _result PlayToScheduleResult
+	if err = p.c.Call(ctx, "PlayToSchedule", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

@@ -107,8 +107,11 @@ func BuyTicket(c *gin.Context) {
 }
 
 type ReturnTicketRequest struct {
-	UserId int64
-	Token  string
+	UserId     int64
+	ScheduleId int64
+	SeatRow    int32
+	SeatCol    int32
+	Token      string
 }
 
 func ReturnTicket(c *gin.Context) {
@@ -124,7 +127,10 @@ func ReturnTicket(c *gin.Context) {
 		return
 	}
 	req := &ticket.ReturnTicketRequest{
-		UserId: receive.UserId,
+		UserId:     receive.UserId,
+		ScheduleId: receive.ScheduleId,
+		SeatRow:    receive.SeatRow,
+		SeatCol:    receive.SeatCol,
 	}
 	resp, err := rpc.ReturnTicket(context.Background(), req)
 	if err != nil {

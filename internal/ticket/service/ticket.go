@@ -15,7 +15,6 @@ import (
 
 var nc *nats.Conn
 var js nats.JetStreamContext
-var buyPublisher nats.PubAckFuture
 
 func NatsInit() {
 	// 连接到nats的服务器
@@ -31,7 +30,7 @@ func NatsInit() {
 		log.Panic("2", err)
 	}
 	//streamName, subject, subject1 := "stream", "order.buy", "order.return"
-	streamName, subject := "stream", "order.buy"
+	streamName, subject, subject1 := "stream", "order.buy", "order.return"
 	// 判断Stream是否存在，如果不存在，那么需要创建这个Stream，否则会导致pub/sub失败
 	stream, err := js.StreamInfo(streamName)
 	if err != nil {
@@ -41,7 +40,7 @@ func NatsInit() {
 		log.Printf("creating stream %q and subject %q", streamName, subject)
 		_, err = js.AddStream(&nats.StreamConfig{
 			Name:     streamName,
-			Subjects: []string{"stream.>"},
+			Subjects: []string{fmt.Sprintf("%s.%s", streamName, subject), fmt.Sprintf("%s.%s", streamName, subject1)},
 			MaxAge:   3 * 24 * time.Hour,
 		})
 		if err != nil {
@@ -90,7 +89,7 @@ func GetAllTicketService(ctx context.Context, req *ticket.GetAllTicketRequest) (
 }
 
 func BuyTicketService(ctx context.Context, req *ticket.BuyTicketRequest) (resp *ticket.BuyTicketResponse, err error) {
-	key := fmt.Sprintf("%d:%d:%d", req.ScheduleId, req.SeatRow, req.SeatCol)
+	key := fmt.Sprintf("%d;%d;%d", req.ScheduleId, req.SeatRow, req.SeatCol)
 	resp = &ticket.BuyTicketResponse{BaseResp: &ticket.BaseResp{}}
 	result, err := redis.TicketIsExist(key)
 	if err != nil {
@@ -104,9 +103,9 @@ func BuyTicketService(ctx context.Context, req *ticket.BuyTicketRequest) (resp *
 		return resp, nil
 	}
 	//成功买到票
-	fmt.Println(1, " ", nc, " ", nc.IsClosed())
+	//fmt.Println(1, " ", nc, " ", nc.IsClosed())
 	//暂时不改变票的状态
-	//err = redis.BuyTicket(ctx, key)
+	err = redis.BuyTicket(ctx, key)
 	if err != nil {
 		resp.BaseResp.StatusCode = 1
 		resp.BaseResp.StatusMessage = err.Error()
@@ -114,20 +113,44 @@ func BuyTicketService(ctx context.Context, req *ticket.BuyTicketRequest) (resp *
 	}
 	//发送创建订单消息
 	fmt.Println(2, " ", nc, " ", nc.IsClosed())
+	t := time.Now().Format("2006-01-02 15:04:05")
+	fmt.Println("time = ", t)
 	_, err = js.Publish("stream.order.buy",
-		[]byte(fmt.Sprintf("%d:%s:%s", req.UserId, key, time.Now().Format("2006-01-02 15:04:05"))))
+		[]byte(fmt.Sprintf("%d;%s;%s;%s", req.UserId, key, t,
+			redis.GetTicketPrice(ctx, fmt.Sprintf("%s;price", key)))))
 	fmt.Println(err)
 	if err != nil {
 		log.Println(err)
 		resp.BaseResp.StatusCode = 1
 		resp.BaseResp.StatusMessage = err.Error()
+	} else {
+		resp.BaseResp.StatusMessage = "success"
 	}
-	//go dao.BuyTicket(ctx, int(req.ScheduleId), int(req.SeatRow), int(req.SeatCol))
-	fmt.Println(3)
+	go dao.BuyTicket(ctx, int(req.ScheduleId), int(req.SeatRow), int(req.SeatCol))
 	return resp, nil
 }
 
-func ReturnTicket(ctx context.Context, req *ticket.ReturnTicketRequest) (resp *ticket.ReturnTicketResponse, err error) {
-
-	return
+func ReturnTicketService(ctx context.Context, req *ticket.ReturnTicketRequest) (resp *ticket.ReturnTicketResponse, err error) {
+	key := fmt.Sprintf("%d;%d;%d", req.ScheduleId, req.SeatRow, req.SeatCol)
+	resp = &ticket.ReturnTicketResponse{BaseResp: &ticket.BaseResp{}}
+	err = redis.ReturnTicket(ctx, key)
+	if err != nil {
+		resp.BaseResp.StatusCode = 1
+		resp.BaseResp.StatusMessage = err.Error()
+		return resp, nil
+	}
+	//发送创建订单消息
+	fmt.Println(2, " ", nc, " ", nc.IsClosed())
+	_, err = js.Publish("stream.order.return",
+		[]byte(fmt.Sprintf("%d;%s;%s", req.UserId, key, time.Now().Format("2006-01-02 15:04:05"))))
+	fmt.Println(err)
+	if err != nil {
+		log.Println(err)
+		resp.BaseResp.StatusCode = 1
+		resp.BaseResp.StatusMessage = err.Error()
+	} else {
+		resp.BaseResp.StatusMessage = "success"
+	}
+	go dao.ReturnTicket(ctx, int(req.ScheduleId), int(req.SeatRow), int(req.SeatCol))
+	return resp, nil
 }

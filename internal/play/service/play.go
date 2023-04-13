@@ -200,3 +200,16 @@ func GetAllScheduleService(ctx context.Context, req *play.GetAllScheduleRequest)
 	}
 	return resp, nil
 }
+func PlayToScheduleService(ctx context.Context, req *play.PlayToScheduleRequest) (resp *play.PlayToScheduleResponse, err error) {
+	resp = &play.PlayToScheduleResponse{BaseResp: &play.BaseResp{}}
+	resp.Play, resp.ScheduleList, err = dao.PlayToSchedule(ctx, req.Id)
+	fmt.Println("schedules = ", resp.ScheduleList)
+	fmt.Println("play = ", resp.Play)
+	if err != nil {
+		resp.BaseResp.StatusCode = 1
+		resp.BaseResp.StatusMessage = err.Error()
+	} else {
+		resp.BaseResp.StatusMessage = "success"
+	}
+	return resp, nil
+}

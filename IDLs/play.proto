@@ -56,6 +56,15 @@ message DeletePlayResponse{
   BaseResp BaseResp = 1;
 }
 
+message PlayToScheduleRequest{
+  int64 Id=1;
+}
+message PlayToScheduleResponse{
+  BaseResp BaseResp = 1;
+  Play Play=2;
+  repeated int64 ScheduleList=3;
+}
+
 message GetAllPlayRequest{
   int32 Current = 1;//当前页
   int32 PageSize = 2; //一页数据条数
@@ -131,4 +140,5 @@ service PlayService{
   rpc UpdateSchedule(UpdateScheduleRequest) returns (UpdateScheduleResponse){}
   rpc DeleteSchedule(DeleteScheduleRequest) returns (DeleteScheduleResponse){}
   rpc GetAllSchedule(GetAllScheduleRequest) returns (GetAllScheduleResponse){}
+  rpc PlayToSchedule(PlayToScheduleRequest) returns (PlayToScheduleResponse){}
 }

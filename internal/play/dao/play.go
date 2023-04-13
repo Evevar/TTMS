@@ -4,8 +4,11 @@ import (
 	"TTMS/kitex_gen/play"
 	"TTMS/kitex_gen/studio"
 	"context"
+	"database/sql"
 	"errors"
 	"fmt"
+	"log"
+	"strings"
 	"time"
 )
 
@@ -129,4 +132,28 @@ func DeleteSchedule(ctx context.Context, id int64) error {
 	} else {
 		return errors.New("该演出计划不存在")
 	}
+}
+func PlayToSchedule(ctx context.Context, id int64) (*play.Play, []int64, error) {
+	p := play.Play{}
+	err := DB.WithContext(ctx).Where("id = ?", id).Find(&p).Error
+	if err != nil {
+		return nil, nil, err
+	}
+
+	rows, err := DB.WithContext(ctx).Model(&play.Schedule{}).Select("id").Where("play_id = ?", id).Rows()
+	if err != nil && strings.EqualFold(err.Error(), sql.ErrNoRows.Error()) {
+		log.Println(err)
+		return &p, nil, err
+	}
+	defer rows.Close()
+	var scheduleIDs []int64
+	for rows.Next() {
+		var scheduleID int64
+		if err := rows.Scan(&scheduleID); err != nil {
+			// 处理错误
+			log.Println(err)
+		}
+		scheduleIDs = append(scheduleIDs, scheduleID)
+	}
+	return &p, scheduleIDs, nil
 }

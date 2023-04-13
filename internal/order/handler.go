@@ -1,6 +1,7 @@
 package main
 
 import (
+	"TTMS/internal/order/service"
 	order "TTMS/kitex_gen/order"
 	"context"
 )
@@ -29,11 +30,11 @@ func (s *OrderServiceImpl) UpdateOrder(ctx context.Context, req *order.UpdateOrd
 // GetAllOrder implements the OrderServiceImpl interface.
 func (s *OrderServiceImpl) GetAllOrder(ctx context.Context, req *order.GetAllOrderRequest) (resp *order.GetAllOrderResponse, err error) {
 	// TODO: Your code here...
-	return
+	return service.GetAllOrderService(ctx, req)
 }
 
 // GetOrderAnalysis implements the OrderServiceImpl interface.
 func (s *OrderServiceImpl) GetOrderAnalysis(ctx context.Context, req *order.GetOrderAnalysisRequest) (resp *order.GetOrderAnalysisResponse, err error) {
 	// TODO: Your code here...
-	return
+	return service.GetOrderAnalysisService(ctx, req)
 }

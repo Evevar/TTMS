@@ -19,6 +19,7 @@ type Client interface {
 	UpdateSchedule(ctx context.Context, Req *play.UpdateScheduleRequest, callOptions ...callopt.Option) (r *play.UpdateScheduleResponse, err error)
 	DeleteSchedule(ctx context.Context, Req *play.DeleteScheduleRequest, callOptions ...callopt.Option) (r *play.DeleteScheduleResponse, err error)
 	GetAllSchedule(ctx context.Context, Req *play.GetAllScheduleRequest, callOptions ...callopt.Option) (r *play.GetAllScheduleResponse, err error)
+	PlayToSchedule(ctx context.Context, Req *play.PlayToScheduleRequest, callOptions ...callopt.Option) (r *play.PlayToScheduleResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -88,4 +89,9 @@ func (p *kPlayServiceClient) DeleteSchedule(ctx context.Context, Req *play.Delet
 func (p *kPlayServiceClient) GetAllSchedule(ctx context.Context, Req *play.GetAllScheduleRequest, callOptions ...callopt.Option) (r *play.GetAllScheduleResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.GetAllSchedule(ctx, Req)
+}
+
+func (p *kPlayServiceClient) PlayToSchedule(ctx context.Context, Req *play.PlayToScheduleRequest, callOptions ...callopt.Option) (r *play.PlayToScheduleResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.PlayToSchedule(ctx, Req)
 }

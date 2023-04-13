@@ -497,6 +497,95 @@ func (x *DeletePlayResponse) fastReadField1(buf []byte, _type int8) (offset int,
 	return offset, nil
 }
 
+func (x *PlayToScheduleRequest) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_PlayToScheduleRequest[number], err)
+}
+
+func (x *PlayToScheduleRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.Id, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
+}
+
+func (x *PlayToScheduleResponse) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 2:
+		offset, err = x.fastReadField2(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 3:
+		offset, err = x.fastReadField3(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_PlayToScheduleResponse[number], err)
+}
+
+func (x *PlayToScheduleResponse) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	var v BaseResp
+	offset, err = fastpb.ReadMessage(buf, _type, &v)
+	if err != nil {
+		return offset, err
+	}
+	x.BaseResp = &v
+	return offset, nil
+}
+
+func (x *PlayToScheduleResponse) fastReadField2(buf []byte, _type int8) (offset int, err error) {
+	var v Play
+	offset, err = fastpb.ReadMessage(buf, _type, &v)
+	if err != nil {
+		return offset, err
+	}
+	x.Play = &v
+	return offset, nil
+}
+
+func (x *PlayToScheduleResponse) fastReadField3(buf []byte, _type int8) (offset int, err error) {
+	offset, err = fastpb.ReadList(buf, _type,
+		func(buf []byte, _type int8) (n int, err error) {
+			var v int64
+			v, offset, err = fastpb.ReadInt64(buf, _type)
+			if err != nil {
+				return offset, err
+			}
+			x.ScheduleList = append(x.ScheduleList, v)
+			return offset, err
+		})
+	return offset, err
+}
+
 func (x *GetAllPlayRequest) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
 	switch number {
 	case 1:
@@ -1443,6 +1532,61 @@ func (x *DeletePlayResponse) fastWriteField1(buf []byte) (offset int) {
 	return offset
 }
 
+func (x *PlayToScheduleRequest) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	return offset
+}
+
+func (x *PlayToScheduleRequest) fastWriteField1(buf []byte) (offset int) {
+	if x.Id == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.Id)
+	return offset
+}
+
+func (x *PlayToScheduleResponse) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	offset += x.fastWriteField2(buf[offset:])
+	offset += x.fastWriteField3(buf[offset:])
+	return offset
+}
+
+func (x *PlayToScheduleResponse) fastWriteField1(buf []byte) (offset int) {
+	if x.BaseResp == nil {
+		return offset
+	}
+	offset += fastpb.WriteMessage(buf[offset:], 1, x.BaseResp)
+	return offset
+}
+
+func (x *PlayToScheduleResponse) fastWriteField2(buf []byte) (offset int) {
+	if x.Play == nil {
+		return offset
+	}
+	offset += fastpb.WriteMessage(buf[offset:], 2, x.Play)
+	return offset
+}
+
+func (x *PlayToScheduleResponse) fastWriteField3(buf []byte) (offset int) {
+	if len(x.ScheduleList) == 0 {
+		return offset
+	}
+	offset += fastpb.WriteListPacked(buf[offset:], 3, len(x.ScheduleList),
+		func(buf []byte, numTagOrKey, numIdxOrVal int32) int {
+			offset := 0
+			offset += fastpb.WriteInt64(buf[offset:], numTagOrKey, x.ScheduleList[numIdxOrVal])
+			return offset
+		})
+	return offset
+}
+
 func (x *GetAllPlayRequest) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
@@ -2226,6 +2370,61 @@ func (x *DeletePlayResponse) sizeField1() (n int) {
 	return n
 }
 
+func (x *PlayToScheduleRequest) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	return n
+}
+
+func (x *PlayToScheduleRequest) sizeField1() (n int) {
+	if x.Id == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(1, x.Id)
+	return n
+}
+
+func (x *PlayToScheduleResponse) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	n += x.sizeField2()
+	n += x.sizeField3()
+	return n
+}
+
+func (x *PlayToScheduleResponse) sizeField1() (n int) {
+	if x.BaseResp == nil {
+		return n
+	}
+	n += fastpb.SizeMessage(1, x.BaseResp)
+	return n
+}
+
+func (x *PlayToScheduleResponse) sizeField2() (n int) {
+	if x.Play == nil {
+		return n
+	}
+	n += fastpb.SizeMessage(2, x.Play)
+	return n
+}
+
+func (x *PlayToScheduleResponse) sizeField3() (n int) {
+	if len(x.ScheduleList) == 0 {
+		return n
+	}
+	n += fastpb.SizeListPacked(3, len(x.ScheduleList),
+		func(numTagOrKey, numIdxOrVal int32) int {
+			n := 0
+			n += fastpb.SizeInt64(numTagOrKey, x.ScheduleList[numIdxOrVal])
+			return n
+		})
+	return n
+}
+
 func (x *GetAllPlayRequest) Size() (n int) {
 	if x == nil {
 		return n
@@ -2695,6 +2894,16 @@ var fieldIDToName_DeletePlayRequest = map[int32]string{
 
 var fieldIDToName_DeletePlayResponse = map[int32]string{
 	1: "BaseResp",
+}
+
+var fieldIDToName_PlayToScheduleRequest = map[int32]string{
+	1: "Id",
+}
+
+var fieldIDToName_PlayToScheduleResponse = map[int32]string{
+	1: "BaseResp",
+	2: "Play",
+	3: "ScheduleList",
 }
 
 var fieldIDToName_GetAllPlayRequest = map[int32]string{

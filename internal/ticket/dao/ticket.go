@@ -47,7 +47,9 @@ func BuyTicket(ctx context.Context, ScheduleId, SeatRow, SeatCol int) {
 	}
 }
 
-//func ReturnTicket(ctx context.Context, ) (,error) {
-//
-//	return
-//}
+func ReturnTicket(ctx context.Context, ScheduleId, SeatRow, SeatCol int) {
+	err := DB.WithContext(ctx).Model(&ticket.Ticket{}).Where("schedule_id = ? and seat_row = ? and seat_col = ?", ScheduleId, SeatRow, SeatCol).Update("status", 0).Error
+	if err != nil {
+		log.Panicln(err)
+	}
+}

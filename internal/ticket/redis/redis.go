@@ -47,10 +47,21 @@ func InitAllTicket(ctx context.Context) error {
 		return err
 	}
 	for _, ticket := range tickets {
-		redisClient.Set(ctx, fmt.Sprintf("%d:%d:%d", ticket.ScheduleId, ticket.SeatRow, ticket.SeatCol), ticket.Status, 0)
+		redisClient.Set(ctx, fmt.Sprintf("%d;%d;%d", ticket.ScheduleId, ticket.SeatRow, ticket.SeatCol), ticket.Status, 0)
+		redisClient.Set(ctx, fmt.Sprintf("%d;%d;%d;price", ticket.ScheduleId, ticket.SeatRow, ticket.SeatCol), ticket.Price, 0)
 	}
 	return nil
 }
 func BuyTicket(ctx context.Context, key string) error {
 	return redisClient.Set(ctx, key, "9", 0).Err()
+}
+func ReturnTicket(ctx context.Context, key string) error {
+	return redisClient.Set(ctx, key, "0", 0).Err()
+}
+func GetTicketPrice(ctx context.Context, key string) string {
+	price, err := redisClient.Get(ctx, key).Result()
+	if err != nil {
+		log.Println("GetTicketPrice ", err)
+	}
+	return price
 }

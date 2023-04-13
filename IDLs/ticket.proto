@@ -23,7 +23,7 @@ message BatchAddTicketRequest{
   int64 StudioId = 2;//对应的演出厅ID
   int32 Price = 3;//价格
   string PlayName = 4;//剧目名称
-  repeated studio.Seat List=5;
+  repeated studio.Seat List = 5;
 }
 message BatchAddTicketResponse{
   BaseResp BaseResp = 1;
@@ -63,7 +63,9 @@ message BuyTicketResponse{
 //退票
 message ReturnTicketRequest{
   int64 UserId = 1;//退票的用户ID
-  int64 TicketId = 2;
+  int64 ScheduleId = 2;//演出计划ID
+  int32 SeatRow = 3;//座位行数
+  int32 SeatCol = 4;//座位列数
 }
 message ReturnTicketResponse{
   BaseResp BaseResp = 1;

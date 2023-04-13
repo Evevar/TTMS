@@ -29,6 +29,16 @@ message AddOrderRequest{
 message AddOrderResponse{
   BaseResp BaseResp = 1;
 }
+//进行支付，确认订单
+message CommitOrderRequest{
+  int64 UserId = 1;
+  int64 ScheduleId = 2;//演出计划ID
+  int32 SeatRow = 3;//座位行数
+  int32 SeatCol = 4;//座位列数
+}
+message CommitOrderResponse{
+  BaseResp BaseResp=1;
+}
 //未在规定时间内支付，默认放弃这张票，系统删除该订单
 message DeleteOrderRequest{
   int64 Id = 1;

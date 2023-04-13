@@ -36,5 +36,5 @@ func (s *TicketServiceImpl) BuyTicket(ctx context.Context, req *ticket.BuyTicket
 // ReturnTicket implements the TicketServiceImpl interface.
 func (s *TicketServiceImpl) ReturnTicket(ctx context.Context, req *ticket.ReturnTicketRequest) (resp *ticket.ReturnTicketResponse, err error) {
 	// TODO: Your code here...
-	return
+	return service.ReturnTicketService(ctx, req)
 }

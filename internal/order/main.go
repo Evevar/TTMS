@@ -32,6 +32,7 @@ func main() {
 		server.WithRegistry(r),                                             // registry
 	)
 	dao.Init()
+	service.InitPlayRPC()
 	go service.NatsInit()
 	err = svr.Run()
 	if err != nil {
