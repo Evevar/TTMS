@@ -3,7 +3,6 @@ package userservice
 
 import (
 	user "TTMS/kitex_gen/user"
-
 	server "github.com/cloudwego/kitex/server"
 )
 

@@ -194,11 +194,6 @@ func (x *AddPlayRequest) FastRead(buf []byte, _type int8, number int32) (offset 
 		if err != nil {
 			goto ReadFieldError
 		}
-	case 9:
-		offset, err = x.fastReadField9(buf, _type)
-		if err != nil {
-			goto ReadFieldError
-		}
 	default:
 		offset, err = fastpb.Skip(buf, _type, number)
 		if err != nil {
@@ -249,11 +244,6 @@ func (x *AddPlayRequest) fastReadField7(buf []byte, _type int8) (offset int, err
 
 func (x *AddPlayRequest) fastReadField8(buf []byte, _type int8) (offset int, err error) {
 	x.Price, offset, err = fastpb.ReadInt64(buf, _type)
-	return offset, err
-}
-
-func (x *AddPlayRequest) fastReadField9(buf []byte, _type int8) (offset int, err error) {
-	x.Token, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
 
@@ -334,11 +324,6 @@ func (x *UpdatePlayRequest) FastRead(buf []byte, _type int8, number int32) (offs
 		if err != nil {
 			goto ReadFieldError
 		}
-	case 10:
-		offset, err = x.fastReadField10(buf, _type)
-		if err != nil {
-			goto ReadFieldError
-		}
 	default:
 		offset, err = fastpb.Skip(buf, _type, number)
 		if err != nil {
@@ -397,11 +382,6 @@ func (x *UpdatePlayRequest) fastReadField9(buf []byte, _type int8) (offset int, 
 	return offset, err
 }
 
-func (x *UpdatePlayRequest) fastReadField10(buf []byte, _type int8) (offset int, err error) {
-	x.Token, offset, err = fastpb.ReadString(buf, _type)
-	return offset, err
-}
-
 func (x *UpdatePlayResponse) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
 	switch number {
 	case 1:
@@ -439,11 +419,6 @@ func (x *DeletePlayRequest) FastRead(buf []byte, _type int8, number int32) (offs
 		if err != nil {
 			goto ReadFieldError
 		}
-	case 2:
-		offset, err = x.fastReadField2(buf, _type)
-		if err != nil {
-			goto ReadFieldError
-		}
 	default:
 		offset, err = fastpb.Skip(buf, _type, number)
 		if err != nil {
@@ -459,11 +434,6 @@ ReadFieldError:
 
 func (x *DeletePlayRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
 	x.Id, offset, err = fastpb.ReadInt64(buf, _type)
-	return offset, err
-}
-
-func (x *DeletePlayRequest) fastReadField2(buf []byte, _type int8) (offset int, err error) {
-	x.Token, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
 
@@ -598,11 +568,6 @@ func (x *GetAllPlayRequest) FastRead(buf []byte, _type int8, number int32) (offs
 		if err != nil {
 			goto ReadFieldError
 		}
-	case 3:
-		offset, err = x.fastReadField3(buf, _type)
-		if err != nil {
-			goto ReadFieldError
-		}
 	default:
 		offset, err = fastpb.Skip(buf, _type, number)
 		if err != nil {
@@ -623,11 +588,6 @@ func (x *GetAllPlayRequest) fastReadField1(buf []byte, _type int8) (offset int, 
 
 func (x *GetAllPlayRequest) fastReadField2(buf []byte, _type int8) (offset int, err error) {
 	x.PageSize, offset, err = fastpb.ReadInt32(buf, _type)
-	return offset, err
-}
-
-func (x *GetAllPlayRequest) fastReadField3(buf []byte, _type int8) (offset int, err error) {
-	x.Token, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
 
@@ -748,11 +708,6 @@ func (x *AddScheduleRequest) FastRead(buf []byte, _type int8, number int32) (off
 		if err != nil {
 			goto ReadFieldError
 		}
-	case 4:
-		offset, err = x.fastReadField4(buf, _type)
-		if err != nil {
-			goto ReadFieldError
-		}
 	default:
 		offset, err = fastpb.Skip(buf, _type, number)
 		if err != nil {
@@ -778,11 +733,6 @@ func (x *AddScheduleRequest) fastReadField2(buf []byte, _type int8) (offset int,
 
 func (x *AddScheduleRequest) fastReadField3(buf []byte, _type int8) (offset int, err error) {
 	x.ShowTime, offset, err = fastpb.ReadString(buf, _type)
-	return offset, err
-}
-
-func (x *AddScheduleRequest) fastReadField4(buf []byte, _type int8) (offset int, err error) {
-	x.Token, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
 
@@ -838,11 +788,6 @@ func (x *UpdateScheduleRequest) FastRead(buf []byte, _type int8, number int32) (
 		if err != nil {
 			goto ReadFieldError
 		}
-	case 5:
-		offset, err = x.fastReadField5(buf, _type)
-		if err != nil {
-			goto ReadFieldError
-		}
 	default:
 		offset, err = fastpb.Skip(buf, _type, number)
 		if err != nil {
@@ -873,11 +818,6 @@ func (x *UpdateScheduleRequest) fastReadField3(buf []byte, _type int8) (offset i
 
 func (x *UpdateScheduleRequest) fastReadField4(buf []byte, _type int8) (offset int, err error) {
 	x.ShowTime, offset, err = fastpb.ReadString(buf, _type)
-	return offset, err
-}
-
-func (x *UpdateScheduleRequest) fastReadField5(buf []byte, _type int8) (offset int, err error) {
-	x.Token, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
 
@@ -918,11 +858,6 @@ func (x *DeleteScheduleRequest) FastRead(buf []byte, _type int8, number int32) (
 		if err != nil {
 			goto ReadFieldError
 		}
-	case 2:
-		offset, err = x.fastReadField2(buf, _type)
-		if err != nil {
-			goto ReadFieldError
-		}
 	default:
 		offset, err = fastpb.Skip(buf, _type, number)
 		if err != nil {
@@ -938,11 +873,6 @@ ReadFieldError:
 
 func (x *DeleteScheduleRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
 	x.Id, offset, err = fastpb.ReadInt64(buf, _type)
-	return offset, err
-}
-
-func (x *DeleteScheduleRequest) fastReadField2(buf []byte, _type int8) (offset int, err error) {
-	x.Token, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
 
@@ -988,11 +918,6 @@ func (x *GetAllScheduleRequest) FastRead(buf []byte, _type int8, number int32) (
 		if err != nil {
 			goto ReadFieldError
 		}
-	case 3:
-		offset, err = x.fastReadField3(buf, _type)
-		if err != nil {
-			goto ReadFieldError
-		}
 	default:
 		offset, err = fastpb.Skip(buf, _type, number)
 		if err != nil {
@@ -1013,11 +938,6 @@ func (x *GetAllScheduleRequest) fastReadField1(buf []byte, _type int8) (offset i
 
 func (x *GetAllScheduleRequest) fastReadField2(buf []byte, _type int8) (offset int, err error) {
 	x.PageSize, offset, err = fastpb.ReadInt32(buf, _type)
-	return offset, err
-}
-
-func (x *GetAllScheduleRequest) fastReadField3(buf []byte, _type int8) (offset int, err error) {
-	x.Token, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
 
@@ -1286,7 +1206,6 @@ func (x *AddPlayRequest) FastWrite(buf []byte) (offset int) {
 	offset += x.fastWriteField6(buf[offset:])
 	offset += x.fastWriteField7(buf[offset:])
 	offset += x.fastWriteField8(buf[offset:])
-	offset += x.fastWriteField9(buf[offset:])
 	return offset
 }
 
@@ -1354,14 +1273,6 @@ func (x *AddPlayRequest) fastWriteField8(buf []byte) (offset int) {
 	return offset
 }
 
-func (x *AddPlayRequest) fastWriteField9(buf []byte) (offset int) {
-	if x.Token == "" {
-		return offset
-	}
-	offset += fastpb.WriteString(buf[offset:], 9, x.Token)
-	return offset
-}
-
 func (x *AddPlayResponse) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
@@ -1391,7 +1302,6 @@ func (x *UpdatePlayRequest) FastWrite(buf []byte) (offset int) {
 	offset += x.fastWriteField7(buf[offset:])
 	offset += x.fastWriteField8(buf[offset:])
 	offset += x.fastWriteField9(buf[offset:])
-	offset += x.fastWriteField10(buf[offset:])
 	return offset
 }
 
@@ -1467,14 +1377,6 @@ func (x *UpdatePlayRequest) fastWriteField9(buf []byte) (offset int) {
 	return offset
 }
 
-func (x *UpdatePlayRequest) fastWriteField10(buf []byte) (offset int) {
-	if x.Token == "" {
-		return offset
-	}
-	offset += fastpb.WriteString(buf[offset:], 10, x.Token)
-	return offset
-}
-
 func (x *UpdatePlayResponse) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
@@ -1496,7 +1398,6 @@ func (x *DeletePlayRequest) FastWrite(buf []byte) (offset int) {
 		return offset
 	}
 	offset += x.fastWriteField1(buf[offset:])
-	offset += x.fastWriteField2(buf[offset:])
 	return offset
 }
 
@@ -1505,14 +1406,6 @@ func (x *DeletePlayRequest) fastWriteField1(buf []byte) (offset int) {
 		return offset
 	}
 	offset += fastpb.WriteInt64(buf[offset:], 1, x.Id)
-	return offset
-}
-
-func (x *DeletePlayRequest) fastWriteField2(buf []byte) (offset int) {
-	if x.Token == "" {
-		return offset
-	}
-	offset += fastpb.WriteString(buf[offset:], 2, x.Token)
 	return offset
 }
 
@@ -1593,7 +1486,6 @@ func (x *GetAllPlayRequest) FastWrite(buf []byte) (offset int) {
 	}
 	offset += x.fastWriteField1(buf[offset:])
 	offset += x.fastWriteField2(buf[offset:])
-	offset += x.fastWriteField3(buf[offset:])
 	return offset
 }
 
@@ -1610,14 +1502,6 @@ func (x *GetAllPlayRequest) fastWriteField2(buf []byte) (offset int) {
 		return offset
 	}
 	offset += fastpb.WriteInt32(buf[offset:], 2, x.PageSize)
-	return offset
-}
-
-func (x *GetAllPlayRequest) fastWriteField3(buf []byte) (offset int) {
-	if x.Token == "" {
-		return offset
-	}
-	offset += fastpb.WriteString(buf[offset:], 3, x.Token)
 	return offset
 }
 
@@ -1698,7 +1582,6 @@ func (x *AddScheduleRequest) FastWrite(buf []byte) (offset int) {
 	offset += x.fastWriteField1(buf[offset:])
 	offset += x.fastWriteField2(buf[offset:])
 	offset += x.fastWriteField3(buf[offset:])
-	offset += x.fastWriteField4(buf[offset:])
 	return offset
 }
 
@@ -1726,14 +1609,6 @@ func (x *AddScheduleRequest) fastWriteField3(buf []byte) (offset int) {
 	return offset
 }
 
-func (x *AddScheduleRequest) fastWriteField4(buf []byte) (offset int) {
-	if x.Token == "" {
-		return offset
-	}
-	offset += fastpb.WriteString(buf[offset:], 4, x.Token)
-	return offset
-}
-
 func (x *AddScheduleResponse) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
@@ -1758,7 +1633,6 @@ func (x *UpdateScheduleRequest) FastWrite(buf []byte) (offset int) {
 	offset += x.fastWriteField2(buf[offset:])
 	offset += x.fastWriteField3(buf[offset:])
 	offset += x.fastWriteField4(buf[offset:])
-	offset += x.fastWriteField5(buf[offset:])
 	return offset
 }
 
@@ -1794,14 +1668,6 @@ func (x *UpdateScheduleRequest) fastWriteField4(buf []byte) (offset int) {
 	return offset
 }
 
-func (x *UpdateScheduleRequest) fastWriteField5(buf []byte) (offset int) {
-	if x.Token == "" {
-		return offset
-	}
-	offset += fastpb.WriteString(buf[offset:], 5, x.Token)
-	return offset
-}
-
 func (x *UpdateScheduleResponse) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
@@ -1823,7 +1689,6 @@ func (x *DeleteScheduleRequest) FastWrite(buf []byte) (offset int) {
 		return offset
 	}
 	offset += x.fastWriteField1(buf[offset:])
-	offset += x.fastWriteField2(buf[offset:])
 	return offset
 }
 
@@ -1832,14 +1697,6 @@ func (x *DeleteScheduleRequest) fastWriteField1(buf []byte) (offset int) {
 		return offset
 	}
 	offset += fastpb.WriteInt64(buf[offset:], 1, x.Id)
-	return offset
-}
-
-func (x *DeleteScheduleRequest) fastWriteField2(buf []byte) (offset int) {
-	if x.Token == "" {
-		return offset
-	}
-	offset += fastpb.WriteString(buf[offset:], 2, x.Token)
 	return offset
 }
 
@@ -1865,7 +1722,6 @@ func (x *GetAllScheduleRequest) FastWrite(buf []byte) (offset int) {
 	}
 	offset += x.fastWriteField1(buf[offset:])
 	offset += x.fastWriteField2(buf[offset:])
-	offset += x.fastWriteField3(buf[offset:])
 	return offset
 }
 
@@ -1882,14 +1738,6 @@ func (x *GetAllScheduleRequest) fastWriteField2(buf []byte) (offset int) {
 		return offset
 	}
 	offset += fastpb.WriteInt32(buf[offset:], 2, x.PageSize)
-	return offset
-}
-
-func (x *GetAllScheduleRequest) fastWriteField3(buf []byte) (offset int) {
-	if x.Token == "" {
-		return offset
-	}
-	offset += fastpb.WriteString(buf[offset:], 3, x.Token)
 	return offset
 }
 
@@ -2124,7 +1972,6 @@ func (x *AddPlayRequest) Size() (n int) {
 	n += x.sizeField6()
 	n += x.sizeField7()
 	n += x.sizeField8()
-	n += x.sizeField9()
 	return n
 }
 
@@ -2192,14 +2039,6 @@ func (x *AddPlayRequest) sizeField8() (n int) {
 	return n
 }
 
-func (x *AddPlayRequest) sizeField9() (n int) {
-	if x.Token == "" {
-		return n
-	}
-	n += fastpb.SizeString(9, x.Token)
-	return n
-}
-
 func (x *AddPlayResponse) Size() (n int) {
 	if x == nil {
 		return n
@@ -2229,7 +2068,6 @@ func (x *UpdatePlayRequest) Size() (n int) {
 	n += x.sizeField7()
 	n += x.sizeField8()
 	n += x.sizeField9()
-	n += x.sizeField10()
 	return n
 }
 
@@ -2305,14 +2143,6 @@ func (x *UpdatePlayRequest) sizeField9() (n int) {
 	return n
 }
 
-func (x *UpdatePlayRequest) sizeField10() (n int) {
-	if x.Token == "" {
-		return n
-	}
-	n += fastpb.SizeString(10, x.Token)
-	return n
-}
-
 func (x *UpdatePlayResponse) Size() (n int) {
 	if x == nil {
 		return n
@@ -2334,7 +2164,6 @@ func (x *DeletePlayRequest) Size() (n int) {
 		return n
 	}
 	n += x.sizeField1()
-	n += x.sizeField2()
 	return n
 }
 
@@ -2343,14 +2172,6 @@ func (x *DeletePlayRequest) sizeField1() (n int) {
 		return n
 	}
 	n += fastpb.SizeInt64(1, x.Id)
-	return n
-}
-
-func (x *DeletePlayRequest) sizeField2() (n int) {
-	if x.Token == "" {
-		return n
-	}
-	n += fastpb.SizeString(2, x.Token)
 	return n
 }
 
@@ -2431,7 +2252,6 @@ func (x *GetAllPlayRequest) Size() (n int) {
 	}
 	n += x.sizeField1()
 	n += x.sizeField2()
-	n += x.sizeField3()
 	return n
 }
 
@@ -2448,14 +2268,6 @@ func (x *GetAllPlayRequest) sizeField2() (n int) {
 		return n
 	}
 	n += fastpb.SizeInt32(2, x.PageSize)
-	return n
-}
-
-func (x *GetAllPlayRequest) sizeField3() (n int) {
-	if x.Token == "" {
-		return n
-	}
-	n += fastpb.SizeString(3, x.Token)
 	return n
 }
 
@@ -2536,7 +2348,6 @@ func (x *AddScheduleRequest) Size() (n int) {
 	n += x.sizeField1()
 	n += x.sizeField2()
 	n += x.sizeField3()
-	n += x.sizeField4()
 	return n
 }
 
@@ -2564,14 +2375,6 @@ func (x *AddScheduleRequest) sizeField3() (n int) {
 	return n
 }
 
-func (x *AddScheduleRequest) sizeField4() (n int) {
-	if x.Token == "" {
-		return n
-	}
-	n += fastpb.SizeString(4, x.Token)
-	return n
-}
-
 func (x *AddScheduleResponse) Size() (n int) {
 	if x == nil {
 		return n
@@ -2596,7 +2399,6 @@ func (x *UpdateScheduleRequest) Size() (n int) {
 	n += x.sizeField2()
 	n += x.sizeField3()
 	n += x.sizeField4()
-	n += x.sizeField5()
 	return n
 }
 
@@ -2632,14 +2434,6 @@ func (x *UpdateScheduleRequest) sizeField4() (n int) {
 	return n
 }
 
-func (x *UpdateScheduleRequest) sizeField5() (n int) {
-	if x.Token == "" {
-		return n
-	}
-	n += fastpb.SizeString(5, x.Token)
-	return n
-}
-
 func (x *UpdateScheduleResponse) Size() (n int) {
 	if x == nil {
 		return n
@@ -2661,7 +2455,6 @@ func (x *DeleteScheduleRequest) Size() (n int) {
 		return n
 	}
 	n += x.sizeField1()
-	n += x.sizeField2()
 	return n
 }
 
@@ -2670,14 +2463,6 @@ func (x *DeleteScheduleRequest) sizeField1() (n int) {
 		return n
 	}
 	n += fastpb.SizeInt64(1, x.Id)
-	return n
-}
-
-func (x *DeleteScheduleRequest) sizeField2() (n int) {
-	if x.Token == "" {
-		return n
-	}
-	n += fastpb.SizeString(2, x.Token)
 	return n
 }
 
@@ -2703,7 +2488,6 @@ func (x *GetAllScheduleRequest) Size() (n int) {
 	}
 	n += x.sizeField1()
 	n += x.sizeField2()
-	n += x.sizeField3()
 	return n
 }
 
@@ -2720,14 +2504,6 @@ func (x *GetAllScheduleRequest) sizeField2() (n int) {
 		return n
 	}
 	n += fastpb.SizeInt32(2, x.PageSize)
-	return n
-}
-
-func (x *GetAllScheduleRequest) sizeField3() (n int) {
-	if x.Token == "" {
-		return n
-	}
-	n += fastpb.SizeString(3, x.Token)
 	return n
 }
 
@@ -2863,7 +2639,6 @@ var fieldIDToName_AddPlayRequest = map[int32]string{
 	6: "StartDate",
 	7: "EndDate",
 	8: "Price",
-	9: "Token",
 }
 
 var fieldIDToName_AddPlayResponse = map[int32]string{
@@ -2871,16 +2646,15 @@ var fieldIDToName_AddPlayResponse = map[int32]string{
 }
 
 var fieldIDToName_UpdatePlayRequest = map[int32]string{
-	1:  "Id",
-	2:  "Name",
-	3:  "Type",
-	4:  "Area",
-	5:  "Rating",
-	6:  "Duration",
-	7:  "StartDate",
-	8:  "EndDate",
-	9:  "Price",
-	10: "Token",
+	1: "Id",
+	2: "Name",
+	3: "Type",
+	4: "Area",
+	5: "Rating",
+	6: "Duration",
+	7: "StartDate",
+	8: "EndDate",
+	9: "Price",
 }
 
 var fieldIDToName_UpdatePlayResponse = map[int32]string{
@@ -2889,7 +2663,6 @@ var fieldIDToName_UpdatePlayResponse = map[int32]string{
 
 var fieldIDToName_DeletePlayRequest = map[int32]string{
 	1: "Id",
-	2: "Token",
 }
 
 var fieldIDToName_DeletePlayResponse = map[int32]string{
@@ -2909,7 +2682,6 @@ var fieldIDToName_PlayToScheduleResponse = map[int32]string{
 var fieldIDToName_GetAllPlayRequest = map[int32]string{
 	1: "Current",
 	2: "PageSize",
-	3: "Token",
 }
 
 var fieldIDToName_GetAllPlayResponse = map[int32]string{
@@ -2928,7 +2700,6 @@ var fieldIDToName_AddScheduleRequest = map[int32]string{
 	1: "PlayId",
 	2: "StudioId",
 	3: "ShowTime",
-	4: "Token",
 }
 
 var fieldIDToName_AddScheduleResponse = map[int32]string{
@@ -2940,7 +2711,6 @@ var fieldIDToName_UpdateScheduleRequest = map[int32]string{
 	2: "PlayId",
 	3: "StudioId",
 	4: "ShowTime",
-	5: "Token",
 }
 
 var fieldIDToName_UpdateScheduleResponse = map[int32]string{
@@ -2949,7 +2719,6 @@ var fieldIDToName_UpdateScheduleResponse = map[int32]string{
 
 var fieldIDToName_DeleteScheduleRequest = map[int32]string{
 	1: "Id",
-	2: "Token",
 }
 
 var fieldIDToName_DeleteScheduleResponse = map[int32]string{
@@ -2959,7 +2728,6 @@ var fieldIDToName_DeleteScheduleResponse = map[int32]string{
 var fieldIDToName_GetAllScheduleRequest = map[int32]string{
 	1: "Current",
 	2: "PageSize",
-	3: "Token",
 }
 
 var fieldIDToName_Result = map[int32]string{

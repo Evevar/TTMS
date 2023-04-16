@@ -58,6 +58,7 @@ func UserLogin(c *gin.Context) {
 	resp.UserInfo = nil
 	c.JSON(http.StatusOK, resp)
 }
+
 func GetAllUser(c *gin.Context) {
 	req := &user.GetAllUserRequest{}
 	if err := c.Bind(req); err != nil {
@@ -65,9 +66,8 @@ func GetAllUser(c *gin.Context) {
 		return
 	}
 	token := c.Query("Token")
-	fmt.Println("找到token = ", token)
 	//token验证
-	_, err := jwt.ParseToken(req.Token)
+	_, err := jwt.ParseToken(token)
 	if err != nil {
 		c.JSON(http.StatusOK, user.GetAllUserResponse{BaseResp: &user.BaseResp{StatusCode: 1, StatusMessage: err.Error()}})
 		return
@@ -80,62 +80,90 @@ func GetAllUser(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, resp)
 }
+
+type ChangeUserPasswordRequest struct {
+	UserId      int64
+	Password    string
+	NewPassword string
+	Token       string
+}
+
 func ChangeUserPassword(c *gin.Context) {
-	req := &user.ChangeUserPasswordRequest{}
-	if err := c.Bind(req); err != nil {
+	receive := &ChangeUserPasswordRequest{}
+	if err := c.Bind(receive); err != nil {
 		c.JSON(http.StatusOK, "bind error")
 		return
 	}
 	//token验证
-	_, err := jwt.ParseToken(req.Token)
+	_, err := jwt.ParseToken(receive.Token)
 	if err != nil {
 		c.JSON(http.StatusOK, user.ChangeUserPasswordResponse{BaseResp: &user.BaseResp{StatusCode: 1, StatusMessage: err.Error()}})
 		return
 	}
 	//接收resp
+	req := &user.ChangeUserPasswordRequest{
+		UserId:      receive.UserId,
+		Password:    receive.Password,
+		NewPassword: receive.NewPassword,
+	}
 	resp, err := rpc.ChangeUserPassword(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
 		log.Fatalln(err)
 	}
-	jwt.DiscardToken(int(req.UserId), req.Token)
+	jwt.DiscardToken(int(req.UserId), receive.Token)
 	c.JSON(http.StatusOK, resp)
 }
+
+type DeleteUserRequest struct {
+	UserId int64
+	Token  string
+}
+
 func DeleteUser(c *gin.Context) {
-	req := &user.DeleteUserRequest{}
-	if err := c.Bind(req); err != nil {
+	receive := &DeleteUserRequest{}
+	if err := c.Bind(receive); err != nil {
 		c.JSON(http.StatusOK, "bind error")
 		return
 	}
 	//token验证
-	_, err := jwt.ParseToken(req.Token)
+	_, err := jwt.ParseToken(receive.Token)
 	if err != nil {
 		c.JSON(http.StatusOK, user.DeleteUserResponse{BaseResp: &user.BaseResp{StatusCode: 1, StatusMessage: err.Error()}})
 		return
 	}
 	//接收resp
+	req := &user.DeleteUserRequest{
+		UserId: receive.UserId,
+	}
 	resp, err := rpc.DeleteUser(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
 		log.Fatalln(err)
 	}
-	jwt.DiscardToken(int(req.UserId), req.Token)
 	c.JSON(http.StatusOK, resp)
 }
+
+type GetUserInfoRequest struct {
+	Token string
+}
+
 func GetUserInfo(c *gin.Context) {
-	req := &user.GetUserInfoRequest{}
-	if err := c.Bind(req); err != nil {
+	receive := &GetUserInfoRequest{}
+	if err := c.Bind(receive); err != nil {
 		c.JSON(http.StatusOK, "bind error")
 		return
 	}
 	//token验证
-	claim, err := jwt.ParseToken(req.Token)
+	claim, err := jwt.ParseToken(receive.Token)
 	if err != nil {
 		c.JSON(http.StatusOK, user.GetUserInfoResponse{BaseResp: &user.BaseResp{StatusCode: 1, StatusMessage: err.Error()}})
 		return
 	}
 	//接收resp
-	req.UserId = claim.ID
+	req := &user.GetUserInfoRequest{
+		UserId: claim.ID,
+	}
 	resp, err := rpc.GetUserInfo(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
@@ -181,20 +209,32 @@ func GetVerification(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, resp)
 }
+
+type BindEmailRequest struct {
+	Email        string
+	Verification string
+	Token        string
+}
+
 func BindEmail(c *gin.Context) {
-	req := &user.BindEmailRequest{}
-	if err := c.Bind(req); err != nil {
+	receive := &BindEmailRequest{}
+	if err := c.Bind(receive); err != nil {
 		c.JSON(http.StatusOK, "bind error")
 		return
 	}
 	//token验证
-	claim, err := jwt.ParseToken(req.Token)
+	claim, err := jwt.ParseToken(receive.Token)
 	if err != nil {
 		c.JSON(http.StatusOK, user.DeleteUserResponse{BaseResp: &user.BaseResp{StatusCode: 1, StatusMessage: err.Error()}})
 		return
 	}
+	req := &user.BindEmailRequest{
+		Email:        receive.Email,
+		Verification: receive.Verification,
+		UserId:       claim.ID,
+	}
 	var resp *user.BindEmailResponse
-	err = jwt.CheckVerification(req.Email, req.Verification)
+	err = jwt.CheckVerification(receive.Email, receive.Verification)
 	if err != nil {
 		resp = &user.BindEmailResponse{BaseResp: &user.BaseResp{StatusCode: 1, StatusMessage: err.Error()}}
 	} else { //验证码匹配成功

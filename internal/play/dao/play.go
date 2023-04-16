@@ -99,7 +99,7 @@ func GetAllSchedule(ctx context.Context, Current, PageSize int) ([]*play.Schedul
 
 func UpdateSchedule(ctx context.Context, SInfo *play.Schedule) error {
 	tx := DB.Begin()
-	err := tx.Updates(&SInfo).Error
+	err := tx.Where("id = ?", SInfo.Id).Updates(&SInfo).Error
 	if err != nil {
 		tx.Rollback()
 		return err

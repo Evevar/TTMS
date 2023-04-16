@@ -18,7 +18,6 @@ message AddStudioRequest{
   string Name = 1;
   int64 RowsCount = 2;
   int64 ColsCount = 3;
-  string Token = 4;
 }
 message AddStudioResponse{
   BaseResp BaseResp = 1;
@@ -28,7 +27,6 @@ message AddStudioResponse{
 message GetAllStudioRequest{
   int32 Current = 1;//当前页
   int32 PageSize = 2; //一页数据条数
-  string Token = 3;
 }
 message GetAllStudioResponse{
   BaseResp BaseResp = 1;
@@ -38,7 +36,6 @@ message GetAllStudioResponse{
 //获取z指定演出厅信息
 message GetStudioRequest{
   int64 Id = 1;
-  string Token = 2;
 }
 message GetStudioResponse{
   BaseResp BaseResp = 1;
@@ -50,7 +47,6 @@ message UpdateStudioRequest{
   int64 RowsCount = 2;
   int64 ColsCount = 3;
   string Name = 4;
-  string Token = 5;
 }
 message UpdateStudioResponse{
   BaseResp BaseResp = 1;
@@ -59,7 +55,6 @@ message UpdateStudioResponse{
 //删除指定演出厅
 message DeleteStudioRequest{
   int64 Id = 1;
-  string Token = 2;
 }
 message DeleteStudioResponse{
   BaseResp BaseResp = 1;
@@ -78,7 +73,6 @@ message AddSeatRequest{
   int64 Row = 2;
   int64 Col = 3;
   int64 Status = 4;//0-不是座位，1-有座位，9-损坏的座位
-  string Token = 5;
 }
 message AddSeatResponse{
   BaseResp BaseResp = 1;
@@ -89,7 +83,6 @@ message GetAllSeatRequest{
   int64 StudioId = 1;
   int32 Current = 2;//当前页
   int32 PageSize = 3; //一页数据条数
-  string Token = 4;
 }
 message GetAllSeatResponse{
   BaseResp BaseResp = 1;
@@ -102,7 +95,6 @@ message UpdateSeatRequest{
   int64 Row = 2;
   int64 Col = 3;
   int64 Status = 4; //修改后座位的新状态
-  string Token = 5;
 }
 message UpdateSeatResponse{
   BaseResp BaseResp = 1;
@@ -113,7 +105,6 @@ message DeleteSeatRequest{
   int64 StudioId = 1;
   int64 Row = 2;
   int64 Col = 3;
-  string Token = 4;
 }
 message DeleteSeatResponse{
   BaseResp BaseResp = 1;

@@ -129,11 +129,6 @@ func (x *AddStudioRequest) FastRead(buf []byte, _type int8, number int32) (offse
 		if err != nil {
 			goto ReadFieldError
 		}
-	case 4:
-		offset, err = x.fastReadField4(buf, _type)
-		if err != nil {
-			goto ReadFieldError
-		}
 	default:
 		offset, err = fastpb.Skip(buf, _type, number)
 		if err != nil {
@@ -159,11 +154,6 @@ func (x *AddStudioRequest) fastReadField2(buf []byte, _type int8) (offset int, e
 
 func (x *AddStudioRequest) fastReadField3(buf []byte, _type int8) (offset int, err error) {
 	x.ColsCount, offset, err = fastpb.ReadInt64(buf, _type)
-	return offset, err
-}
-
-func (x *AddStudioRequest) fastReadField4(buf []byte, _type int8) (offset int, err error) {
-	x.Token, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
 
@@ -209,11 +199,6 @@ func (x *GetAllStudioRequest) FastRead(buf []byte, _type int8, number int32) (of
 		if err != nil {
 			goto ReadFieldError
 		}
-	case 3:
-		offset, err = x.fastReadField3(buf, _type)
-		if err != nil {
-			goto ReadFieldError
-		}
 	default:
 		offset, err = fastpb.Skip(buf, _type, number)
 		if err != nil {
@@ -234,11 +219,6 @@ func (x *GetAllStudioRequest) fastReadField1(buf []byte, _type int8) (offset int
 
 func (x *GetAllStudioRequest) fastReadField2(buf []byte, _type int8) (offset int, err error) {
 	x.PageSize, offset, err = fastpb.ReadInt32(buf, _type)
-	return offset, err
-}
-
-func (x *GetAllStudioRequest) fastReadField3(buf []byte, _type int8) (offset int, err error) {
-	x.Token, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
 
@@ -294,11 +274,6 @@ func (x *GetStudioRequest) FastRead(buf []byte, _type int8, number int32) (offse
 		if err != nil {
 			goto ReadFieldError
 		}
-	case 2:
-		offset, err = x.fastReadField2(buf, _type)
-		if err != nil {
-			goto ReadFieldError
-		}
 	default:
 		offset, err = fastpb.Skip(buf, _type, number)
 		if err != nil {
@@ -314,11 +289,6 @@ ReadFieldError:
 
 func (x *GetStudioRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
 	x.Id, offset, err = fastpb.ReadInt64(buf, _type)
-	return offset, err
-}
-
-func (x *GetStudioRequest) fastReadField2(buf []byte, _type int8) (offset int, err error) {
-	x.Token, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
 
@@ -389,11 +359,6 @@ func (x *UpdateStudioRequest) FastRead(buf []byte, _type int8, number int32) (of
 		if err != nil {
 			goto ReadFieldError
 		}
-	case 5:
-		offset, err = x.fastReadField5(buf, _type)
-		if err != nil {
-			goto ReadFieldError
-		}
 	default:
 		offset, err = fastpb.Skip(buf, _type, number)
 		if err != nil {
@@ -424,11 +389,6 @@ func (x *UpdateStudioRequest) fastReadField3(buf []byte, _type int8) (offset int
 
 func (x *UpdateStudioRequest) fastReadField4(buf []byte, _type int8) (offset int, err error) {
 	x.Name, offset, err = fastpb.ReadString(buf, _type)
-	return offset, err
-}
-
-func (x *UpdateStudioRequest) fastReadField5(buf []byte, _type int8) (offset int, err error) {
-	x.Token, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
 
@@ -469,11 +429,6 @@ func (x *DeleteStudioRequest) FastRead(buf []byte, _type int8, number int32) (of
 		if err != nil {
 			goto ReadFieldError
 		}
-	case 2:
-		offset, err = x.fastReadField2(buf, _type)
-		if err != nil {
-			goto ReadFieldError
-		}
 	default:
 		offset, err = fastpb.Skip(buf, _type, number)
 		if err != nil {
@@ -489,11 +444,6 @@ ReadFieldError:
 
 func (x *DeleteStudioRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
 	x.Id, offset, err = fastpb.ReadInt64(buf, _type)
-	return offset, err
-}
-
-func (x *DeleteStudioRequest) fastReadField2(buf []byte, _type int8) (offset int, err error) {
-	x.Token, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
 
@@ -614,11 +564,6 @@ func (x *AddSeatRequest) FastRead(buf []byte, _type int8, number int32) (offset 
 		if err != nil {
 			goto ReadFieldError
 		}
-	case 5:
-		offset, err = x.fastReadField5(buf, _type)
-		if err != nil {
-			goto ReadFieldError
-		}
 	default:
 		offset, err = fastpb.Skip(buf, _type, number)
 		if err != nil {
@@ -649,11 +594,6 @@ func (x *AddSeatRequest) fastReadField3(buf []byte, _type int8) (offset int, err
 
 func (x *AddSeatRequest) fastReadField4(buf []byte, _type int8) (offset int, err error) {
 	x.Status, offset, err = fastpb.ReadInt64(buf, _type)
-	return offset, err
-}
-
-func (x *AddSeatRequest) fastReadField5(buf []byte, _type int8) (offset int, err error) {
-	x.Token, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
 
@@ -704,11 +644,6 @@ func (x *GetAllSeatRequest) FastRead(buf []byte, _type int8, number int32) (offs
 		if err != nil {
 			goto ReadFieldError
 		}
-	case 4:
-		offset, err = x.fastReadField4(buf, _type)
-		if err != nil {
-			goto ReadFieldError
-		}
 	default:
 		offset, err = fastpb.Skip(buf, _type, number)
 		if err != nil {
@@ -734,11 +669,6 @@ func (x *GetAllSeatRequest) fastReadField2(buf []byte, _type int8) (offset int, 
 
 func (x *GetAllSeatRequest) fastReadField3(buf []byte, _type int8) (offset int, err error) {
 	x.PageSize, offset, err = fastpb.ReadInt32(buf, _type)
-	return offset, err
-}
-
-func (x *GetAllSeatRequest) fastReadField4(buf []byte, _type int8) (offset int, err error) {
-	x.Token, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
 
@@ -809,11 +739,6 @@ func (x *UpdateSeatRequest) FastRead(buf []byte, _type int8, number int32) (offs
 		if err != nil {
 			goto ReadFieldError
 		}
-	case 5:
-		offset, err = x.fastReadField5(buf, _type)
-		if err != nil {
-			goto ReadFieldError
-		}
 	default:
 		offset, err = fastpb.Skip(buf, _type, number)
 		if err != nil {
@@ -844,11 +769,6 @@ func (x *UpdateSeatRequest) fastReadField3(buf []byte, _type int8) (offset int, 
 
 func (x *UpdateSeatRequest) fastReadField4(buf []byte, _type int8) (offset int, err error) {
 	x.Status, offset, err = fastpb.ReadInt64(buf, _type)
-	return offset, err
-}
-
-func (x *UpdateSeatRequest) fastReadField5(buf []byte, _type int8) (offset int, err error) {
-	x.Token, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
 
@@ -899,11 +819,6 @@ func (x *DeleteSeatRequest) FastRead(buf []byte, _type int8, number int32) (offs
 		if err != nil {
 			goto ReadFieldError
 		}
-	case 4:
-		offset, err = x.fastReadField4(buf, _type)
-		if err != nil {
-			goto ReadFieldError
-		}
 	default:
 		offset, err = fastpb.Skip(buf, _type, number)
 		if err != nil {
@@ -929,11 +844,6 @@ func (x *DeleteSeatRequest) fastReadField2(buf []byte, _type int8) (offset int, 
 
 func (x *DeleteSeatRequest) fastReadField3(buf []byte, _type int8) (offset int, err error) {
 	x.Col, offset, err = fastpb.ReadInt64(buf, _type)
-	return offset, err
-}
-
-func (x *DeleteSeatRequest) fastReadField4(buf []byte, _type int8) (offset int, err error) {
-	x.Token, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
 
@@ -1051,7 +961,6 @@ func (x *AddStudioRequest) FastWrite(buf []byte) (offset int) {
 	offset += x.fastWriteField1(buf[offset:])
 	offset += x.fastWriteField2(buf[offset:])
 	offset += x.fastWriteField3(buf[offset:])
-	offset += x.fastWriteField4(buf[offset:])
 	return offset
 }
 
@@ -1079,14 +988,6 @@ func (x *AddStudioRequest) fastWriteField3(buf []byte) (offset int) {
 	return offset
 }
 
-func (x *AddStudioRequest) fastWriteField4(buf []byte) (offset int) {
-	if x.Token == "" {
-		return offset
-	}
-	offset += fastpb.WriteString(buf[offset:], 4, x.Token)
-	return offset
-}
-
 func (x *AddStudioResponse) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
@@ -1109,7 +1010,6 @@ func (x *GetAllStudioRequest) FastWrite(buf []byte) (offset int) {
 	}
 	offset += x.fastWriteField1(buf[offset:])
 	offset += x.fastWriteField2(buf[offset:])
-	offset += x.fastWriteField3(buf[offset:])
 	return offset
 }
 
@@ -1126,14 +1026,6 @@ func (x *GetAllStudioRequest) fastWriteField2(buf []byte) (offset int) {
 		return offset
 	}
 	offset += fastpb.WriteInt32(buf[offset:], 2, x.PageSize)
-	return offset
-}
-
-func (x *GetAllStudioRequest) fastWriteField3(buf []byte) (offset int) {
-	if x.Token == "" {
-		return offset
-	}
-	offset += fastpb.WriteString(buf[offset:], 3, x.Token)
 	return offset
 }
 
@@ -1169,7 +1061,6 @@ func (x *GetStudioRequest) FastWrite(buf []byte) (offset int) {
 		return offset
 	}
 	offset += x.fastWriteField1(buf[offset:])
-	offset += x.fastWriteField2(buf[offset:])
 	return offset
 }
 
@@ -1178,14 +1069,6 @@ func (x *GetStudioRequest) fastWriteField1(buf []byte) (offset int) {
 		return offset
 	}
 	offset += fastpb.WriteInt64(buf[offset:], 1, x.Id)
-	return offset
-}
-
-func (x *GetStudioRequest) fastWriteField2(buf []byte) (offset int) {
-	if x.Token == "" {
-		return offset
-	}
-	offset += fastpb.WriteString(buf[offset:], 2, x.Token)
 	return offset
 }
 
@@ -1222,7 +1105,6 @@ func (x *UpdateStudioRequest) FastWrite(buf []byte) (offset int) {
 	offset += x.fastWriteField2(buf[offset:])
 	offset += x.fastWriteField3(buf[offset:])
 	offset += x.fastWriteField4(buf[offset:])
-	offset += x.fastWriteField5(buf[offset:])
 	return offset
 }
 
@@ -1258,14 +1140,6 @@ func (x *UpdateStudioRequest) fastWriteField4(buf []byte) (offset int) {
 	return offset
 }
 
-func (x *UpdateStudioRequest) fastWriteField5(buf []byte) (offset int) {
-	if x.Token == "" {
-		return offset
-	}
-	offset += fastpb.WriteString(buf[offset:], 5, x.Token)
-	return offset
-}
-
 func (x *UpdateStudioResponse) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
@@ -1287,7 +1161,6 @@ func (x *DeleteStudioRequest) FastWrite(buf []byte) (offset int) {
 		return offset
 	}
 	offset += x.fastWriteField1(buf[offset:])
-	offset += x.fastWriteField2(buf[offset:])
 	return offset
 }
 
@@ -1296,14 +1169,6 @@ func (x *DeleteStudioRequest) fastWriteField1(buf []byte) (offset int) {
 		return offset
 	}
 	offset += fastpb.WriteInt64(buf[offset:], 1, x.Id)
-	return offset
-}
-
-func (x *DeleteStudioRequest) fastWriteField2(buf []byte) (offset int) {
-	if x.Token == "" {
-		return offset
-	}
-	offset += fastpb.WriteString(buf[offset:], 2, x.Token)
 	return offset
 }
 
@@ -1383,7 +1248,6 @@ func (x *AddSeatRequest) FastWrite(buf []byte) (offset int) {
 	offset += x.fastWriteField2(buf[offset:])
 	offset += x.fastWriteField3(buf[offset:])
 	offset += x.fastWriteField4(buf[offset:])
-	offset += x.fastWriteField5(buf[offset:])
 	return offset
 }
 
@@ -1419,14 +1283,6 @@ func (x *AddSeatRequest) fastWriteField4(buf []byte) (offset int) {
 	return offset
 }
 
-func (x *AddSeatRequest) fastWriteField5(buf []byte) (offset int) {
-	if x.Token == "" {
-		return offset
-	}
-	offset += fastpb.WriteString(buf[offset:], 5, x.Token)
-	return offset
-}
-
 func (x *AddSeatResponse) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
@@ -1450,7 +1306,6 @@ func (x *GetAllSeatRequest) FastWrite(buf []byte) (offset int) {
 	offset += x.fastWriteField1(buf[offset:])
 	offset += x.fastWriteField2(buf[offset:])
 	offset += x.fastWriteField3(buf[offset:])
-	offset += x.fastWriteField4(buf[offset:])
 	return offset
 }
 
@@ -1475,14 +1330,6 @@ func (x *GetAllSeatRequest) fastWriteField3(buf []byte) (offset int) {
 		return offset
 	}
 	offset += fastpb.WriteInt32(buf[offset:], 3, x.PageSize)
-	return offset
-}
-
-func (x *GetAllSeatRequest) fastWriteField4(buf []byte) (offset int) {
-	if x.Token == "" {
-		return offset
-	}
-	offset += fastpb.WriteString(buf[offset:], 4, x.Token)
 	return offset
 }
 
@@ -1521,7 +1368,6 @@ func (x *UpdateSeatRequest) FastWrite(buf []byte) (offset int) {
 	offset += x.fastWriteField2(buf[offset:])
 	offset += x.fastWriteField3(buf[offset:])
 	offset += x.fastWriteField4(buf[offset:])
-	offset += x.fastWriteField5(buf[offset:])
 	return offset
 }
 
@@ -1557,14 +1403,6 @@ func (x *UpdateSeatRequest) fastWriteField4(buf []byte) (offset int) {
 	return offset
 }
 
-func (x *UpdateSeatRequest) fastWriteField5(buf []byte) (offset int) {
-	if x.Token == "" {
-		return offset
-	}
-	offset += fastpb.WriteString(buf[offset:], 5, x.Token)
-	return offset
-}
-
 func (x *UpdateSeatResponse) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
@@ -1588,7 +1426,6 @@ func (x *DeleteSeatRequest) FastWrite(buf []byte) (offset int) {
 	offset += x.fastWriteField1(buf[offset:])
 	offset += x.fastWriteField2(buf[offset:])
 	offset += x.fastWriteField3(buf[offset:])
-	offset += x.fastWriteField4(buf[offset:])
 	return offset
 }
 
@@ -1613,14 +1450,6 @@ func (x *DeleteSeatRequest) fastWriteField3(buf []byte) (offset int) {
 		return offset
 	}
 	offset += fastpb.WriteInt64(buf[offset:], 3, x.Col)
-	return offset
-}
-
-func (x *DeleteSeatRequest) fastWriteField4(buf []byte) (offset int) {
-	if x.Token == "" {
-		return offset
-	}
-	offset += fastpb.WriteString(buf[offset:], 4, x.Token)
 	return offset
 }
 
@@ -1724,7 +1553,6 @@ func (x *AddStudioRequest) Size() (n int) {
 	n += x.sizeField1()
 	n += x.sizeField2()
 	n += x.sizeField3()
-	n += x.sizeField4()
 	return n
 }
 
@@ -1752,14 +1580,6 @@ func (x *AddStudioRequest) sizeField3() (n int) {
 	return n
 }
 
-func (x *AddStudioRequest) sizeField4() (n int) {
-	if x.Token == "" {
-		return n
-	}
-	n += fastpb.SizeString(4, x.Token)
-	return n
-}
-
 func (x *AddStudioResponse) Size() (n int) {
 	if x == nil {
 		return n
@@ -1782,7 +1602,6 @@ func (x *GetAllStudioRequest) Size() (n int) {
 	}
 	n += x.sizeField1()
 	n += x.sizeField2()
-	n += x.sizeField3()
 	return n
 }
 
@@ -1799,14 +1618,6 @@ func (x *GetAllStudioRequest) sizeField2() (n int) {
 		return n
 	}
 	n += fastpb.SizeInt32(2, x.PageSize)
-	return n
-}
-
-func (x *GetAllStudioRequest) sizeField3() (n int) {
-	if x.Token == "" {
-		return n
-	}
-	n += fastpb.SizeString(3, x.Token)
 	return n
 }
 
@@ -1842,7 +1653,6 @@ func (x *GetStudioRequest) Size() (n int) {
 		return n
 	}
 	n += x.sizeField1()
-	n += x.sizeField2()
 	return n
 }
 
@@ -1851,14 +1661,6 @@ func (x *GetStudioRequest) sizeField1() (n int) {
 		return n
 	}
 	n += fastpb.SizeInt64(1, x.Id)
-	return n
-}
-
-func (x *GetStudioRequest) sizeField2() (n int) {
-	if x.Token == "" {
-		return n
-	}
-	n += fastpb.SizeString(2, x.Token)
 	return n
 }
 
@@ -1895,7 +1697,6 @@ func (x *UpdateStudioRequest) Size() (n int) {
 	n += x.sizeField2()
 	n += x.sizeField3()
 	n += x.sizeField4()
-	n += x.sizeField5()
 	return n
 }
 
@@ -1931,14 +1732,6 @@ func (x *UpdateStudioRequest) sizeField4() (n int) {
 	return n
 }
 
-func (x *UpdateStudioRequest) sizeField5() (n int) {
-	if x.Token == "" {
-		return n
-	}
-	n += fastpb.SizeString(5, x.Token)
-	return n
-}
-
 func (x *UpdateStudioResponse) Size() (n int) {
 	if x == nil {
 		return n
@@ -1960,7 +1753,6 @@ func (x *DeleteStudioRequest) Size() (n int) {
 		return n
 	}
 	n += x.sizeField1()
-	n += x.sizeField2()
 	return n
 }
 
@@ -1969,14 +1761,6 @@ func (x *DeleteStudioRequest) sizeField1() (n int) {
 		return n
 	}
 	n += fastpb.SizeInt64(1, x.Id)
-	return n
-}
-
-func (x *DeleteStudioRequest) sizeField2() (n int) {
-	if x.Token == "" {
-		return n
-	}
-	n += fastpb.SizeString(2, x.Token)
 	return n
 }
 
@@ -2056,7 +1840,6 @@ func (x *AddSeatRequest) Size() (n int) {
 	n += x.sizeField2()
 	n += x.sizeField3()
 	n += x.sizeField4()
-	n += x.sizeField5()
 	return n
 }
 
@@ -2092,14 +1875,6 @@ func (x *AddSeatRequest) sizeField4() (n int) {
 	return n
 }
 
-func (x *AddSeatRequest) sizeField5() (n int) {
-	if x.Token == "" {
-		return n
-	}
-	n += fastpb.SizeString(5, x.Token)
-	return n
-}
-
 func (x *AddSeatResponse) Size() (n int) {
 	if x == nil {
 		return n
@@ -2123,7 +1898,6 @@ func (x *GetAllSeatRequest) Size() (n int) {
 	n += x.sizeField1()
 	n += x.sizeField2()
 	n += x.sizeField3()
-	n += x.sizeField4()
 	return n
 }
 
@@ -2148,14 +1922,6 @@ func (x *GetAllSeatRequest) sizeField3() (n int) {
 		return n
 	}
 	n += fastpb.SizeInt32(3, x.PageSize)
-	return n
-}
-
-func (x *GetAllSeatRequest) sizeField4() (n int) {
-	if x.Token == "" {
-		return n
-	}
-	n += fastpb.SizeString(4, x.Token)
 	return n
 }
 
@@ -2194,7 +1960,6 @@ func (x *UpdateSeatRequest) Size() (n int) {
 	n += x.sizeField2()
 	n += x.sizeField3()
 	n += x.sizeField4()
-	n += x.sizeField5()
 	return n
 }
 
@@ -2230,14 +1995,6 @@ func (x *UpdateSeatRequest) sizeField4() (n int) {
 	return n
 }
 
-func (x *UpdateSeatRequest) sizeField5() (n int) {
-	if x.Token == "" {
-		return n
-	}
-	n += fastpb.SizeString(5, x.Token)
-	return n
-}
-
 func (x *UpdateSeatResponse) Size() (n int) {
 	if x == nil {
 		return n
@@ -2261,7 +2018,6 @@ func (x *DeleteSeatRequest) Size() (n int) {
 	n += x.sizeField1()
 	n += x.sizeField2()
 	n += x.sizeField3()
-	n += x.sizeField4()
 	return n
 }
 
@@ -2286,14 +2042,6 @@ func (x *DeleteSeatRequest) sizeField3() (n int) {
 		return n
 	}
 	n += fastpb.SizeInt64(3, x.Col)
-	return n
-}
-
-func (x *DeleteSeatRequest) sizeField4() (n int) {
-	if x.Token == "" {
-		return n
-	}
-	n += fastpb.SizeString(4, x.Token)
 	return n
 }
 
@@ -2330,7 +2078,6 @@ var fieldIDToName_AddStudioRequest = map[int32]string{
 	1: "Name",
 	2: "RowsCount",
 	3: "ColsCount",
-	4: "Token",
 }
 
 var fieldIDToName_AddStudioResponse = map[int32]string{
@@ -2340,7 +2087,6 @@ var fieldIDToName_AddStudioResponse = map[int32]string{
 var fieldIDToName_GetAllStudioRequest = map[int32]string{
 	1: "Current",
 	2: "PageSize",
-	3: "Token",
 }
 
 var fieldIDToName_GetAllStudioResponse = map[int32]string{
@@ -2350,7 +2096,6 @@ var fieldIDToName_GetAllStudioResponse = map[int32]string{
 
 var fieldIDToName_GetStudioRequest = map[int32]string{
 	1: "Id",
-	2: "Token",
 }
 
 var fieldIDToName_GetStudioResponse = map[int32]string{
@@ -2363,7 +2108,6 @@ var fieldIDToName_UpdateStudioRequest = map[int32]string{
 	2: "RowsCount",
 	3: "ColsCount",
 	4: "Name",
-	5: "Token",
 }
 
 var fieldIDToName_UpdateStudioResponse = map[int32]string{
@@ -2372,7 +2116,6 @@ var fieldIDToName_UpdateStudioResponse = map[int32]string{
 
 var fieldIDToName_DeleteStudioRequest = map[int32]string{
 	1: "Id",
-	2: "Token",
 }
 
 var fieldIDToName_DeleteStudioResponse = map[int32]string{
@@ -2392,7 +2135,6 @@ var fieldIDToName_AddSeatRequest = map[int32]string{
 	2: "Row",
 	3: "Col",
 	4: "Status",
-	5: "Token",
 }
 
 var fieldIDToName_AddSeatResponse = map[int32]string{
@@ -2403,7 +2145,6 @@ var fieldIDToName_GetAllSeatRequest = map[int32]string{
 	1: "StudioId",
 	2: "Current",
 	3: "PageSize",
-	4: "Token",
 }
 
 var fieldIDToName_GetAllSeatResponse = map[int32]string{
@@ -2416,7 +2157,6 @@ var fieldIDToName_UpdateSeatRequest = map[int32]string{
 	2: "Row",
 	3: "Col",
 	4: "Status",
-	5: "Token",
 }
 
 var fieldIDToName_UpdateSeatResponse = map[int32]string{
@@ -2427,7 +2167,6 @@ var fieldIDToName_DeleteSeatRequest = map[int32]string{
 	1: "StudioId",
 	2: "Row",
 	3: "Col",
-	4: "Token",
 }
 
 var fieldIDToName_DeleteSeatResponse = map[int32]string{
