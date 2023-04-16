@@ -22,8 +22,8 @@ func InitOrderRPC() {
 
 	c, err := orderservice.NewClient(
 		consts.OrderServiceName,
-		//client.WithMiddleware(middleware.CommonMiddleware),
-		//client.WithInstanceMW(middleware.ClientMiddleware),
+		//client.WithMiddleware(mw.CommonMiddleware),
+		//client.WithInstanceMW(mw.ClientMiddleware),
 		client.WithMuxConnection(1),                       // mux
 		client.WithRPCTimeout(3*time.Second),              // rpc timeout
 		client.WithConnectTimeout(50*time.Millisecond),    // conn timeout
@@ -46,6 +46,13 @@ func GetAllOrder(ctx context.Context, req *order.GetAllOrderRequest) (*order.Get
 }
 func GetOrderAnalysis(ctx context.Context, req *order.GetOrderAnalysisRequest) (*order.GetOrderAnalysisResponse, error) {
 	resp, err := orderClient.GetOrderAnalysis(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return resp, err
+}
+func CommitOrder(ctx context.Context, req *order.CommitOrderRequest) (*order.CommitOrderResponse, error) {
+	resp, err := orderClient.CommitOrder(ctx, req)
 	if err != nil {
 		return nil, err
 	}

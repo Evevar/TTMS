@@ -1,54 +1,16 @@
 package service
 
 import (
-	"TTMS/configs/consts"
 	"TTMS/internal/ticket/dao"
+	"TTMS/internal/ticket/nats"
 	"TTMS/internal/ticket/redis"
 	"TTMS/kitex_gen/ticket"
 	"context"
 	"errors"
 	"fmt"
-	"github.com/nats-io/nats.go"
 	"log"
 	"time"
 )
-
-var nc *nats.Conn
-var js nats.JetStreamContext
-
-func NatsInit() {
-	// 连接到nats的服务器
-	conn, err := nats.Connect(consts.NatsAddress)
-	nc = conn
-	if err != nil {
-		log.Panic("1", err)
-	}
-
-	// 初始化JetStream功能
-	js, err = conn.JetStream(nats.Context(context.Background()))
-	if err != nil {
-		log.Panic("2", err)
-	}
-	//streamName, subject, subject1 := "stream", "order.buy", "order.return"
-	streamName, subject, subject1 := "stream", "order.buy", "order.return"
-	// 判断Stream是否存在，如果不存在，那么需要创建这个Stream，否则会导致pub/sub失败
-	stream, err := js.StreamInfo(streamName)
-	if err != nil {
-		log.Println("3", err) // 如果不存在，这里会有报错
-	}
-	if stream == nil {
-		log.Printf("creating stream %q and subject %q", streamName, subject)
-		_, err = js.AddStream(&nats.StreamConfig{
-			Name:     streamName,
-			Subjects: []string{fmt.Sprintf("%s.%s", streamName, subject), fmt.Sprintf("%s.%s", streamName, subject1)},
-			MaxAge:   3 * 24 * time.Hour,
-		})
-		if err != nil {
-			log.Panicln("4", err)
-		}
-	}
-	//select {}
-}
 
 func BatchAddTicketService(ctx context.Context, req *ticket.BatchAddTicketRequest) (resp *ticket.BatchAddTicketResponse, err error) {
 	//fmt.Println(req.ScheduleId, req.Price, req.PlayName, req.StudioId, req.List)
@@ -112,10 +74,9 @@ func BuyTicketService(ctx context.Context, req *ticket.BuyTicketRequest) (resp *
 		return resp, err
 	}
 	//发送创建订单消息
-	fmt.Println(2, " ", nc, " ", nc.IsClosed())
 	t := time.Now().Format("2006-01-02 15:04:05")
 	fmt.Println("time = ", t)
-	_, err = js.Publish("stream.order.buy",
+	_, err = nats.JS.Publish("stream.order.buy",
 		[]byte(fmt.Sprintf("%d;%s;%s;%s", req.UserId, key, t,
 			redis.GetTicketPrice(ctx, fmt.Sprintf("%s;price", key)))))
 	fmt.Println(err)
@@ -140,8 +101,7 @@ func ReturnTicketService(ctx context.Context, req *ticket.ReturnTicketRequest) (
 		return resp, nil
 	}
 	//发送创建订单消息
-	fmt.Println(2, " ", nc, " ", nc.IsClosed())
-	_, err = js.Publish("stream.order.return",
+	_, err = nats.JS.Publish("stream.order.return",
 		[]byte(fmt.Sprintf("%d;%s;%s", req.UserId, key, time.Now().Format("2006-01-02 15:04:05"))))
 	fmt.Println(err)
 	if err != nil {

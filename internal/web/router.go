@@ -46,6 +46,7 @@ func InitRouter() *gin.Engine {
 	baseGroup.POST("/ticket/buy/", api.BuyTicket)
 	baseGroup.POST("/ticket/return/", api.ReturnTicket)
 
+	baseGroup.POST("/order/commit/", api.CommitOrder)
 	baseGroup.GET("/order/all/", api.GetAllOrder)
 	baseGroup.GET("/order/analysis/", api.GetOrderAnalysis)
 	return r

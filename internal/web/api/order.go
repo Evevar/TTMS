@@ -67,3 +67,37 @@ func GetOrderAnalysis(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, resp)
 }
+
+type CommitOrderRequest struct {
+	UserId     int64
+	ScheduleId int64
+	SeatRow    int32
+	SeatCol    int32
+	Token      string
+}
+
+func CommitOrder(c *gin.Context) {
+	receive := &CommitOrderRequest{}
+	if err := c.Bind(receive); err != nil {
+		log.Println("err = ", err, " receive = ", receive)
+		c.JSON(http.StatusOK, "bind error")
+		return
+	}
+	_, err := jwt.ParseToken(receive.Token)
+	if err != nil {
+		c.JSON(http.StatusOK, order.CommitOrderResponse{BaseResp: &order.BaseResp{StatusCode: 1, StatusMessage: err.Error()}})
+		return
+	}
+	req := &order.CommitOrderRequest{
+		UserId:     receive.UserId,
+		ScheduleId: receive.ScheduleId,
+		SeatRow:    receive.SeatRow,
+		SeatCol:    receive.SeatCol,
+	}
+	resp, err := rpc.CommitOrder(context.Background(), req)
+	if err != nil {
+		c.JSON(http.StatusServiceUnavailable, err)
+		log.Fatalln(err)
+	}
+	c.JSON(http.StatusOK, resp)
+}

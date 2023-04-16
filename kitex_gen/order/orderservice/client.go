@@ -11,11 +11,9 @@ import (
 
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
-	AddOrder(ctx context.Context, Req *order.AddOrderRequest, callOptions ...callopt.Option) (r *order.AddOrderResponse, err error)
-	DeleteOrder(ctx context.Context, Req *order.DeleteOrderRequest, callOptions ...callopt.Option) (r *order.DeleteOrderResponse, err error)
-	UpdateOrder(ctx context.Context, Req *order.UpdateOrderRequest, callOptions ...callopt.Option) (r *order.UpdateOrderResponse, err error)
 	GetAllOrder(ctx context.Context, Req *order.GetAllOrderRequest, callOptions ...callopt.Option) (r *order.GetAllOrderResponse, err error)
 	GetOrderAnalysis(ctx context.Context, Req *order.GetOrderAnalysisRequest, callOptions ...callopt.Option) (r *order.GetOrderAnalysisResponse, err error)
+	CommitOrder(ctx context.Context, Req *order.CommitOrderRequest, callOptions ...callopt.Option) (r *order.CommitOrderResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -47,21 +45,6 @@ type kOrderServiceClient struct {
 	*kClient
 }
 
-func (p *kOrderServiceClient) AddOrder(ctx context.Context, Req *order.AddOrderRequest, callOptions ...callopt.Option) (r *order.AddOrderResponse, err error) {
-	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.AddOrder(ctx, Req)
-}
-
-func (p *kOrderServiceClient) DeleteOrder(ctx context.Context, Req *order.DeleteOrderRequest, callOptions ...callopt.Option) (r *order.DeleteOrderResponse, err error) {
-	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.DeleteOrder(ctx, Req)
-}
-
-func (p *kOrderServiceClient) UpdateOrder(ctx context.Context, Req *order.UpdateOrderRequest, callOptions ...callopt.Option) (r *order.UpdateOrderResponse, err error) {
-	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.UpdateOrder(ctx, Req)
-}
-
 func (p *kOrderServiceClient) GetAllOrder(ctx context.Context, Req *order.GetAllOrderRequest, callOptions ...callopt.Option) (r *order.GetAllOrderResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.GetAllOrder(ctx, Req)
@@ -70,4 +53,9 @@ func (p *kOrderServiceClient) GetAllOrder(ctx context.Context, Req *order.GetAll
 func (p *kOrderServiceClient) GetOrderAnalysis(ctx context.Context, Req *order.GetOrderAnalysisRequest, callOptions ...callopt.Option) (r *order.GetOrderAnalysisResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.GetOrderAnalysis(ctx, Req)
+}
+
+func (p *kOrderServiceClient) CommitOrder(ctx context.Context, Req *order.CommitOrderRequest, callOptions ...callopt.Option) (r *order.CommitOrderResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.CommitOrder(ctx, Req)
 }

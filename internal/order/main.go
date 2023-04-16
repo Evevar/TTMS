@@ -3,6 +3,7 @@ package main
 import (
 	"TTMS/configs/consts"
 	"TTMS/internal/order/dao"
+	"TTMS/internal/order/mw"
 	"TTMS/internal/order/service"
 	order "TTMS/kitex_gen/order/orderservice"
 	"github.com/cloudwego/kitex/pkg/klog"
@@ -32,8 +33,9 @@ func main() {
 		server.WithRegistry(r),                                             // registry
 	)
 	dao.Init()
+	mw.InitRedis()
 	service.InitPlayRPC()
-	go service.NatsInit()
+	go mw.InitNats()
 	err = svr.Run()
 	if err != nil {
 		klog.Fatal(err)

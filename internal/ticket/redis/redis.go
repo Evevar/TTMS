@@ -58,6 +58,9 @@ func BuyTicket(ctx context.Context, key string) error {
 func ReturnTicket(ctx context.Context, key string) error {
 	return redisClient.Set(ctx, key, "0", 0).Err()
 }
+func CommitTicket(ctx context.Context, key string) error {
+	return redisClient.Set(ctx, key, "1", 0).Err()
+}
 func GetTicketPrice(ctx context.Context, key string) string {
 	price, err := redisClient.Get(ctx, key).Result()
 	if err != nil {

@@ -3,8 +3,8 @@ package main
 import (
 	"TTMS/configs/consts"
 	"TTMS/internal/ticket/dao"
+	"TTMS/internal/ticket/nats"
 	"TTMS/internal/ticket/redis"
-	"TTMS/internal/ticket/service"
 	ticket "TTMS/kitex_gen/ticket/ticketservice"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/limit"
@@ -33,7 +33,7 @@ func main() {
 		server.WithRegistry(r),                                             // registry
 	)
 	dao.Init()
-	service.NatsInit()
+	go nats.Init()
 	redis.Init()
 	err = svr.Run()
 	if err != nil {

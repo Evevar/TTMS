@@ -29,8 +29,8 @@ func InitStudioRPC() {
 
 	c, err := studioservice.NewClient(
 		consts.StudioServiceName,
-		//client.WithMiddleware(middleware.CommonMiddleware),
-		//client.WithInstanceMW(middleware.ClientMiddleware),
+		//client.WithMiddleware(mw.CommonMiddleware),
+		//client.WithInstanceMW(mw.ClientMiddleware),
 		client.WithMuxConnection(1),                       // mux
 		client.WithRPCTimeout(3*time.Second),              // rpc timeout
 		client.WithConnectTimeout(50*time.Millisecond),    // conn timeout

@@ -25,15 +25,24 @@ func GetAllOrder(ctx context.Context, UserId int) ([]*order.Order, error) {
 	return orders, err
 }
 
-func GetOrderAnalysis(ctx context.Context, ScheduleIdList []int64) (int64, error) {
-	row := DB.WithContext(ctx).Model(&order.Order{}).Select("count(value)").Where("schedule_id in ?", ScheduleIdList).Row()
-	err := row.Err()
+func GetOrderAnalysis(ctx context.Context, ScheduleIdList []int64) (int64, int64, error) { //count,sum
+	rows, err := DB.WithContext(ctx).Model(&order.Order{}).Select("count(id),sum(value)").Where("schedule_id in ?", ScheduleIdList).Rows()
 	if err != nil && strings.EqualFold(err.Error(), sql.ErrNoRows.Error()) {
 		log.Println(err)
 		log.Println(sql.ErrNoRows)
-		return 0, nil
+		return 0, 0, nil
 	}
-	var ans int64
-	err = row.Scan(&ans)
-	return ans, err
+	rows.Next()
+	var ans1, ans2 int64
+	err = rows.Scan(&ans1, &ans2)
+	if err != nil {
+		log.Println(err)
+	}
+	return ans1, ans2, err
+}
+func DeleteOrder(ctx context.Context, userId, scheduleId, seatRow, seatCol int) error {
+	o := order.Order{}
+	err := DB.WithContext(ctx).Where("user_id = ? and schedule_id = ? and seat_row = ? and seat_col = ?", userId, scheduleId, seatRow, seatCol).Delete(&o).Error
+	log.Println(&o)
+	return err
 }

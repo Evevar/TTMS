@@ -1,5 +1,7 @@
 package consts
 
+import "time"
+
 const (
 	EtcdAddress       = "127.0.0.1:2379"
 	NatsAddress       = "nats://127.0.0.1:4222"
@@ -11,4 +13,5 @@ const (
 	MySQLDefaultDSN   = "TTMS:TTMS@tcp(localhost:3306)/TTMS?charset=utf8mb4&parseTime=True"
 	WebServerPort     = "8080"
 	RedisPassword     = "redis"
+	OrderDelayTime    = time.Minute * 1
 )

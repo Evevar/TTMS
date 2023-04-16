@@ -26,8 +26,8 @@ func main() {
 	}
 	svr := user.NewServer(new(UserServiceImpl),
 		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: consts.UserServiceName}), // server name
-		//server.WithMiddleware(middleware.CommonMiddleware),                                          // middleWare
-		//server.WithMiddleware(middleware.ServerMiddleware),
+		//server.WithMiddleware(mw.CommonMiddleware),                                          // middleWare
+		//server.WithMiddleware(mw.ServerMiddleware),
 		server.WithServiceAddr(addr),                                       // address
 		server.WithLimit(&limit.Option{MaxConnections: 1000, MaxQPS: 100}), // limit
 		server.WithMuxTransport(),                                          // 开启多路复用

@@ -124,6 +124,7 @@ func UpdateSchedule(ctx context.Context, SInfo *play.Schedule) error {
 	tx.Commit()
 	return nil
 }
+
 func DeleteSchedule(ctx context.Context, id int64) error {
 	s := play.Schedule{}
 	DB.WithContext(ctx).Where("id  = ?", id).Find(&s)
@@ -133,6 +134,7 @@ func DeleteSchedule(ctx context.Context, id int64) error {
 		return errors.New("该演出计划不存在")
 	}
 }
+
 func PlayToSchedule(ctx context.Context, id int64) (*play.Play, []int64, error) {
 	p := play.Play{}
 	err := DB.WithContext(ctx).Where("id = ?", id).Find(&p).Error

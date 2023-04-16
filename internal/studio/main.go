@@ -25,8 +25,8 @@ func main() {
 	}
 	svr := studio.NewServer(new(StudioServiceImpl),
 		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: consts.StudioServiceName}), // server name
-		//server.WithMiddleware(middleware.CommonMiddleware),                                          // middleWare
-		//server.WithMiddleware(middleware.ServerMiddleware),
+		//server.WithMiddleware(mw.CommonMiddleware),                                          // middleWare
+		//server.WithMiddleware(mw.ServerMiddleware),
 		server.WithServiceAddr(addr),                                       // address
 		server.WithLimit(&limit.Option{MaxConnections: 1000, MaxQPS: 100}), // limit
 		server.WithMuxTransport(),                                          // Multiplex

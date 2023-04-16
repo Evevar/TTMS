@@ -76,7 +76,6 @@ type BuyTicketRequest struct {
 	ScheduleId int64
 	SeatRow    int32
 	SeatCol    int32
-	UserId     int64
 	Token      string
 }
 
@@ -87,7 +86,7 @@ func BuyTicket(c *gin.Context) {
 		c.JSON(http.StatusOK, "bind error")
 		return
 	}
-	_, err := jwt.ParseToken(receive.Token)
+	claim, err := jwt.ParseToken(receive.Token)
 	if err != nil {
 		c.JSON(http.StatusOK, ticket.BuyTicketResponse{BaseResp: &ticket.BaseResp{StatusCode: 1, StatusMessage: err.Error()}})
 		return
@@ -96,7 +95,7 @@ func BuyTicket(c *gin.Context) {
 		ScheduleId: receive.ScheduleId,
 		SeatRow:    receive.SeatRow,
 		SeatCol:    receive.SeatCol,
-		UserId:     receive.UserId,
+		UserId:     claim.ID,
 	}
 	resp, err := rpc.BuyTicket(context.Background(), req)
 	if err != nil {
