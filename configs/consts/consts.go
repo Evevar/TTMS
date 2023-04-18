@@ -14,4 +14,5 @@ const (
 	WebServerPort     = "8080"
 	RedisPassword     = "redis"
 	OrderDelayTime    = time.Minute * 1
+	RedisLockTimeOut  = time.Second * 5
 )

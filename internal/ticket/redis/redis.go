@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"github.com/redis/go-redis/v9"
 	"log"
+	"time"
 )
 
 var redisClient *redis.Client
@@ -22,20 +23,7 @@ func Init() {
 	if err != nil {
 		panic(err)
 	}
-}
-
-func TicketIsExist(key string) (bool, error) {
-	fmt.Println("key = ", key)
-	value, err := redisClient.Get(context.Background(), key).Result()
-	fmt.Println("value = ", value, " err = ", err)
-	if err == redis.Nil {
-		return false, errors.New("票信息错误，不存在该票")
-	}
-	if value == "0" { //0-待售（未被预定）
-		return true, nil
-	}
-	//票已经被抢
-	return false, errors.New("票已经被抢")
+	go LockRenewal()
 }
 
 // InitAllTicket 将所有票加载到redis缓存中
@@ -52,6 +40,69 @@ func InitAllTicket(ctx context.Context) error {
 	}
 	return nil
 }
+
+// AddTicket 添加票缓存
+func AddTicket(key string, price int32) {
+	ctx := context.Background()
+	redisClient.Set(ctx, key, 0, 0)
+	redisClient.Set(ctx, fmt.Sprintf("%s;price", key), price, 0)
+}
+
+// AcquireLock 分布式锁，加锁
+func AcquireLock(lockKey string) bool {
+	//result, err := redis.String(conn.Do("SET", lockKey, lockValue, "NX", "EX", lockTimeout))
+	result, err := redisClient.SetNX(context.Background(), lockKey, 1, time.Duration(consts.RedisLockTimeOut)).Result()
+	if err != nil || !result {
+		return false
+	}
+	return true
+}
+
+// ReleaseLock 分布式锁，释放锁
+func ReleaseLock(lockKey string) bool {
+	result, err := redisClient.Del(context.Background(), lockKey).Result()
+	if err != nil || result != 1 {
+		return false
+	}
+	return true
+}
+
+// LockRenewal 为分布式锁续期
+func LockRenewal() {
+	var cursor uint64 = 0
+	ctx := context.Background()
+	for {
+		keys, next, err := redisClient.Scan(ctx, cursor, "lock;*", 10000).Result()
+		if err != nil {
+			log.Println(err)
+		}
+		cursor = next
+		for _, key := range keys {
+			d, err := redisClient.TTL(ctx, key).Result()
+			if err != nil {
+				log.Println(err)
+			}
+			if d < 2*time.Second { //锁过期时间不足2s时，对锁进行续期
+				redisClient.Expire(ctx, key, consts.RedisLockTimeOut)
+			}
+		}
+	}
+
+}
+func TicketIsExist(key string) (bool, error) {
+	fmt.Println("key = ", key)
+	value, err := redisClient.Get(context.Background(), key).Result()
+	fmt.Println("value = ", value, " err = ", err)
+	if err == redis.Nil {
+		return false, errors.New("票信息错误，不存在该票")
+	}
+	if value == "0" { //0-待售（未被预定）
+		return true, nil
+	}
+	//票已经被抢
+	return false, errors.New("票已经被抢")
+}
+
 func BuyTicket(ctx context.Context, key string) error {
 	return redisClient.Set(ctx, key, "9", 0).Err()
 }

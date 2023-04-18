@@ -15,6 +15,9 @@ import (
 func BatchAddTicketService(ctx context.Context, req *ticket.BatchAddTicketRequest) (resp *ticket.BatchAddTicketResponse, err error) {
 	//fmt.Println(req.ScheduleId, req.Price, req.PlayName, req.StudioId, req.List)
 	err = dao.BatchAddTicket(ctx, req.ScheduleId, req.Price, req.PlayName, req.StudioId, req.List)
+	for _, s := range req.List {
+		redis.AddTicket(fmt.Sprintf("%d;%d;%d", req.ScheduleId, s.Row, s.Col), req.Price)
+	}
 	resp = &ticket.BatchAddTicketResponse{BaseResp: &ticket.BaseResp{}}
 	if err != nil {
 		resp.BaseResp.StatusCode = 1
@@ -64,13 +67,18 @@ func BuyTicketService(ctx context.Context, req *ticket.BuyTicketRequest) (resp *
 		resp.BaseResp.StatusMessage = errors.New("票已经被抢").Error()
 		return resp, nil
 	}
+	delay := time.Microsecond
+	for !redis.AcquireLock(fmt.Sprintf("lock;%s", key)) { //没有抢到分布式锁，就一直循环
+		time.Sleep(delay)
+		delay *= 2
+	}
 	//成功买到票
-	//fmt.Println(1, " ", nc, " ", nc.IsClosed())
 	//暂时不改变票的状态
 	err = redis.BuyTicket(ctx, key)
 	if err != nil {
 		resp.BaseResp.StatusCode = 1
 		resp.BaseResp.StatusMessage = err.Error()
+		redis.ReleaseLock(fmt.Sprintf("lock;%s", key)) //释放锁
 		return resp, err
 	}
 	//发送创建订单消息
@@ -88,6 +96,7 @@ func BuyTicketService(ctx context.Context, req *ticket.BuyTicketRequest) (resp *
 		resp.BaseResp.StatusMessage = "success"
 	}
 	go dao.BuyTicket(ctx, int(req.ScheduleId), int(req.SeatRow), int(req.SeatCol))
+	redis.ReleaseLock(fmt.Sprintf("lock;%s", key)) //释放锁
 	return resp, nil
 }
 
