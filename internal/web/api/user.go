@@ -15,17 +15,36 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type CreateUserRequest struct {
+	Type     int32
+	Name     string
+	Password string
+	Email    string
+	Token    string
+}
+
 func CreateUser(c *gin.Context) {
-	req := &user.CreateUserRequest{}
-	if err := c.Bind(req); err != nil {
+	receive := &CreateUserRequest{}
+	if err := c.Bind(receive); err != nil {
 		c.JSON(http.StatusOK, "bind error")
 		return
 	}
-	//_, err := jwt.ParseToken(req.Token)
-	//if err != nil {
-	//	c.JSON(http.StatusOK, user.CreateUserResponse{BaseResp: &user.BaseResp{StatusCode: 1, StatusMessage: err.Error()}})
-	//	return
-	//}
+	req := &user.CreateUserRequest{
+		Name:     receive.Name,
+		Type:     receive.Type,
+		Password: receive.Password,
+		Email:    receive.Email,
+	}
+	if receive.Token == "" { //用户注册
+		req.Type = 0
+	} else { //前端完成之后，使该接口在创建员工时限制权限
+		//_, err := jwt.ParseToken(req.Token)
+		//if err != nil {
+		//	c.JSON(http.StatusOK, user.CreateUserResponse{BaseResp: &user.BaseResp{StatusCode: 1, StatusMessage: err.Error()}})
+		//	return
+		//}
+	}
+
 	fmt.Println(req)
 	resp, err := rpc.CreateUser(context.Background(), req)
 	if err != nil {
