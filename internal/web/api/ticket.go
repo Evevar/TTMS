@@ -106,7 +106,6 @@ func BuyTicket(c *gin.Context) {
 }
 
 type ReturnTicketRequest struct {
-	UserId     int64
 	ScheduleId int64
 	SeatRow    int32
 	SeatCol    int32
@@ -120,13 +119,13 @@ func ReturnTicket(c *gin.Context) {
 		c.JSON(http.StatusOK, "bind error")
 		return
 	}
-	_, err := jwt.ParseToken(receive.Token)
+	claim, err := jwt.ParseToken(receive.Token)
 	if err != nil {
 		c.JSON(http.StatusOK, ticket.ReturnTicketResponse{BaseResp: &ticket.BaseResp{StatusCode: 1, StatusMessage: err.Error()}})
 		return
 	}
 	req := &ticket.ReturnTicketRequest{
-		UserId:     receive.UserId,
+		UserId:     claim.ID,
 		ScheduleId: receive.ScheduleId,
 		SeatRow:    receive.SeatRow,
 		SeatCol:    receive.SeatCol,

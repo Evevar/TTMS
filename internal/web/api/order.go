@@ -69,7 +69,6 @@ func GetOrderAnalysis(c *gin.Context) {
 }
 
 type CommitOrderRequest struct {
-	UserId     int64
 	ScheduleId int64
 	SeatRow    int32
 	SeatCol    int32
@@ -83,13 +82,13 @@ func CommitOrder(c *gin.Context) {
 		c.JSON(http.StatusOK, "bind error")
 		return
 	}
-	_, err := jwt.ParseToken(receive.Token)
+	claim, err := jwt.ParseToken(receive.Token)
 	if err != nil {
 		c.JSON(http.StatusOK, order.CommitOrderResponse{BaseResp: &order.BaseResp{StatusCode: 1, StatusMessage: err.Error()}})
 		return
 	}
 	req := &order.CommitOrderRequest{
-		UserId:     receive.UserId,
+		UserId:     claim.ID,
 		ScheduleId: receive.ScheduleId,
 		SeatRow:    receive.SeatRow,
 		SeatCol:    receive.SeatCol,
