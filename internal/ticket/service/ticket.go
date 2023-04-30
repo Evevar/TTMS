@@ -67,8 +67,8 @@ func BuyTicketService(ctx context.Context, req *ticket.BuyTicketRequest) (resp *
 		resp.BaseResp.StatusMessage = errors.New("票已经被抢").Error()
 		return resp, nil
 	}
-	delay := time.Microsecond
-	for !redis.AcquireLock(fmt.Sprintf("lock;%s", key)) { //没有抢到分布式锁，就一直循环
+	delay := time.Millisecond
+	for !redis.AcquireLock(fmt.Sprintf("lock;%s", key)) { //没有抢到分布式锁，就一直循环,第一次重试时间为1毫秒
 		time.Sleep(delay)
 		delay *= 2
 	}
