@@ -10,9 +10,9 @@ const (
 	PlayServiceName   = "playSvr"
 	TicketServiceName = "ticketSvr"
 	OrderServiceName  = "orderSvr"
-	MySQLDefaultDSN   = "TTMS:TTMS@tcp(localhost:3306)/TTMS?charset=utf8mb4&parseTime=True"
+	MySQLDefaultDSN   = "TTMS:TTMS@tcp(localhost:3307)/TTMS?charset=utf8mb4&parseTime=True"
 	WebServerPort     = "8080"
 	RedisPassword     = "redis"
-	OrderDelayTime    = time.Minute * 1
+	OrderDelayTime    = time.Minute * 10
 	RedisLockTimeOut  = time.Second * 5
 )
