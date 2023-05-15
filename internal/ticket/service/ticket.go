@@ -1,5 +1,12 @@
 package service
 
+/*
++---------------------------------------------------------------------------+---------------------------------------------------------------+
+|							BuyTicketMsg									|						ReturnTicketMsg							|
+|---------------------------------------------------------------------------+---------------------------------------------------------------+
+|	UserId	|	ScheduleId	|	SeatRow	|	SeatCol	|	Time	|	Price	|	UserId	|	ScheduleId	|	SeatRow	|	SeatCol	|	Time	|
++---------------------------------------------------------------------------+---------------------------------------------------------------+
+*/
 import (
 	"TTMS/internal/ticket/dao"
 	"TTMS/internal/ticket/nats"
@@ -109,7 +116,7 @@ func ReturnTicketService(ctx context.Context, req *ticket.ReturnTicketRequest) (
 		resp.BaseResp.StatusMessage = err.Error()
 		return resp, nil
 	}
-	//发送创建订单消息
+
 	_, err = nats.JS.Publish("stream.order.return",
 		[]byte(fmt.Sprintf("%d;%s;%s", req.UserId, key, time.Now().Format("2006-01-02 15:04:05"))))
 	fmt.Println(err)

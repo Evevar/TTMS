@@ -26,7 +26,7 @@ func GetAllOrder(ctx context.Context, UserId int) ([]*order.Order, error) {
 }
 
 func GetOrderAnalysis(ctx context.Context, ScheduleIdList []int64) (int64, int64, error) { //count,sum
-	rows, err := DB.WithContext(ctx).Model(&order.Order{}).Select("count(id),sum(value)").Where("schedule_id in ?", ScheduleIdList).Rows()
+	rows, err := DB.WithContext(ctx).Model(&order.Order{}).Select("count(id),coalesce(sum(value),0)").Where("schedule_id in ?", ScheduleIdList).Rows()
 	if err != nil && strings.EqualFold(err.Error(), sql.ErrNoRows.Error()) {
 		log.Println(err)
 		log.Println(sql.ErrNoRows)

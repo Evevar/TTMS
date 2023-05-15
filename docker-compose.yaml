@@ -2,7 +2,7 @@ version: "3"
 
 services:
   mysql:
-    image: "mysql:latest"
+    image: "mariadb:10.11.2"
     ports:
       - "3307:3306"
     environment:
@@ -10,6 +10,8 @@ services:
       - MYSQL_USER=TTMS
       - MYSQL_PASSWORD=TTMS
       - MYSQL_RANDOM_ROOT_PASSWORD="yes"
+    volumes:
+      - ./script/mysql:/var/lib/mysql
   Etcd:
     image: "quay.io/coreos/etcd:v3.5.5"
     environment:

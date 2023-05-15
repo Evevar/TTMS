@@ -31,8 +31,8 @@ CREATE TABLE IF NOT EXISTS `plays` (
     `area` NVARCHAR(255) NOT NULL,
     `rating` INTEGER NOT NULL COMMENT '剧目等级 1-儿童 2-青年 3-成年',
     `duration` NVARCHAR(255) NOT NULL COMMENT '如：3h30m30s',
-    `start_data` NVARCHAR(255) NOT NULL COMMENT '示例格式：2006-01-02',
-    `end_data` NVARCHAR(255) NOT NULL COMMENT '示例格式：2006-01-02',
+    `start_date` NVARCHAR(255) NOT NULL COMMENT '示例格式：2006-01-02',
+    `end_date` NVARCHAR(255) NOT NULL COMMENT '示例格式：2006-01-02',
     `price` INTEGER NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
