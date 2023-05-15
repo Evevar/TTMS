@@ -1,11 +1,11 @@
 #!/bin/bash
 
-WEB_LOG_FILE=/var/log/TTMS/web.log
-USER_LOG_FILE=/var/log/TTMS/user.log
-PLAY_LOG_FILE=/var/log/TTMS/play.log
-TICKET_LOG_FILE=/var/log/TTMS/ticket.log
-STUDIO_LOG_FILE=/var/log/TTMS/studio.log
-ORDER_LOG_FILE=/var/log/TTMS/order.log
+WEB_LOG_FILE=./log/web.log
+USER_LOG_FILE=./log/user.log
+PLAY_LOG_FILE=./log/play.log
+TICKET_LOG_FILE=./log/ticket.log
+STUDIO_LOG_FILE=./log/studio.log
+ORDER_LOG_FILE=./log/order.log
 
 # 创建日志文件并清空内容
 echo "" >${WEB_LOG_FILE}
@@ -16,15 +16,15 @@ echo "" >${STUDIO_LOG_FILE}
 echo "" >${ORDER_LOG_FILE}
 
 # 启动程序，并将输出重定向到日志文件
-go build ../internal/web &
-./web >>${WEB_LOG_FILE} 2>&1 &
-go build ../internal/user &
-./user >>${USER_LOG_FILE} 2>&1 &
-go build ../internal/play &
-./play >>${PLAY_LOG_FILE} 2>&1 &
-go build ../internal/ticket &
-./ticket >>${TICKET_LOG_FILE} 2>&1 &
-go build ../internal/studio &
-./studio >>${STUDIO_LOG_FILE} 2>&1 &
-go build ../internal/order &
-./order >>${ORDER_LOG_FILE} 2>&1 &
+go build -o ttms_web ../internal/web
+./ttms_web >>${WEB_LOG_FILE} 2>&1 &
+go build -o ttms_user ../internal/user
+./ttms_user >>${USER_LOG_FILE} 2>&1 &
+go build -o ttms_play ../internal/play
+./ttms_play >>${PLAY_LOG_FILE} 2>&1 &
+go build -o ttms_ticket ../internal/ticket
+./ttms_ticket >>${TICKET_LOG_FILE} 2>&1 &
+go build -o ttms_studio ../internal/studio
+./ttms_studio >>${STUDIO_LOG_FILE} 2>&1 &
+go build -o ttms_order ../internal/order
+./ttms_order >>${ORDER_LOG_FILE} 2>&1 &
