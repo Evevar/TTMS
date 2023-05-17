@@ -71,7 +71,7 @@ func ReleaseLock(lockKey string) bool {
 func LockRenewal() {
 	var cursor uint64 = 0
 	ctx := context.Background()
-	for {
+	for range time.Tick(1 * time.Second) {
 		keys, next, err := redisClient.Scan(ctx, cursor, "lock;*", 10000).Result()
 		if err != nil {
 			log.Println(err)
