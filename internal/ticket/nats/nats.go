@@ -29,7 +29,7 @@ func Init() {
 		log.Panic("2", err)
 	}
 	//streamName, subject, subject1 := "stream", "order.buy", "order.return"
-	streamName, subject, subject1, subject2, subject3 := "stream", "order.buy", "order.return", "ticket.commit", "ticket.timeout"
+	streamName, subject, subject2, subject3 := "stream", "order.buy", "ticket.commit", "ticket.timeout"
 	// 判断Stream是否存在，如果不存在，那么需要创建这个Stream，否则会导致pub/sub失败
 	stream, err := JS.StreamInfo(streamName)
 	if err != nil {
@@ -38,7 +38,7 @@ func Init() {
 	if stream == nil {
 		_, err = JS.AddStream(&nats.StreamConfig{
 			Name: streamName,
-			Subjects: []string{fmt.Sprintf("%s.%s", streamName, subject), fmt.Sprintf("%s.%s", streamName, subject1),
+			Subjects: []string{fmt.Sprintf("%s.%s", streamName, subject),
 				fmt.Sprintf("%s.%s", streamName, subject2), fmt.Sprintf("%s.%s", streamName, subject3)},
 			MaxAge: 3 * 24 * time.Hour,
 		})
