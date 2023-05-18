@@ -62,3 +62,9 @@ func (s *PlayServiceImpl) PlayToSchedule(ctx context.Context, req *play.PlayToSc
 	// TODO: Your code here...
 	return service.PlayToScheduleService(ctx, req)
 }
+
+// GetSchedule implements the PlayServiceImpl interface.
+func (s *PlayServiceImpl) GetSchedule(ctx context.Context, req *play.GetScheduleRequest) (resp *play.GetScheduleResponse, err error) {
+	// TODO: Your code here...
+	return service.GetScheduleService(ctx, req)
+}

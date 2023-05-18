@@ -8,16 +8,73 @@ package service
 +---------------------------------------------------------------------------+---------------------------------------------------------------+
 */
 import (
+	"TTMS/configs/consts"
 	"TTMS/internal/ticket/dao"
 	"TTMS/internal/ticket/nats"
 	"TTMS/internal/ticket/redis"
+	"TTMS/kitex_gen/order"
+	"TTMS/kitex_gen/order/orderservice"
+	"TTMS/kitex_gen/play"
+	"TTMS/kitex_gen/play/playservice"
 	"TTMS/kitex_gen/ticket"
 	"context"
 	"errors"
 	"fmt"
+	"github.com/cloudwego/kitex/client"
+	"github.com/cloudwego/kitex/pkg/retry"
+	etcd "github.com/kitex-contrib/registry-etcd"
+	trace "github.com/kitex-contrib/tracer-opentracing"
 	"log"
 	"time"
 )
+
+var playClient playservice.Client
+var orderClient orderservice.Client
+
+func OrderPlayRPC() {
+	r, err := etcd.NewEtcdResolver([]string{consts.EtcdAddress})
+	if err != nil {
+		panic(err)
+	}
+
+	c, err := orderservice.NewClient(
+		consts.OrderServiceName,
+		//client.WithMiddleware(mw.CommonMiddleware),
+		//client.WithInstanceMW(mw.ClientMiddleware),
+		client.WithMuxConnection(1),                       // mux
+		client.WithRPCTimeout(3*time.Second),              // rpc timeout
+		client.WithConnectTimeout(50*time.Millisecond),    // conn timeout
+		client.WithFailureRetry(retry.NewFailurePolicy()), // retry
+		client.WithSuite(trace.NewDefaultClientSuite()),   // tracer
+		client.WithResolver(r),                            // resolver
+	)
+	if err != nil {
+		panic(err)
+	}
+	orderClient = c
+}
+func InitPlayRPC() {
+	r, err := etcd.NewEtcdResolver([]string{consts.EtcdAddress})
+	if err != nil {
+		panic(err)
+	}
+
+	c, err := playservice.NewClient(
+		consts.PlayServiceName,
+		//client.WithMiddleware(mw.CommonMiddleware),
+		//client.WithInstanceMW(mw.ClientMiddleware),
+		client.WithMuxConnection(1),                       // mux
+		client.WithRPCTimeout(3*time.Second),              // rpc timeout
+		client.WithConnectTimeout(50*time.Millisecond),    // conn timeout
+		client.WithFailureRetry(retry.NewFailurePolicy()), // retry
+		client.WithSuite(trace.NewDefaultClientSuite()),   // tracer
+		client.WithResolver(r),                            // resolver
+	)
+	if err != nil {
+		panic(err)
+	}
+	playClient = c
+}
 
 func BatchAddTicketService(ctx context.Context, req *ticket.BatchAddTicketRequest) (resp *ticket.BatchAddTicketResponse, err error) {
 	//fmt.Println(req.ScheduleId, req.Price, req.PlayName, req.StudioId, req.List)
@@ -59,36 +116,60 @@ func GetAllTicketService(ctx context.Context, req *ticket.GetAllTicketRequest) (
 	}
 	return resp, nil
 }
+func TicketIsExist(ctx context.Context, ScheduleId int64, SeatRow int32, SeatCol int32) (bool, error, string) {
+	key := fmt.Sprintf("%d;%d;%d", ScheduleId, SeatRow, SeatCol)
+	result, err := redis.TicketIsExist(key) //只查看票的状态，不抢票
+	if result {
+		return true, nil, "redis"
+	}
+	if err == nil { //redis没找到，去mysql再找一下
+		t := dao.GetTicket(ctx, ScheduleId, SeatRow, SeatCol)
+		if t.Id > 0 && t.Status == 0 {
+			return true, nil, "mysql"
+		}
+	}
+	return false, errors.New("票已被抢"), ""
+}
+func BuyTicket(ctx context.Context, ScheduleId int64, SeatRow int32, SeatCol int32, source string) {
+	if source == "redis" {
+		redis.BuyTicket(ctx, fmt.Sprintf("%d;%d;%d", ScheduleId, SeatRow, SeatCol))
+	}
+	//source=="mysql"，无论是否更新redis，mysql是一定要更新的
+	go dao.BuyTicket(ctx, ScheduleId, SeatRow, SeatCol)
 
+}
 func BuyTicketService(ctx context.Context, req *ticket.BuyTicketRequest) (resp *ticket.BuyTicketResponse, err error) {
-	key := fmt.Sprintf("%d;%d;%d", req.ScheduleId, req.SeatRow, req.SeatCol)
+	//先判断是否为有效的’买票时间‘
+	schedule, err := playClient.GetSchedule(ctx, &play.GetScheduleRequest{Id: req.ScheduleId})
 	resp = &ticket.BuyTicketResponse{BaseResp: &ticket.BaseResp{}}
-	result, err := redis.TicketIsExist(key)
+
+	deadline, _ := time.Parse("2006-01-02 15:04:05", schedule.Schedule.ShowTime)
+	if deadline.Sub(time.Now()) < 10*time.Minute { //距离开场已经不足10分钟，停止售票
+		resp.BaseResp.StatusCode = 1
+		resp.BaseResp.StatusMessage = errors.New("已停止售票").Error()
+		return resp, nil
+	}
+	//在有效的时间范围内，查看票是否还存在（没有被别人买）
+	key := fmt.Sprintf("%d;%d;%d", req.ScheduleId, req.SeatRow, req.SeatCol)
+
+	result, err, source := TicketIsExist(ctx, req.ScheduleId, req.SeatRow, req.SeatCol) //只查看票的状态，不抢票
 	if err != nil {
 		resp.BaseResp.StatusCode = 1
 		resp.BaseResp.StatusMessage = err.Error()
 		return resp, nil
 	}
-	if !result {
+
+	//票已经被买,或者是同时抢票但没有抢到分布式锁
+	if !result || !redis.AcquireLock(fmt.Sprintf("lock;%s", key)) {
 		resp.BaseResp.StatusCode = 1
-		resp.BaseResp.StatusMessage = errors.New("票已经被抢").Error()
+		resp.BaseResp.StatusMessage = errors.New("票已经被买").Error()
 		return resp, nil
 	}
-	delay := time.Millisecond
-	for !redis.AcquireLock(fmt.Sprintf("lock;%s", key)) { //没有抢到分布式锁，就一直循环,第一次重试时间为1毫秒
-		time.Sleep(delay)
-		delay *= 2
-	}
-	//成功买到票
-	//暂时不改变票的状态
-	err = redis.BuyTicket(ctx, key)
-	if err != nil {
-		resp.BaseResp.StatusCode = 1
-		resp.BaseResp.StatusMessage = err.Error()
-		redis.ReleaseLock(fmt.Sprintf("lock;%s", key)) //释放锁
-		return resp, err
-	}
-	//发送创建订单消息
+	//抢到分布式锁,执行买票流程
+	//选择是否更新redis，并强制更新mysql
+	BuyTicket(ctx, req.ScheduleId, req.SeatRow, req.SeatCol, source)
+
+	//成功抢到票,发送创建订单消息
 	t := time.Now().Format("2006-01-02 15:04:05")
 	fmt.Println("time = ", t)
 	_, err = nats.JS.Publish("stream.order.buy",
@@ -102,31 +183,36 @@ func BuyTicketService(ctx context.Context, req *ticket.BuyTicketRequest) (resp *
 	} else {
 		resp.BaseResp.StatusMessage = "success"
 	}
-	go dao.BuyTicket(ctx, int(req.ScheduleId), int(req.SeatRow), int(req.SeatCol))
 	redis.ReleaseLock(fmt.Sprintf("lock;%s", key)) //释放锁
 	return resp, nil
 }
 
+func ReturnTicket(ctx context.Context, ScheduleId int64, SeatRow int32, SeatCol int32) {
+	if ttl := redis.TicketTTL(ctx, fmt.Sprintf("%d;%d;%d", ScheduleId, SeatRow, SeatCol)); ttl > 0 {
+		redis.ReturnTicket(ctx, fmt.Sprintf("%d;%d;%d", ScheduleId, SeatRow, SeatCol), ttl)
+	}
+	go dao.ReturnTicket(ctx, ScheduleId, SeatRow, SeatCol)
+}
 func ReturnTicketService(ctx context.Context, req *ticket.ReturnTicketRequest) (resp *ticket.ReturnTicketResponse, err error) {
-	key := fmt.Sprintf("%d;%d;%d", req.ScheduleId, req.SeatRow, req.SeatCol)
+	//先判断是否为有效的’退票时间‘
+	schedule, err := playClient.GetSchedule(ctx, &play.GetScheduleRequest{Id: req.ScheduleId})
 	resp = &ticket.ReturnTicketResponse{BaseResp: &ticket.BaseResp{}}
-	err = redis.ReturnTicket(ctx, key)
-	if err != nil {
+
+	deadline, _ := time.Parse("2006-01-02 15:04:05", schedule.Schedule.ShowTime)
+	if deadline.Sub(time.Now()) < 0 { //演出已经开始，停止退票
 		resp.BaseResp.StatusCode = 1
-		resp.BaseResp.StatusMessage = err.Error()
+		resp.BaseResp.StatusMessage = errors.New("已停止退票").Error()
 		return resp, nil
 	}
 
-	_, err = nats.JS.Publish("stream.order.return",
-		[]byte(fmt.Sprintf("%d;%s;%s", req.UserId, key, time.Now().Format("2006-01-02 15:04:05"))))
-	fmt.Println(err)
-	if err != nil {
-		log.Println(err)
+	resp1, _ := orderClient.UpdateOrder(ctx, &order.UpdateOrderRequest{UserId: req.UserId, ScheduleId: req.ScheduleId,
+		SeatRow: req.SeatRow, SeatCol: req.SeatCol})
+	if resp1.BaseResp.StatusCode == 1 {
 		resp.BaseResp.StatusCode = 1
-		resp.BaseResp.StatusMessage = err.Error()
+		resp.BaseResp.StatusMessage = resp1.BaseResp.StatusMessage
 	} else {
 		resp.BaseResp.StatusMessage = "success"
 	}
-	go dao.ReturnTicket(ctx, int(req.ScheduleId), int(req.SeatRow), int(req.SeatCol))
+	ReturnTicket(ctx, req.ScheduleId, req.SeatRow, req.SeatCol)
 	return resp, nil
 }

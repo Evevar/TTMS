@@ -13,6 +13,6 @@ const (
 	MySQLDefaultDSN   = "TTMS:TTMS@tcp(localhost:3307)/TTMS?charset=utf8mb4&parseTime=True"
 	WebServerPort     = "8080"
 	RedisPassword     = "redis"
-	OrderDelayTime    = time.Minute * 10
+	OrderDelayTime    = time.Minute * 1
 	RedisLockTimeOut  = time.Second * 5
 )

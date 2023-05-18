@@ -13,13 +13,12 @@ import (
 	"time"
 )
 
-var NC *nats.Conn
 var JS nats.JetStreamContext
 
 func Init() {
 	// 连接到nats的服务器
 	conn, err := nats.Connect(consts.NatsAddress)
-	NC = conn
+
 	if err != nil {
 		log.Panic("1", err)
 	}
@@ -69,11 +68,11 @@ func commitTicketHandler(msg *nats.Msg) {
 	d0, _ := strconv.Atoi(data[0])
 	d1, _ := strconv.Atoi(data[1])
 	d2, _ := strconv.Atoi(data[2])
-	err := redis.CommitTicket(context.Background(), fmt.Sprintf("%d;%d;%d", d0, d1, d2))
-	if err != nil {
-		log.Panicln(err)
+	ttl := redis.TicketTTL(context.Background(), fmt.Sprintf("%d;%d;%d", d0, d1, d2))
+	if ttl > 0 {
+		redis.CommitTicket(context.Background(), fmt.Sprintf("%d;%d;%d", d0, d1, d2))
 	}
-	dao.CommitTicket(context.Background(), d0, d1, d2)
+	dao.CommitTicket(context.Background(), int64(d0), int32(d1), int32(d2))
 
 }
 func timeoutTicketHandler(msg *nats.Msg) {
@@ -82,9 +81,9 @@ func timeoutTicketHandler(msg *nats.Msg) {
 	d0, _ := strconv.Atoi(data[0])
 	d1, _ := strconv.Atoi(data[1])
 	d2, _ := strconv.Atoi(data[2])
-	err := redis.ReturnTicket(context.Background(), fmt.Sprintf("%d;%d;%d", d0, d1, d2))
-	if err != nil {
-		log.Panicln(err)
+	ttl := redis.TicketTTL(context.Background(), fmt.Sprintf("%d;%d;%d", d0, d1, d2))
+	if ttl > 0 {
+		redis.ReturnTicket(context.Background(), fmt.Sprintf("%d;%d;%d", d0, d1, d2), ttl)
 	}
-	dao.ReturnTicket(context.Background(), d0, d1, d2)
+	dao.ReturnTicket(context.Background(), int64(d0), int32(d1), int32(d2))
 }

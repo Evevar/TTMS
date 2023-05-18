@@ -19,14 +19,14 @@ func Init() {
 		Password: consts.RedisPassword,
 		DB:       1,
 	})
-	err := InitAllTicket(context.Background())
-	if err != nil {
-		panic(err)
-	}
+	//err := InitAllTicket(context.Background())
+	//if err != nil {
+	//	panic(err)
+	//}
 	go LockRenewal()
 }
 
-// InitAllTicket 将所有票加载到redis缓存中
+// InitAllTicket 将所有票加载到redis缓存中（已弃用）
 func InitAllTicket(ctx context.Context) error {
 	// 票信息 键值对 key="ScheduleId:SeatRow:SeatCol" value="Status"
 	tickets, err := dao.GetAllTicket2(ctx)
@@ -44,8 +44,8 @@ func InitAllTicket(ctx context.Context) error {
 // AddTicket 添加票缓存
 func AddTicket(key string, price int32) {
 	ctx := context.Background()
-	redisClient.Set(ctx, key, 0, 0)
-	redisClient.Set(ctx, fmt.Sprintf("%s;price", key), price, 0)
+	redisClient.Set(ctx, key, 0, time.Hour)
+	redisClient.Set(ctx, fmt.Sprintf("%s;price", key), price, time.Hour)
 }
 
 // AcquireLock 分布式锁，加锁
@@ -94,7 +94,7 @@ func TicketIsExist(key string) (bool, error) {
 	value, err := redisClient.Get(context.Background(), key).Result()
 	fmt.Println("value = ", value, " err = ", err)
 	if err == redis.Nil {
-		return false, errors.New("票信息错误，不存在该票")
+		return false, nil
 	}
 	if value == "0" { //0-待售（未被预定）
 		return true, nil
@@ -103,14 +103,14 @@ func TicketIsExist(key string) (bool, error) {
 	return false, errors.New("票已经被抢")
 }
 
-func BuyTicket(ctx context.Context, key string) error {
-	return redisClient.Set(ctx, key, "9", 0).Err()
+func BuyTicket(ctx context.Context, key string) {
+	redisClient.Set(ctx, key, "9", time.Hour)
 }
-func ReturnTicket(ctx context.Context, key string) error {
-	return redisClient.Set(ctx, key, "0", 0).Err()
+func ReturnTicket(ctx context.Context, key string, expire time.Duration) {
+	redisClient.Set(ctx, key, "0", expire)
 }
-func CommitTicket(ctx context.Context, key string) error {
-	return redisClient.Set(ctx, key, "1", 0).Err()
+func CommitTicket(ctx context.Context, key string) {
+	redisClient.Set(ctx, key, "1", time.Hour)
 }
 func GetTicketPrice(ctx context.Context, key string) string {
 	price, err := redisClient.Get(ctx, key).Result()
@@ -118,4 +118,11 @@ func GetTicketPrice(ctx context.Context, key string) string {
 		log.Println("GetTicketPrice ", err)
 	}
 	return price
+}
+func TicketTTL(ctx context.Context, key string) time.Duration {
+	d, err := redisClient.TTL(ctx, key).Result()
+	if err != nil {
+		log.Println(err)
+	}
+	return d
 }

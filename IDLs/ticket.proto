@@ -23,7 +23,7 @@ message BatchAddTicketRequest{
   int64 StudioId = 2;//对应的演出厅ID
   int32 Price = 3;//价格
   string PlayName = 4;//剧目名称
-  repeated studio.Seat List = 5;
+  repeated studio.Seat List = 6;
 }
 message BatchAddTicketResponse{
   BaseResp BaseResp = 1;

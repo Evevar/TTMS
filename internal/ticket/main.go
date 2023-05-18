@@ -5,6 +5,7 @@ import (
 	"TTMS/internal/ticket/dao"
 	"TTMS/internal/ticket/nats"
 	"TTMS/internal/ticket/redis"
+	"TTMS/internal/ticket/service"
 	ticket "TTMS/kitex_gen/ticket/ticketservice"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/limit"
@@ -35,6 +36,8 @@ func main() {
 	dao.Init()
 	go nats.Init()
 	redis.Init()
+	service.InitPlayRPC()
+	service.OrderPlayRPC()
 	err = svr.Run()
 	if err != nil {
 		klog.Fatal(err)

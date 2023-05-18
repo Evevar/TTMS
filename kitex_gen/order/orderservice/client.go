@@ -11,6 +11,7 @@ import (
 
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
+	UpdateOrder(ctx context.Context, Req *order.UpdateOrderRequest, callOptions ...callopt.Option) (r *order.UpdateOrderResponse, err error)
 	GetAllOrder(ctx context.Context, Req *order.GetAllOrderRequest, callOptions ...callopt.Option) (r *order.GetAllOrderResponse, err error)
 	GetOrderAnalysis(ctx context.Context, Req *order.GetOrderAnalysisRequest, callOptions ...callopt.Option) (r *order.GetOrderAnalysisResponse, err error)
 	CommitOrder(ctx context.Context, Req *order.CommitOrderRequest, callOptions ...callopt.Option) (r *order.CommitOrderResponse, err error)
@@ -43,6 +44,11 @@ func MustNewClient(destService string, opts ...client.Option) Client {
 
 type kOrderServiceClient struct {
 	*kClient
+}
+
+func (p *kOrderServiceClient) UpdateOrder(ctx context.Context, Req *order.UpdateOrderRequest, callOptions ...callopt.Option) (r *order.UpdateOrderResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.UpdateOrder(ctx, Req)
 }
 
 func (p *kOrderServiceClient) GetAllOrder(ctx context.Context, Req *order.GetAllOrderRequest, callOptions ...callopt.Option) (r *order.GetAllOrderResponse, err error) {

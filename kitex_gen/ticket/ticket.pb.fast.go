@@ -165,8 +165,8 @@ func (x *BatchAddTicketRequest) FastRead(buf []byte, _type int8, number int32) (
 		if err != nil {
 			goto ReadFieldError
 		}
-	case 5:
-		offset, err = x.fastReadField5(buf, _type)
+	case 6:
+		offset, err = x.fastReadField6(buf, _type)
 		if err != nil {
 			goto ReadFieldError
 		}
@@ -203,7 +203,7 @@ func (x *BatchAddTicketRequest) fastReadField4(buf []byte, _type int8) (offset i
 	return offset, err
 }
 
-func (x *BatchAddTicketRequest) fastReadField5(buf []byte, _type int8) (offset int, err error) {
+func (x *BatchAddTicketRequest) fastReadField6(buf []byte, _type int8) (offset int, err error) {
 	var v studio.Seat
 	offset, err = fastpb.ReadMessage(buf, _type, &v)
 	if err != nil {
@@ -690,7 +690,7 @@ func (x *BatchAddTicketRequest) FastWrite(buf []byte) (offset int) {
 	offset += x.fastWriteField2(buf[offset:])
 	offset += x.fastWriteField3(buf[offset:])
 	offset += x.fastWriteField4(buf[offset:])
-	offset += x.fastWriteField5(buf[offset:])
+	offset += x.fastWriteField6(buf[offset:])
 	return offset
 }
 
@@ -726,12 +726,12 @@ func (x *BatchAddTicketRequest) fastWriteField4(buf []byte) (offset int) {
 	return offset
 }
 
-func (x *BatchAddTicketRequest) fastWriteField5(buf []byte) (offset int) {
+func (x *BatchAddTicketRequest) fastWriteField6(buf []byte) (offset int) {
 	if x.List == nil {
 		return offset
 	}
 	for i := range x.List {
-		offset += fastpb.WriteMessage(buf[offset:], 5, x.List[i])
+		offset += fastpb.WriteMessage(buf[offset:], 6, x.List[i])
 	}
 	return offset
 }
@@ -1093,7 +1093,7 @@ func (x *BatchAddTicketRequest) Size() (n int) {
 	n += x.sizeField2()
 	n += x.sizeField3()
 	n += x.sizeField4()
-	n += x.sizeField5()
+	n += x.sizeField6()
 	return n
 }
 
@@ -1129,12 +1129,12 @@ func (x *BatchAddTicketRequest) sizeField4() (n int) {
 	return n
 }
 
-func (x *BatchAddTicketRequest) sizeField5() (n int) {
+func (x *BatchAddTicketRequest) sizeField6() (n int) {
 	if x.List == nil {
 		return n
 	}
 	for i := range x.List {
-		n += fastpb.SizeMessage(5, x.List[i])
+		n += fastpb.SizeMessage(6, x.List[i])
 	}
 	return n
 }
@@ -1405,7 +1405,7 @@ var fieldIDToName_BatchAddTicketRequest = map[int32]string{
 	2: "StudioId",
 	3: "Price",
 	4: "PlayName",
-	5: "List",
+	6: "List",
 }
 
 var fieldIDToName_BatchAddTicketResponse = map[int32]string{

@@ -47,12 +47,15 @@ message CommitOrderResponse{
 //  BaseResp BaseResp = 1;
 //}
 //修改订单（退票）
-//message UpdateOrderRequest{
-//  int64 Id = 1;
-//}
-//message UpdateOrderResponse{
-//  BaseResp BaseResp = 1;
-//}
+message UpdateOrderRequest{
+  int64 UserId = 1;//退票的用户ID
+  int64 ScheduleId = 2;//演出计划ID
+  int32 SeatRow = 3;//座位行数
+  int32 SeatCol = 4;//座位列数
+}
+message UpdateOrderResponse{
+  BaseResp BaseResp = 1;
+}
 
 //[给用户使用]根据用户ID 获取全部订单信息
 message GetAllOrderRequest{
@@ -87,7 +90,7 @@ message GetOrderAnalysisResponse{
 service OrderService{
 //  rpc AddOrder(AddOrderRequest) returns (AddOrderResponse){}
 //  rpc DeleteOrder(DeleteOrderRequest) returns (DeleteOrderResponse){}
-//  rpc UpdateOrder(UpdateOrderRequest) returns (UpdateOrderResponse){}
+  rpc UpdateOrder(UpdateOrderRequest) returns (UpdateOrderResponse){}
   rpc GetAllOrder(GetAllOrderRequest) returns (GetAllOrderResponse){}
   rpc GetOrderAnalysis(GetOrderAnalysisRequest) returns (GetOrderAnalysisResponse){}
   rpc CommitOrder(CommitOrderRequest) returns (CommitOrderResponse){}

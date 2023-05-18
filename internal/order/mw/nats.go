@@ -1,5 +1,12 @@
 package mw
 
+/*
++---------------------------------------------------------------------------+---------------------------------------------------------------+
+|							BuyTicketMsg									|						ReturnTicketMsg							|
+|---------------------------------------------------------------------------+---------------------------------------------------------------+
+|	UserId	|	ScheduleId	|	SeatRow	|	SeatCol	|	Time	|	Price	|	UserId	|	ScheduleId	|	SeatRow	|	SeatCol	|	Time	|
++---------------------------------------------------------------------------+---------------------------------------------------------------+
+*/
 import (
 	"TTMS/configs/consts"
 	"TTMS/internal/order/dao"
@@ -29,7 +36,7 @@ func InitNats() {
 		log.Panic("2", err)
 	}
 	//streamName, subject, subject1 := "stream", "order.buy", "order.return"
-	streamName, subject, subject1, subject2, subject3 := "stream", "order.buy", "order.return", "ticket.commit", "ticket.timeout"
+	streamName, subject, subject2, subject3 := "stream", "order.buy", "ticket.commit", "ticket.timeout"
 	stream, err := JS.StreamInfo(streamName)
 	if err != nil {
 		log.Println("3", err) // 如果不存在，这里会有报错
@@ -39,7 +46,7 @@ func InitNats() {
 		log.Printf("creating stream %q and subject %q", streamName, subject)
 		_, err = JS.AddStream(&nats.StreamConfig{
 			Name: streamName,
-			Subjects: []string{fmt.Sprintf("%s.%s", streamName, subject), fmt.Sprintf("%s.%s", streamName, subject1),
+			Subjects: []string{fmt.Sprintf("%s.%s", streamName, subject),
 				fmt.Sprintf("%s.%s", streamName, subject2), fmt.Sprintf("%s.%s", streamName, subject3)},
 			MaxAge: 3 * 24 * time.Hour,
 		})
@@ -54,12 +61,7 @@ func InitNats() {
 	for {
 		msgs, _ := sub.Fetch(10)
 		for _, msg := range msgs {
-			switch msg.Subject {
-			case "stream.order.buy":
-				AddOrderHandler(msg)
-			case "stream.order.return":
-				ReturnOrderHandler(msg)
-			}
+			AddOrderHandler(msg)
 		}
 	}
 }
@@ -80,22 +82,6 @@ func AddOrderHandler(msg *nats.Msg) {
 	ToDelayQueue(context.Background(), orderInfo, t)
 	//fmt.Println(d0, d1, d2, d3, data[4])
 	err := dao.AddOrder(d0, d1, d2, d3, data[4], d5)
-	if err != nil {
-		log.Panicln(err)
-	}
-	err = msg.Ack()
-	if err != nil {
-		return
-	}
-}
-func ReturnOrderHandler(msg *nats.Msg) {
-	data := strings.Split(string(msg.Data), ";")
-	fmt.Println(data)
-	d0, _ := strconv.Atoi(data[0])
-	d1, _ := strconv.Atoi(data[1])
-	d2, _ := strconv.Atoi(data[2])
-	d3, _ := strconv.Atoi(data[3])
-	err := dao.UpdateOrder(d0, d1, d2, d3, data[4])
 	if err != nil {
 		log.Panicln(err)
 	}

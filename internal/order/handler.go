@@ -26,3 +26,9 @@ func (s *OrderServiceImpl) CommitOrder(ctx context.Context, req *order.CommitOrd
 	// TODO: Your code here...
 	return service.CommitOrderService(ctx, req)
 }
+
+// UpdateOrder implements the OrderServiceImpl interface.
+func (s *OrderServiceImpl) UpdateOrder(ctx context.Context, req *order.UpdateOrderRequest) (resp *order.UpdateOrderResponse, err error) {
+	// TODO: Your code here...
+	return service.UpdateOrderService(ctx, req)
+}

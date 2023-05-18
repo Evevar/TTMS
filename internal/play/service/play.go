@@ -10,11 +10,11 @@ import (
 	"TTMS/kitex_gen/ticket/ticketservice"
 	"context"
 	"errors"
-	"fmt"
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/retry"
 	etcd "github.com/kitex-contrib/registry-etcd"
 	trace "github.com/kitex-contrib/tracer-opentracing"
+	"log"
 	"time"
 )
 
@@ -133,7 +133,7 @@ func AddScheduleService(ctx context.Context, req *play.AddScheduleRequest) (resp
 	}
 	re, _ := studioClient.GetAllSeat(ctx, &studio.GetAllSeatRequest{StudioId: req.StudioId, Current: 0, PageSize: 1000})
 	p, err := dao.GetPlayById(req.PlayId)
-	//fmt.Println(re.List)
+	//log.Println(re.List)
 	_, err = ticketClient.BatchAddTicket(ctx, &ticket.BatchAddTicketRequest{ScheduleId: id, StudioId: req.StudioId, Price: int32(p.Price), PlayName: p.Name, List: re.List})
 	if err != nil {
 		resp.BaseResp.StatusCode = 1
@@ -173,13 +173,13 @@ func GetAllScheduleService(ctx context.Context, req *play.GetAllScheduleRequest)
 	resp = &play.GetAllScheduleResponse{BaseResp: &play.BaseResp{}}
 	resp.List = make([]*play.Result, 0, req.PageSize)
 	schedules, err := dao.GetAllSchedule(ctx, int(req.Current), int(req.PageSize))
-	fmt.Println("schedule = ", schedules)
+	log.Println("schedule = ", schedules)
 	for i, sch := range schedules {
 		p, _ := dao.GetPlayById(sch.PlayId)
 		resp1, _ := studioClient.GetStudio(ctx, &studio.GetStudioRequest{Id: sch.StudioId})
-		fmt.Println("play = ", p)
-		fmt.Println("studio = ", resp1.Result)
-		//fmt.Println("i = ", i, "resp.List[i] = ", resp.List[i])
+		log.Println("play = ", p)
+		log.Println("studio = ", resp1.Result)
+		//log.Println("i = ", i, "resp.List[i] = ", resp.List[i])
 		resp.List = append(resp.List, new(play.Result))
 		resp.List[i].Id = sch.Id
 		resp.List[i].PlayName = p.Name
@@ -189,9 +189,9 @@ func GetAllScheduleService(ctx context.Context, req *play.GetAllScheduleRequest)
 		resp.List[i].ShowTime = sch.ShowTime
 		resp.List[i].Price = p.Price
 		resp.List[i].StudioName = resp1.Result.Name
-		fmt.Println("Result = ", resp.List)
+		log.Println("Result = ", resp.List)
 	}
-	fmt.Println("Result = ", resp.List)
+	log.Println("Result = ", resp.List)
 	if err != nil {
 		resp.BaseResp.StatusCode = 1
 		resp.BaseResp.StatusMessage = err.Error()
@@ -203,8 +203,21 @@ func GetAllScheduleService(ctx context.Context, req *play.GetAllScheduleRequest)
 func PlayToScheduleService(ctx context.Context, req *play.PlayToScheduleRequest) (resp *play.PlayToScheduleResponse, err error) {
 	resp = &play.PlayToScheduleResponse{BaseResp: &play.BaseResp{}}
 	resp.Play, resp.ScheduleList, err = dao.PlayToSchedule(ctx, req.Id)
-	fmt.Println("schedules = ", resp.ScheduleList)
-	fmt.Println("play = ", resp.Play)
+	log.Println("schedules = ", resp.ScheduleList)
+	log.Println("play = ", resp.Play)
+	if err != nil {
+		resp.BaseResp.StatusCode = 1
+		resp.BaseResp.StatusMessage = err.Error()
+	} else {
+		resp.BaseResp.StatusMessage = "success"
+	}
+	return resp, nil
+}
+func GetScheduleService(ctx context.Context, req *play.GetScheduleRequest) (resp *play.GetScheduleResponse, err error) {
+	log.Println(req)
+	resp = &play.GetScheduleResponse{BaseResp: &play.BaseResp{}}
+	resp.Schedule, err = dao.GetSchedule(ctx, req.Id)
+	log.Println("schedule = ", resp.Schedule)
 	if err != nil {
 		resp.BaseResp.StatusCode = 1
 		resp.BaseResp.StatusMessage = err.Error()

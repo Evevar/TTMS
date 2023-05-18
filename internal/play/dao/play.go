@@ -159,3 +159,11 @@ func PlayToSchedule(ctx context.Context, id int64) (*play.Play, []int64, error) 
 	}
 	return &p, scheduleIDs, nil
 }
+func GetSchedule(ctx context.Context, id int64) (*play.Schedule, error) {
+	schedule := play.Schedule{}
+	DB.WithContext(ctx).Model(&play.Schedule{}).Where("id = ? ", id).Find(&schedule).Limit(1)
+	if schedule.Id > 0 {
+		return &schedule, nil
+	}
+	return &schedule, errors.New("该Schedule不存在")
+}

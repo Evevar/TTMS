@@ -105,3 +105,15 @@ func CommitOrderService(ctx context.Context, req *order.CommitOrderRequest) (res
 
 	return resp, nil
 }
+func UpdateOrderService(ctx context.Context, req *order.UpdateOrderRequest) (resp *order.UpdateOrderResponse, err error) {
+	resp = &order.UpdateOrderResponse{BaseResp: &order.BaseResp{}}
+	dao.UpdateOrder(req.UserId, req.ScheduleId, req.SeatRow, req.SeatCol, time.Now().Format("2006-01-02 15:04:05"))
+	if err != nil {
+		resp.BaseResp.StatusCode = 1
+		resp.BaseResp.StatusMessage = err.Error()
+	} else {
+		resp.BaseResp.StatusMessage = "success"
+	}
+
+	return resp, nil
+}

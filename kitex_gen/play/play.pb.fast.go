@@ -906,6 +906,76 @@ func (x *DeleteScheduleResponse) fastReadField1(buf []byte, _type int8) (offset 
 	return offset, nil
 }
 
+func (x *GetScheduleRequest) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_GetScheduleRequest[number], err)
+}
+
+func (x *GetScheduleRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.Id, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
+}
+
+func (x *GetScheduleResponse) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 2:
+		offset, err = x.fastReadField2(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_GetScheduleResponse[number], err)
+}
+
+func (x *GetScheduleResponse) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	var v BaseResp
+	offset, err = fastpb.ReadMessage(buf, _type, &v)
+	if err != nil {
+		return offset, err
+	}
+	x.BaseResp = &v
+	return offset, nil
+}
+
+func (x *GetScheduleResponse) fastReadField2(buf []byte, _type int8) (offset int, err error) {
+	var v Schedule
+	offset, err = fastpb.ReadMessage(buf, _type, &v)
+	if err != nil {
+		return offset, err
+	}
+	x.Schedule = &v
+	return offset, nil
+}
+
 func (x *GetAllScheduleRequest) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
 	switch number {
 	case 1:
@@ -1716,6 +1786,47 @@ func (x *DeleteScheduleResponse) fastWriteField1(buf []byte) (offset int) {
 	return offset
 }
 
+func (x *GetScheduleRequest) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	return offset
+}
+
+func (x *GetScheduleRequest) fastWriteField1(buf []byte) (offset int) {
+	if x.Id == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.Id)
+	return offset
+}
+
+func (x *GetScheduleResponse) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	offset += x.fastWriteField2(buf[offset:])
+	return offset
+}
+
+func (x *GetScheduleResponse) fastWriteField1(buf []byte) (offset int) {
+	if x.BaseResp == nil {
+		return offset
+	}
+	offset += fastpb.WriteMessage(buf[offset:], 1, x.BaseResp)
+	return offset
+}
+
+func (x *GetScheduleResponse) fastWriteField2(buf []byte) (offset int) {
+	if x.Schedule == nil {
+		return offset
+	}
+	offset += fastpb.WriteMessage(buf[offset:], 2, x.Schedule)
+	return offset
+}
+
 func (x *GetAllScheduleRequest) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
@@ -2482,6 +2593,47 @@ func (x *DeleteScheduleResponse) sizeField1() (n int) {
 	return n
 }
 
+func (x *GetScheduleRequest) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	return n
+}
+
+func (x *GetScheduleRequest) sizeField1() (n int) {
+	if x.Id == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(1, x.Id)
+	return n
+}
+
+func (x *GetScheduleResponse) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	n += x.sizeField2()
+	return n
+}
+
+func (x *GetScheduleResponse) sizeField1() (n int) {
+	if x.BaseResp == nil {
+		return n
+	}
+	n += fastpb.SizeMessage(1, x.BaseResp)
+	return n
+}
+
+func (x *GetScheduleResponse) sizeField2() (n int) {
+	if x.Schedule == nil {
+		return n
+	}
+	n += fastpb.SizeMessage(2, x.Schedule)
+	return n
+}
+
 func (x *GetAllScheduleRequest) Size() (n int) {
 	if x == nil {
 		return n
@@ -2723,6 +2875,15 @@ var fieldIDToName_DeleteScheduleRequest = map[int32]string{
 
 var fieldIDToName_DeleteScheduleResponse = map[int32]string{
 	1: "BaseResp",
+}
+
+var fieldIDToName_GetScheduleRequest = map[int32]string{
+	1: "Id",
+}
+
+var fieldIDToName_GetScheduleResponse = map[int32]string{
+	1: "BaseResp",
+	2: "Schedule",
 }
 
 var fieldIDToName_GetAllScheduleRequest = map[int32]string{
