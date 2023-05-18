@@ -26,7 +26,7 @@
 
 5. 部署和测试：将各个服务部署到不同的服务器上，并进行测试和调试。
 
-## 目录结构设计：
+## 目录结构设计
 
 - configs：用于存放配置文件，如数据库配置、日志配置等。
 - IDLs:放置.proto文件。
@@ -37,3 +37,26 @@
 - kitex_gen: 通过protobuf文件生成的kitex库代码。
 - scripts：用于存放项目的脚本文件。
 - pkg：用于存放项目的公共库和工具函数等。
+
+## 部署
+
+- cd 到TTMS主目录下，执行`docker-compose up -d`，一键部署
+- 在云服务器上部署时，需要用nginx从默认的80端口转发到web网关层的8080端口，nginx配置如下，在
+
+`/etc/nginx/sites-available/default`文件中的`server`块中添加
+```
+location /ttms/ {
+   	proxy_pass http://127.0.0.1:8080/ttms/;
+	proxy_set_header Host $host;
+}
+```
+
+## 运行
+
+- cd 到script目录下
+- 执行 `bash ./bootstrap.sh`
+
+## 终止
+
+- cd 到script目录下
+- 执行 `bash ./stop.sh`
