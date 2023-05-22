@@ -59,6 +59,7 @@ func UserLogin(c *gin.Context) {
 		c.JSON(http.StatusOK, "bind error")
 		return
 	}
+	log.Println("req = ", req)
 	resp, err := rpc.UserLogin(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
