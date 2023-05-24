@@ -15,36 +15,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type CreateUserRequest struct {
-	Type     int32
-	Name     string
-	Password string
-	Email    string
-	Token    string
-}
-
 func CreateUser(c *gin.Context) {
-	receive := &CreateUserRequest{}
-	if err := c.Bind(receive); err != nil {
+	req := &user.CreateUserRequest{}
+	if err := c.Bind(req); err != nil {
 		c.JSON(http.StatusOK, "bind error")
 		return
 	}
-	req := &user.CreateUserRequest{
-		Name:     receive.Name,
-		Type:     receive.Type,
-		Password: receive.Password,
-		Email:    receive.Email,
-	}
-	if receive.Token == "" { //用户注册
-		req.Type = 0
-	} else { //前端完成之后，使该接口在创建员工时限制权限
-		//_, err := jwt.ParseToken(req.Token)
-		//if err != nil {
-		//	c.JSON(http.StatusOK, user.CreateUserResponse{BaseResp: &user.BaseResp{StatusCode: 1, StatusMessage: err.Error()}})
-		//	return
-		//}
-	}
-
+	//_, err := jwt.ParseToken(req.Token)
+	//if err != nil {
+	//	c.JSON(http.StatusOK, user.CreateUserResponse{BaseResp: &user.BaseResp{StatusCode: 1, StatusMessage: err.Error()}})
+	//	return
+	//}
 	fmt.Println(req)
 	resp, err := rpc.CreateUser(context.Background(), req)
 	if err != nil {
@@ -59,7 +40,6 @@ func UserLogin(c *gin.Context) {
 		c.JSON(http.StatusOK, "bind error")
 		return
 	}
-	log.Println("req = ", req)
 	resp, err := rpc.UserLogin(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
@@ -78,18 +58,10 @@ func UserLogin(c *gin.Context) {
 	resp.UserInfo = nil
 	c.JSON(http.StatusOK, resp)
 }
-
 func GetAllUser(c *gin.Context) {
 	req := &user.GetAllUserRequest{}
 	if err := c.Bind(req); err != nil {
 		c.JSON(http.StatusOK, "bind error")
-		return
-	}
-	token := c.Query("Token")
-	//token验证
-	_, err := jwt.ParseToken(token)
-	if err != nil {
-		c.JSON(http.StatusOK, user.GetAllUserResponse{BaseResp: &user.BaseResp{StatusCode: 1, StatusMessage: err.Error()}})
 		return
 	}
 	//接收resp
@@ -100,90 +72,47 @@ func GetAllUser(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, resp)
 }
-
-type ChangeUserPasswordRequest struct {
-	UserId      int64
-	Password    string
-	NewPassword string
-	Token       string
-}
-
 func ChangeUserPassword(c *gin.Context) {
-	receive := &ChangeUserPasswordRequest{}
-	if err := c.Bind(receive); err != nil {
+	req := &user.ChangeUserPasswordRequest{}
+	if err := c.Bind(req); err != nil {
 		c.JSON(http.StatusOK, "bind error")
 		return
 	}
-	//token验证
-	_, err := jwt.ParseToken(receive.Token)
-	if err != nil {
-		c.JSON(http.StatusOK, user.ChangeUserPasswordResponse{BaseResp: &user.BaseResp{StatusCode: 1, StatusMessage: err.Error()}})
-		return
-	}
 	//接收resp
-	req := &user.ChangeUserPasswordRequest{
-		UserId:      receive.UserId,
-		Password:    receive.Password,
-		NewPassword: receive.NewPassword,
-	}
 	resp, err := rpc.ChangeUserPassword(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
 		log.Fatalln(err)
 	}
-	jwt.DiscardToken(int(req.UserId), receive.Token)
+	Token, _ := c.Get("Token")
+	jwt.DiscardToken(int(req.UserId), Token.(string))
 	c.JSON(http.StatusOK, resp)
 }
-
-type DeleteUserRequest struct {
-	UserId int64
-	Token  string
-}
-
 func DeleteUser(c *gin.Context) {
-	receive := &DeleteUserRequest{}
-	if err := c.Bind(receive); err != nil {
+	req := &user.DeleteUserRequest{}
+	if err := c.Bind(req); err != nil {
 		c.JSON(http.StatusOK, "bind error")
 		return
 	}
-	//token验证
-	_, err := jwt.ParseToken(receive.Token)
-	if err != nil {
-		c.JSON(http.StatusOK, user.DeleteUserResponse{BaseResp: &user.BaseResp{StatusCode: 1, StatusMessage: err.Error()}})
-		return
-	}
 	//接收resp
-	req := &user.DeleteUserRequest{
-		UserId: receive.UserId,
-	}
 	resp, err := rpc.DeleteUser(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
 		log.Fatalln(err)
 	}
+	Token, _ := c.Get("Token")
+	jwt.DiscardToken(int(req.UserId), Token.(string))
 	c.JSON(http.StatusOK, resp)
 }
-
-type GetUserInfoRequest struct {
-	Token string
-}
-
 func GetUserInfo(c *gin.Context) {
-	receive := &GetUserInfoRequest{}
-	if err := c.Bind(receive); err != nil {
+	req := &user.GetUserInfoRequest{}
+	if err := c.Bind(req); err != nil {
 		c.JSON(http.StatusOK, "bind error")
 		return
 	}
-	//token验证
-	claim, err := jwt.ParseToken(receive.Token)
-	if err != nil {
-		c.JSON(http.StatusOK, user.GetUserInfoResponse{BaseResp: &user.BaseResp{StatusCode: 1, StatusMessage: err.Error()}})
-		return
-	}
 	//接收resp
-	req := &user.GetUserInfoRequest{
-		UserId: claim.ID,
-	}
+	id, _ := c.Get("ID")
+	req.UserId = id.(int64)
 	resp, err := rpc.GetUserInfo(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
@@ -229,36 +158,20 @@ func GetVerification(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, resp)
 }
-
-type BindEmailRequest struct {
-	Email        string
-	Verification string
-	Token        string
-}
-
 func BindEmail(c *gin.Context) {
-	receive := &BindEmailRequest{}
-	if err := c.Bind(receive); err != nil {
+	req := &user.BindEmailRequest{}
+	if err := c.Bind(req); err != nil {
 		c.JSON(http.StatusOK, "bind error")
 		return
 	}
-	//token验证
-	claim, err := jwt.ParseToken(receive.Token)
-	if err != nil {
-		c.JSON(http.StatusOK, user.DeleteUserResponse{BaseResp: &user.BaseResp{StatusCode: 1, StatusMessage: err.Error()}})
-		return
-	}
-	req := &user.BindEmailRequest{
-		Email:        receive.Email,
-		Verification: receive.Verification,
-		UserId:       claim.ID,
-	}
+
 	var resp *user.BindEmailResponse
-	err = jwt.CheckVerification(receive.Email, receive.Verification)
+	err := jwt.CheckVerification(req.Email, req.Verification)
 	if err != nil {
 		resp = &user.BindEmailResponse{BaseResp: &user.BaseResp{StatusCode: 1, StatusMessage: err.Error()}}
 	} else { //验证码匹配成功
-		req.UserId = claim.ID
+		id, _ := c.Get("ID")
+		req.UserId = id.(int64)
 		resp, err = rpc.BindEmail(context.Background(), req)
 		if err != nil {
 			c.JSON(http.StatusServiceUnavailable, err)

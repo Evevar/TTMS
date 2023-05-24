@@ -2,8 +2,9 @@ package main
 
 import (
 	"TTMS/internal/web/api"
-
+	"TTMS/pkg/jwt"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 func InitRouter() *gin.Engine {
@@ -12,7 +13,7 @@ func InitRouter() *gin.Engine {
 
 	baseGroup.POST("/user/create/", api.CreateUser)
 	baseGroup.POST("/user/login/", api.UserLogin)
-	baseGroup.GET("/user/all/", api.GetAllUser)
+	baseGroup.GET("/user/all/", AuthMiddleware(), api.GetAllUser)
 	baseGroup.POST("/user/change", api.ChangeUserPassword)
 	baseGroup.POST("/user/delete/", api.DeleteUser)
 	baseGroup.GET("/user/info/", api.GetUserInfo)
@@ -20,34 +21,65 @@ func InitRouter() *gin.Engine {
 	baseGroup.POST("/user/bind/", api.BindEmail)
 	baseGroup.POST("/user/forget/", api.ForgetPassword)
 
-	baseGroup.POST("/studio/add/", api.AddStudio)
-	baseGroup.GET("/studio/all/", api.GetAllStudio)
-	baseGroup.GET("/studio/info/", api.GetStudio)
-	baseGroup.POST("/studio/update/", api.UpdateStudio)
-	baseGroup.POST("/studio/delete/", api.DeleteStudio)
+	studioGroup := baseGroup.Group("/studio", AuthMiddleware())
+	studioGroup.POST("/add/", api.AddStudio)
+	studioGroup.GET("/all/", api.GetAllStudio)
+	studioGroup.GET("/info/", api.GetStudio)
+	studioGroup.POST("/update/", api.UpdateStudio)
+	studioGroup.POST("/delete/", api.DeleteStudio)
 
-	baseGroup.POST("/seat/add/", api.AddSeat)
-	baseGroup.POST("/seat/update/", api.UpdateSeat)
-	baseGroup.POST("/seat/delete/", api.DeleteSeat)
-	baseGroup.GET("/seat/all/", api.GetAllSeat)
+	seatGroup := baseGroup.Group("/seat", AuthMiddleware())
+	seatGroup.POST("/add/", api.AddSeat)
+	seatGroup.POST("/update/", api.UpdateSeat)
+	seatGroup.POST("/delete/", api.DeleteSeat)
+	seatGroup.GET("/all/", api.GetAllSeat)
 
-	baseGroup.POST("/play/add/", api.AddPlay)
-	baseGroup.POST("/play/update/", api.UpdatePlay)
-	baseGroup.POST("/play/delete/", api.DeletePlay)
-	baseGroup.GET("/play/all/", api.GetAllPlay)
+	playGroup := baseGroup.Group("/play", AuthMiddleware())
+	playGroup.POST("/add/", api.AddPlay)
+	playGroup.POST("/update/", api.UpdatePlay)
+	playGroup.POST("/delete/", api.DeletePlay)
+	playGroup.GET("/all/", api.GetAllPlay)
 
-	baseGroup.POST("/schedule/add/", api.AddSchedule)
-	baseGroup.POST("/schedule/update/", api.UpdateSchedule)
-	baseGroup.POST("/schedule/delete/", api.DeleteSchedule)
-	baseGroup.GET("/schedule/all/", api.GetAllSchedule)
+	scheduleGroup := baseGroup.Group("/schedule", AuthMiddleware())
+	scheduleGroup.POST("/add/", api.AddSchedule)
+	scheduleGroup.POST("/update/", api.UpdateSchedule)
+	scheduleGroup.POST("/delete/", api.DeleteSchedule)
+	scheduleGroup.GET("/all/", api.GetAllSchedule)
 
-	baseGroup.POST("/ticket/update/", api.UpdateTicket)
-	baseGroup.GET("/ticket/all/", api.GetAllTicket)
-	baseGroup.POST("/ticket/buy/", api.BuyTicket)
-	baseGroup.POST("/ticket/return/", api.ReturnTicket)
+	ticketGroup := baseGroup.Group("/ticket", AuthMiddleware())
+	ticketGroup.POST("/update/", api.UpdateTicket)
+	ticketGroup.GET("/all/", api.GetAllTicket)
+	ticketGroup.POST("/buy/", api.BuyTicket)
+	ticketGroup.POST("/return/", api.ReturnTicket)
 
-	baseGroup.POST("/order/commit/", api.CommitOrder)
-	baseGroup.GET("/order/all/", api.GetAllOrder)
-	baseGroup.GET("/order/analysis/", api.GetOrderAnalysis)
+	orderGroup := baseGroup.Group("/order", AuthMiddleware())
+	orderGroup.POST("/commit/", api.CommitOrder)
+	orderGroup.GET("/all/", api.GetAllOrder)
+	orderGroup.GET("/analysis/", api.GetOrderAnalysis)
 	return r
+}
+func AuthMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// 从HTTP请求头中读取token
+		tokenString := c.GetHeader("Authorization")
+		// 确保token非空
+		if tokenString == "" {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+			return
+		}
+		// 解析token
+		claim, err := jwt.ParseToken(tokenString)
+
+		// 处理token解析错误
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+			return
+		}
+		// 将解析后的token存储到gin的上下文中，以便后续使用
+		c.Set("ID", claim.ID)
+		c.Set("UserType", claim.UserType)
+		c.Set("Token", tokenString)
+		// 继续处理请求
+		c.Next()
+	}
 }
