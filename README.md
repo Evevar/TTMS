@@ -38,25 +38,33 @@
 - scripts：用于存放项目的脚本文件。
 - pkg：用于存放项目的公共库和工具函数等。
 
-## 部署
+## 部署（单机模拟分布式环境）
 
 - cd 到TTMS主目录下，执行`docker-compose up -d`，一键部署
-- 在云服务器上部署时，需要用nginx从默认的80端口转发到web网关层的8080端口，nginx配置如下，在
+- 在云服务器上部署时，需要用nginx从默认的80端口转发到web网关层的8080端口，并解决跨域问题，nginx配置如下，在
 
 `/etc/nginx/sites-available/default`文件中的`server`块中添加
 ```
 location /ttms/ {
    	proxy_pass http://127.0.0.1:8080/ttms/;
+	add_header Access-Control-Allow-Methods *;
+        add_header Access-Control-Allow-Origin $http_origin always;
+        add_header Access-Control-Allow-Max-Age 3600;
+        add_header Access-Control-Allow-Credentials true;
+        add_header Access-Control-Allow-Headers $http_access_control_request_headers;
+        if ($request_method = OPTIONS) {
+            return 200;
+        }
 	proxy_set_header Host $host;
 }
 ```
 
-## 运行
+## 运行（单机模拟分布式环境）
 
 - cd 到script目录下
 - 执行 `bash ./bootstrap.sh`
 
-## 终止
+## 终止（单机模拟分布式环境）
 
 - cd 到script目录下
 - 执行 `bash ./stop.sh`
