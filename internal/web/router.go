@@ -13,13 +13,14 @@ func InitRouter() *gin.Engine {
 
 	baseGroup.POST("/user/create/", api.CreateUser)
 	baseGroup.POST("/user/login/", api.UserLogin)
-	baseGroup.GET("/user/all/", AuthMiddleware(), api.GetAllUser)
-	baseGroup.POST("/user/change", api.ChangeUserPassword)
-	baseGroup.POST("/user/delete/", api.DeleteUser)
-	baseGroup.GET("/user/info/", api.GetUserInfo)
 	baseGroup.POST("/user/verify/", api.GetVerification)
-	baseGroup.POST("/user/bind/", api.BindEmail)
 	baseGroup.POST("/user/forget/", api.ForgetPassword)
+	//以上内容不需要Token鉴权
+	baseGroup.GET("/user/all/", AuthMiddleware(), api.GetAllUser)
+	baseGroup.POST("/user/change", AuthMiddleware(), api.ChangeUserPassword)
+	baseGroup.POST("/user/delete/", AuthMiddleware(), api.DeleteUser)
+	baseGroup.GET("/user/info/", AuthMiddleware(), api.GetUserInfo)
+	baseGroup.POST("/user/bind/", AuthMiddleware(), api.BindEmail)
 
 	studioGroup := baseGroup.Group("/studio", AuthMiddleware())
 	studioGroup.POST("/add/", api.AddStudio)
