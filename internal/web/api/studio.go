@@ -14,7 +14,7 @@ func AddStudio(c *gin.Context) {
 	req := &studio.AddStudioRequest{}
 	if err := c.Bind(req); err != nil {
 		log.Println("err = ", err, " req = ", req)
-		c.JSON(http.StatusOK, "bind error")
+		c.JSON(http.StatusBadRequest, "bind error")
 		return
 	}
 
@@ -29,7 +29,7 @@ func GetAllStudio(c *gin.Context) {
 	req := &studio.GetAllStudioRequest{}
 	if err := c.Bind(req); err != nil {
 		log.Println("err = ", err, " req = ", req)
-		c.JSON(http.StatusOK, "bind error")
+		c.JSON(http.StatusBadRequest, "bind error")
 		return
 	}
 	resp, err := rpc.GetAllStudio(context.Background(), req)
@@ -43,7 +43,7 @@ func GetStudio(c *gin.Context) {
 	req := &studio.GetStudioRequest{}
 	if err := c.Bind(req); err != nil {
 		log.Println("err = ", err, " req = ", req)
-		c.JSON(http.StatusOK, "bind error")
+		c.JSON(http.StatusBadRequest, "bind error")
 		return
 	}
 	resp, err := rpc.GetStudio(context.Background(), req)
@@ -57,7 +57,7 @@ func UpdateStudio(c *gin.Context) {
 	req := &studio.UpdateStudioRequest{}
 	if err := c.Bind(req); err != nil {
 		log.Println("err = ", err, " req = ", req)
-		c.JSON(http.StatusOK, "bind error")
+		c.JSON(http.StatusBadRequest, "bind error")
 		return
 	}
 	resp, err := rpc.UpdateStudio(context.Background(), req)
@@ -71,7 +71,7 @@ func DeleteStudio(c *gin.Context) {
 	req := &studio.DeleteStudioRequest{}
 	if err := c.Bind(req); err != nil {
 		log.Println("err = ", err, " req = ", req)
-		c.JSON(http.StatusOK, "bind error")
+		c.JSON(http.StatusBadRequest, "bind error")
 		return
 	}
 

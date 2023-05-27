@@ -12,7 +12,7 @@ import (
 func UpdateTicket(c *gin.Context) {
 	req := &ticket.UpdateTicketRequest{}
 	if err := c.Bind(req); err != nil {
-		c.JSON(http.StatusOK, "bind error")
+		c.JSON(http.StatusBadRequest, "bind error")
 		return
 	}
 
@@ -27,7 +27,7 @@ func UpdateTicket(c *gin.Context) {
 func GetAllTicket(c *gin.Context) {
 	req := &ticket.GetAllTicketRequest{}
 	if err := c.Bind(req); err != nil {
-		c.JSON(http.StatusOK, "bind error")
+		c.JSON(http.StatusBadRequest, "bind error")
 		return
 	}
 	resp, err := rpc.GetAllTicket(context.Background(), req)
@@ -41,7 +41,7 @@ func GetAllTicket(c *gin.Context) {
 func BuyTicket(c *gin.Context) {
 	req := &ticket.BuyTicketRequest{}
 	if err := c.Bind(req); err != nil {
-		c.JSON(http.StatusOK, "bind error")
+		c.JSON(http.StatusBadRequest, "bind error")
 		return
 	}
 	resp, err := rpc.BuyTicket(context.Background(), req)
@@ -55,7 +55,7 @@ func BuyTicket(c *gin.Context) {
 func ReturnTicket(c *gin.Context) {
 	req := &ticket.ReturnTicketRequest{}
 	if err := c.Bind(req); err != nil {
-		c.JSON(http.StatusOK, "bind error")
+		c.JSON(http.StatusBadRequest, "bind error")
 		return
 	}
 	resp, err := rpc.ReturnTicket(context.Background(), req)

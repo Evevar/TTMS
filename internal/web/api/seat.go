@@ -14,7 +14,7 @@ func AddSeat(c *gin.Context) {
 	req := &studio.AddSeatRequest{}
 	if err := c.Bind(req); err != nil {
 		log.Println("err = ", err, " req = ", req)
-		c.JSON(http.StatusOK, "bind error")
+		c.JSON(http.StatusBadRequest, "bind error")
 		return
 	}
 
@@ -29,7 +29,7 @@ func GetAllSeat(c *gin.Context) {
 	req := &studio.GetAllSeatRequest{}
 	if err := c.Bind(req); err != nil {
 		log.Println("err = ", err, " req = ", req)
-		c.JSON(http.StatusOK, "bind error")
+		c.JSON(http.StatusBadRequest, "bind error")
 		return
 	}
 
@@ -44,7 +44,7 @@ func UpdateSeat(c *gin.Context) {
 	req := &studio.UpdateSeatRequest{}
 	if err := c.Bind(req); err != nil {
 		log.Println("err = ", err, " req = ", req)
-		c.JSON(http.StatusOK, "bind error")
+		c.JSON(http.StatusBadRequest, "bind error")
 		return
 	}
 
@@ -59,7 +59,7 @@ func DeleteSeat(c *gin.Context) {
 	req := &studio.DeleteSeatRequest{}
 	if err := c.Bind(req); err != nil {
 		log.Println("err = ", err, " req = ", req)
-		c.JSON(http.StatusOK, "bind error")
+		c.JSON(http.StatusBadRequest, "bind error")
 		return
 	}
 

@@ -18,7 +18,8 @@ import (
 func CreateUser(c *gin.Context) {
 	req := &user.CreateUserRequest{}
 	if err := c.Bind(req); err != nil {
-		c.JSON(http.StatusOK, "bind error")
+		log.Println("err = ", err, " req = ", req)
+		c.JSON(http.StatusBadRequest, "bind error")
 		return
 	}
 	//_, err := jwt.ParseToken(req.Token)
@@ -37,7 +38,8 @@ func CreateUser(c *gin.Context) {
 func UserLogin(c *gin.Context) {
 	req := &user.UserLoginRequest{}
 	if err := c.Bind(req); err != nil {
-		c.JSON(http.StatusOK, "bind error")
+		log.Println("err = ", err, " req = ", req)
+		c.JSON(http.StatusBadRequest, "bind error")
 		return
 	}
 	resp, err := rpc.UserLogin(context.Background(), req)
@@ -61,7 +63,8 @@ func UserLogin(c *gin.Context) {
 func GetAllUser(c *gin.Context) {
 	req := &user.GetAllUserRequest{}
 	if err := c.Bind(req); err != nil {
-		c.JSON(http.StatusOK, "bind error")
+		log.Println("err = ", err, " req = ", req)
+		c.JSON(http.StatusBadRequest, "bind error")
 		return
 	}
 	//接收resp
@@ -75,7 +78,8 @@ func GetAllUser(c *gin.Context) {
 func ChangeUserPassword(c *gin.Context) {
 	req := &user.ChangeUserPasswordRequest{}
 	if err := c.Bind(req); err != nil {
-		c.JSON(http.StatusOK, "bind error")
+		log.Println("err = ", err, " req = ", req)
+		c.JSON(http.StatusBadRequest, "bind error")
 		return
 	}
 	//接收resp
@@ -91,7 +95,8 @@ func ChangeUserPassword(c *gin.Context) {
 func DeleteUser(c *gin.Context) {
 	req := &user.DeleteUserRequest{}
 	if err := c.Bind(req); err != nil {
-		c.JSON(http.StatusOK, "bind error")
+		log.Println("err = ", err, " req = ", req)
+		c.JSON(http.StatusBadRequest, "bind error")
 		return
 	}
 	//接收resp
@@ -107,7 +112,8 @@ func DeleteUser(c *gin.Context) {
 func GetUserInfo(c *gin.Context) {
 	req := &user.GetUserInfoRequest{}
 	if err := c.Bind(req); err != nil {
-		c.JSON(http.StatusOK, "bind error")
+		log.Println("err = ", err, " req = ", req)
+		c.JSON(http.StatusBadRequest, "bind error")
 		return
 	}
 	//接收resp
@@ -129,7 +135,8 @@ GetVerification 两个优化提升了用户体验：
 func GetVerification(c *gin.Context) {
 	req := &user.GetVerificationRequest{}
 	if err := c.Bind(req); err != nil {
-		c.JSON(http.StatusOK, "bind error")
+		log.Println("err = ", err, " req = ", req)
+		c.JSON(http.StatusBadRequest, "bind error")
 		return
 	}
 	mail := req.Email
@@ -161,7 +168,8 @@ func GetVerification(c *gin.Context) {
 func BindEmail(c *gin.Context) {
 	req := &user.BindEmailRequest{}
 	if err := c.Bind(req); err != nil {
-		c.JSON(http.StatusOK, "bind error")
+		log.Println("err = ", err, " req = ", req)
+		c.JSON(http.StatusBadRequest, "bind error")
 		return
 	}
 
@@ -184,7 +192,8 @@ func BindEmail(c *gin.Context) {
 func ForgetPassword(c *gin.Context) {
 	req := &user.ForgetPasswordRequest{}
 	if err := c.Bind(req); err != nil {
-		c.JSON(http.StatusOK, "bind error")
+		log.Println("err = ", err, " req = ", req)
+		c.JSON(http.StatusBadRequest, "bind error")
 		return
 	}
 	var resp *user.ForgetPasswordResponse
