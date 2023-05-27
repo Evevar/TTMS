@@ -144,7 +144,7 @@ func BuyTicketService(ctx context.Context, req *ticket.BuyTicketRequest) (resp *
 	resp = &ticket.BuyTicketResponse{BaseResp: &ticket.BaseResp{}}
 
 	deadline, _ := time.Parse("2006-01-02 15:04:05", schedule.Schedule.ShowTime)
-	if deadline.Sub(time.Now()) < 10*time.Minute { //距离开场已经不足10分钟，停止售票
+	if time.Until(deadline) < 10*time.Minute { //距离开场已经不足10分钟，停止售票
 		resp.BaseResp.StatusCode = 1
 		resp.BaseResp.StatusMessage = errors.New("已停止售票").Error()
 		return resp, nil
@@ -199,7 +199,7 @@ func ReturnTicketService(ctx context.Context, req *ticket.ReturnTicketRequest) (
 	resp = &ticket.ReturnTicketResponse{BaseResp: &ticket.BaseResp{}}
 
 	deadline, _ := time.Parse("2006-01-02 15:04:05", schedule.Schedule.ShowTime)
-	if deadline.Sub(time.Now()) < 0 { //演出已经开始，停止退票
+	if time.Until(deadline) < 0 { //演出已经开始，停止退票
 		resp.BaseResp.StatusCode = 1
 		resp.BaseResp.StatusMessage = errors.New("已停止退票").Error()
 		return resp, nil

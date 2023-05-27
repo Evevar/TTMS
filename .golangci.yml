@@ -2,14 +2,14 @@ linters:
   enable:
     - errcheck
     - gofmt
-    - goimports
-    - ineffassign
-    - staticcheck
+
     - unused
   disable:
     - exhaustivestruct
     - nakedret
-
+    - goimports
+    - ineffassign
+    - staticcheck
 linters-settings:
   errcheck:
     check-nil-return: false
