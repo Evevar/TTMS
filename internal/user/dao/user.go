@@ -32,14 +32,15 @@ func CreateUser(ctx context.Context, userInfo *user.User) (err error, id int64) 
 	if DB.Where("name = ?", userInfo.Name).Limit(1).Find(&u); u.Id > 0 {
 		err = errors.New("[警告] 添加成功，您设置了重名用户")
 	}
-	id = u.Id
+
 	if DB.Where("email = ?", userInfo.Email).Limit(1).Find(&u); u.Id > 0 && len(u.Email) > 0 {
 		err = errors.New("注册失败，该邮箱已经被使用")
 		return
 	}
 	userInfo.Password = string(getPassword(userInfo.Password))
 	//fmt.Println("userInfo = ", userInfo, "\nu = ", u, "\nctx = ", ctx, "\nDB = ", DB)
-	DB.Create(userInfo)
+	DB.Create(userInfo).Find(u)
+	id = u.Id
 	return
 }
 
