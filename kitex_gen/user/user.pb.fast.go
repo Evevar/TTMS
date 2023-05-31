@@ -184,6 +184,11 @@ func (x *CreateUserResponse) FastRead(buf []byte, _type int8, number int32) (off
 		if err != nil {
 			goto ReadFieldError
 		}
+	case 2:
+		offset, err = x.fastReadField2(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
 	default:
 		offset, err = fastpb.Skip(buf, _type, number)
 		if err != nil {
@@ -205,6 +210,11 @@ func (x *CreateUserResponse) fastReadField1(buf []byte, _type int8) (offset int,
 	}
 	x.BaseResp = &v
 	return offset, nil
+}
+
+func (x *CreateUserResponse) fastReadField2(buf []byte, _type int8) (offset int, err error) {
+	x.UserId, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
 }
 
 func (x *UserLoginRequest) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
@@ -916,6 +926,7 @@ func (x *CreateUserResponse) FastWrite(buf []byte) (offset int) {
 		return offset
 	}
 	offset += x.fastWriteField1(buf[offset:])
+	offset += x.fastWriteField2(buf[offset:])
 	return offset
 }
 
@@ -924,6 +935,14 @@ func (x *CreateUserResponse) fastWriteField1(buf []byte) (offset int) {
 		return offset
 	}
 	offset += fastpb.WriteMessage(buf[offset:], 1, x.BaseResp)
+	return offset
+}
+
+func (x *CreateUserResponse) fastWriteField2(buf []byte) (offset int) {
+	if x.UserId == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 2, x.UserId)
 	return offset
 }
 
@@ -1427,6 +1446,7 @@ func (x *CreateUserResponse) Size() (n int) {
 		return n
 	}
 	n += x.sizeField1()
+	n += x.sizeField2()
 	return n
 }
 
@@ -1435,6 +1455,14 @@ func (x *CreateUserResponse) sizeField1() (n int) {
 		return n
 	}
 	n += fastpb.SizeMessage(1, x.BaseResp)
+	return n
+}
+
+func (x *CreateUserResponse) sizeField2() (n int) {
+	if x.UserId == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(2, x.UserId)
 	return n
 }
 
@@ -1827,6 +1855,7 @@ var fieldIDToName_CreateUserRequest = map[int32]string{
 
 var fieldIDToName_CreateUserResponse = map[int32]string{
 	1: "BaseResp",
+	2: "UserId",
 }
 
 var fieldIDToName_UserLoginRequest = map[int32]string{

@@ -14,8 +14,9 @@ func CreateUserService(ctx context.Context, req *user.CreateUserRequest) (*user.
 		Password: req.Password,
 		Email:    req.Email,
 	}
-	err := dao.CreateUser(ctx, userInfo)
+	err, id := dao.CreateUser(ctx, userInfo)
 	resp := &user.CreateUserResponse{BaseResp: &user.BaseResp{}}
+	resp.UserId = id
 	if err != nil && err.Error() != "[警告] 添加成功，您设置了重名用户" {
 		resp.BaseResp.StatusCode = 1
 		resp.BaseResp.StatusMessage = err.Error()

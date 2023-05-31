@@ -27,18 +27,20 @@ func PasswordEqual(Password1, Password2 string) error {
 }
 
 // CreateUser 创建用户最后要加上判断 userType=9的条件
-func CreateUser(ctx context.Context, userInfo *user.User) (err error) {
+func CreateUser(ctx context.Context, userInfo *user.User) (err error, id int64) {
 	u := user.User{Id: -1}
 	if DB.Where("name = ?", userInfo.Name).Limit(1).Find(&u); u.Id > 0 {
 		err = errors.New("[警告] 添加成功，您设置了重名用户")
 	}
+	id = u.Id
 	if DB.Where("email = ?", userInfo.Email).Limit(1).Find(&u); u.Id > 0 && len(u.Email) > 0 {
-		return errors.New("注册失败，该邮箱已经被使用")
+		err = errors.New("注册失败，该邮箱已经被使用")
+		return
 	}
 	userInfo.Password = string(getPassword(userInfo.Password))
 	//fmt.Println("userInfo = ", userInfo, "\nu = ", u, "\nctx = ", ctx, "\nDB = ", DB)
 	DB.Create(userInfo)
-	return err
+	return
 }
 
 func UserLogin(ctx context.Context, userInfo *user.User) (*user.User, error) {

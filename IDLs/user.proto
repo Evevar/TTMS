@@ -24,6 +24,7 @@ message CreateUserRequest{
 }
 message CreateUserResponse {
   BaseResp BaseResp = 1;
+  int64 UserId=2;
 }
 //用户登录
 message UserLoginRequest{
