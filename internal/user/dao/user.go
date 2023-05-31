@@ -28,7 +28,7 @@ func PasswordEqual(Password1, Password2 string) error {
 
 // CreateUser 创建用户最后要加上判断 userType=9的条件
 func CreateUser(ctx context.Context, userInfo *user.User) (err error, id int64) {
-	u := user.User{Id: -1}
+	u := user.User{}
 	if DB.Where("name = ?", userInfo.Name).Limit(1).Find(&u); u.Id > 0 {
 		err = errors.New("[警告] 添加成功，您设置了重名用户")
 	}
