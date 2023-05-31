@@ -176,9 +176,10 @@ func GetAllScheduleService(ctx context.Context, req *play.GetAllScheduleRequest)
 	log.Println("schedule = ", schedules)
 	for i, sch := range schedules {
 		p, _ := dao.GetPlayById(sch.PlayId)
-		resp1, _ := studioClient.GetStudio(ctx, &studio.GetStudioRequest{Id: sch.StudioId})
+		resp1, err1 := studioClient.GetStudio(ctx, &studio.GetStudioRequest{Id: sch.StudioId})
 		log.Println("play = ", p)
 		log.Println("studio = ", resp1.Result)
+		log.Println("err1 = ", err1)
 		//log.Println("i = ", i, "resp.List[i] = ", resp.List[i])
 		resp.List = append(resp.List, new(play.Result))
 		resp.List[i].Id = sch.Id
