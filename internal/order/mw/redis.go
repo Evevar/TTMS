@@ -39,7 +39,7 @@ func InitRedis() {
 // ToDelayQueue 将任务添加到延迟队列
 func ToDelayQueue(ctx context.Context, orderInfo string, timeUnix float64) {
 	err := client.ZAdd(ctx, delayQueue, redis.Z{Member: orderInfo, Score: timeUnix}).Err()
-	fmt.Println("ToDelayQueue time = ", time.Unix(int64(timeUnix), 0).Format("2006-01-02 15:04:05"))
+	log.Println("ToDelayQueue time = ", time.Unix(int64(timeUnix), 0).Format("2006-01-02 15:04:05"))
 	if err != nil {
 		log.Println("ToDelayQueue ", err)
 	}
@@ -48,7 +48,9 @@ func ToDelayQueue(ctx context.Context, orderInfo string, timeUnix float64) {
 // RemoveFromDelayQueue 按时支付订单，从延时队列中取出该订单
 func RemoveFromDelayQueue(ctx context.Context, req *order.CommitOrderRequest) error {
 	orderInfo := fmt.Sprintf("%d;%d;%d;%d", req.UserId, req.ScheduleId, req.SeatRow, req.SeatCol)
+	log.Println("orderInfo = ", orderInfo)
 	count, err := client.ZRem(ctx, delayQueue, orderInfo).Result()
+	log.Println("count = ", count, " err = ", err)
 	if err != nil {
 		return err
 	}
@@ -111,6 +113,7 @@ func eventLoop(ctx context.Context) {
 			log.Println(err)
 			continue
 		}
+		log.Println("now = ", time.Now().Format("2006-01-02 15:04:05"))
 		log.Println("results = ", results)
 		results = results[1:]
 		log.Println("results = ", results)
