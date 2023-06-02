@@ -83,6 +83,8 @@ func ChangeUserPassword(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, "bind error")
 		return
 	}
+	UserId, _ := c.Get("ID")
+	req.UserId = UserId.(int64)
 	//接收resp
 	resp, err := rpc.ChangeUserPassword(context.Background(), req)
 	if err != nil {
