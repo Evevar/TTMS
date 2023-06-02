@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
 
 	"gorm.io/gorm"
 )
@@ -20,8 +21,18 @@ func AddBatchSeat(ctx context.Context, studioInfo *Studio) error {
 	return DB.WithContext(ctx).Create(seats).Error
 }
 func AddSeat(ctx context.Context, seatInfo *studio.Seat) error {
+	s1 := studio.Studio{Id: seatInfo.StudioId}
+	DB.WithContext(ctx).Find(&s1)
+	if s1.Id == 0 {
+		return errors.New("演出厅不存在")
+	}
+	log.Println("studio = ", s1)
+	if seatInfo.Row > s1.RowsCount || seatInfo.Col > s1.ColsCount {
+		return errors.New("无法添加超出演出厅规模的座位")
+	}
 	s := studio.Seat{}
-	if DB.WithContext(ctx).Where("studio_id = ? and row = ? and col = ?", seatInfo.StudioId, seatInfo.Row, seatInfo.Col).
+	if DB.WithContext(ctx).Where("studio_id = ? and row = ? and col = ? ",
+		seatInfo.StudioId, seatInfo.Row, seatInfo.Col).
 		Limit(1).Find(&s); s.Id > 0 && s.Status > 0 {
 		fmt.Println("不允许的行为：同一位置重复加入座位")
 		return errors.New("不允许的行为：同一位置重复加入座位")
