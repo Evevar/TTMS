@@ -61,14 +61,17 @@ func InitNats() {
 	for {
 		msgs, _ := sub.Fetch(10)
 		for _, msg := range msgs {
-			AddOrderHandler(msg)
+			switch msg.Subject {
+			case "stream.order.buy":
+				AddOrderHandler(msg)
+			}
 		}
 	}
 }
 
 func AddOrderHandler(msg *nats.Msg) {
 	data := strings.Split(string(msg.Data), ";")
-	fmt.Println(data)
+	log.Println("data = ", data)
 	d0, _ := strconv.Atoi(data[0])
 	d1, _ := strconv.Atoi(data[1])
 	d2, _ := strconv.Atoi(data[2])

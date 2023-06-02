@@ -16,6 +16,8 @@ func GetAllOrder(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, "bind error")
 		return
 	}
+	UserId, _ := c.Get("ID")
+	req.UserId = UserId.(int64)
 	resp, err := rpc.GetAllOrder(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
@@ -46,6 +48,8 @@ func CommitOrder(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, "bind error")
 		return
 	}
+	UserId, _ := c.Get("ID")
+	req.UserId = UserId.(int64)
 	resp, err := rpc.CommitOrder(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)

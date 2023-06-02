@@ -144,6 +144,9 @@ func BuyTicketService(ctx context.Context, req *ticket.BuyTicketRequest) (resp *
 	resp = &ticket.BuyTicketResponse{BaseResp: &ticket.BaseResp{}}
 
 	deadline, _ := time.Parse("2006-01-02 15:04:05", schedule.Schedule.ShowTime)
+	log.Println("now = ", time.Now().Format("2006-01-02 15:04:05"))
+	log.Println("showtime = ", deadline)
+	log.Println("until = ", time.Until(deadline))
 	if time.Until(deadline) < 10*time.Minute { //距离开场已经不足10分钟，停止售票
 		resp.BaseResp.StatusCode = 1
 		resp.BaseResp.StatusMessage = errors.New("已停止售票").Error()

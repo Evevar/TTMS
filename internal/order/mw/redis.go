@@ -111,9 +111,9 @@ func eventLoop(ctx context.Context) {
 			log.Println(err)
 			continue
 		}
-		fmt.Println(results)
+		log.Println("results = ", results)
 		results = results[1:]
-		fmt.Println(results)
+		log.Println("results = ", results)
 		for _, result := range results {
 			fmt.Println("result = ", result)
 			data := strings.Split(result, ";")

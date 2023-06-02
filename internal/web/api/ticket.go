@@ -44,6 +44,8 @@ func BuyTicket(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, "bind error")
 		return
 	}
+	UserId, _ := c.Get("ID")
+	req.UserId = UserId.(int64)
 	resp, err := rpc.BuyTicket(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
@@ -58,6 +60,8 @@ func ReturnTicket(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, "bind error")
 		return
 	}
+	UserId, _ := c.Get("ID")
+	req.UserId = UserId.(int64)
 	resp, err := rpc.ReturnTicket(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
