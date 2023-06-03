@@ -57,10 +57,16 @@ func RemoveFromDelayQueue(ctx context.Context, req *order.CommitOrderRequest) er
 	if count == 0 {
 		return errors.New("订单已经过期")
 	}
+	//更改订单状态为已支付
+	err = dao.UpdateOrder(req.UserId, req.ScheduleId, req.SeatRow, req.SeatCol, 1, time.Now().Format("2006-01-02 15:04:05"))
+	if err != nil {
+		log.Println(err)
+		return err
+	}
 	//向ticket服务提交，更改票状态为已付款
 	_, err = JS.Publish("stream.ticket.commit", []byte(fmt.Sprintf("%d;%d;%d", req.ScheduleId, req.SeatRow, req.SeatCol)))
 	if err != nil {
-		log.Panicln(err)
+		log.Panicln("UpdateOrder err = ", err)
 	}
 	return nil
 }

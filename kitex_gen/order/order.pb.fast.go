@@ -319,6 +319,11 @@ func (x *GetAllOrderRequest) FastRead(buf []byte, _type int8, number int32) (off
 		if err != nil {
 			goto ReadFieldError
 		}
+	case 2:
+		offset, err = x.fastReadField2(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
 	default:
 		offset, err = fastpb.Skip(buf, _type, number)
 		if err != nil {
@@ -334,6 +339,11 @@ ReadFieldError:
 
 func (x *GetAllOrderRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
 	x.UserId, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
+}
+
+func (x *GetAllOrderRequest) fastReadField2(buf []byte, _type int8) (offset int, err error) {
+	x.OrderType, offset, err = fastpb.ReadInt32(buf, _type)
 	return offset, err
 }
 
@@ -784,6 +794,7 @@ func (x *GetAllOrderRequest) FastWrite(buf []byte) (offset int) {
 		return offset
 	}
 	offset += x.fastWriteField1(buf[offset:])
+	offset += x.fastWriteField2(buf[offset:])
 	return offset
 }
 
@@ -792,6 +803,14 @@ func (x *GetAllOrderRequest) fastWriteField1(buf []byte) (offset int) {
 		return offset
 	}
 	offset += fastpb.WriteInt64(buf[offset:], 1, x.UserId)
+	return offset
+}
+
+func (x *GetAllOrderRequest) fastWriteField2(buf []byte) (offset int) {
+	if x.OrderType == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt32(buf[offset:], 2, x.OrderType)
 	return offset
 }
 
@@ -1178,6 +1197,7 @@ func (x *GetAllOrderRequest) Size() (n int) {
 		return n
 	}
 	n += x.sizeField1()
+	n += x.sizeField2()
 	return n
 }
 
@@ -1186,6 +1206,14 @@ func (x *GetAllOrderRequest) sizeField1() (n int) {
 		return n
 	}
 	n += fastpb.SizeInt64(1, x.UserId)
+	return n
+}
+
+func (x *GetAllOrderRequest) sizeField2() (n int) {
+	if x.OrderType == 0 {
+		return n
+	}
+	n += fastpb.SizeInt32(2, x.OrderType)
 	return n
 }
 
@@ -1385,6 +1413,7 @@ var fieldIDToName_UpdateOrderResponse = map[int32]string{
 
 var fieldIDToName_GetAllOrderRequest = map[int32]string{
 	1: "UserId",
+	2: "OrderType",
 }
 
 var fieldIDToName_GetAllOrderResponse = map[int32]string{

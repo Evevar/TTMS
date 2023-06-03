@@ -7,17 +7,22 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 func GetAllOrder(c *gin.Context) {
 	req := &order.GetAllOrderRequest{}
-	if err := c.Bind(req); err != nil {
-		log.Println("err = ", err, " req = ", req)
-		c.JSON(http.StatusBadRequest, "bind error")
-		return
-	}
+
 	UserId, _ := c.Get("ID")
 	req.UserId = UserId.(int64)
+	t := c.Query("OrderType")
+	orderType, err := strconv.Atoi(t)
+	if err != nil {
+		log.Println("err = ", err, "orderType = ", orderType)
+	}
+	if orderType == 2 {
+		req.OrderType = 2
+	}
 	resp, err := rpc.GetAllOrder(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)

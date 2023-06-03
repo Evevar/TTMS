@@ -15,7 +15,7 @@ message Order{
   int32 SeatCol = 5;//座位列数
   string Date = 6;//订单处理时间 按照示例格式：2006-01-02 15:04:05（\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}:\d{2}）
   int32 Value = 7;//票价
-  int32 Type = 8;//交易类型，1-买票，-1-退票
+  int32 Type = 8;//交易类型，1-买票，-1-退票，2-待支付
 }
 //用户抢到了票，创建订单，默认是买票行为
 //message AddOrderRequest{
@@ -37,7 +37,7 @@ message CommitOrderRequest{
   int32 SeatCol = 4;//座位列数
 }
 message CommitOrderResponse{
-  BaseResp BaseResp=1;
+  BaseResp BaseResp = 1;
 }
 //未在规定时间内支付，默认放弃这张票，系统删除该订单
 //message DeleteOrderRequest{
@@ -60,6 +60,7 @@ message UpdateOrderResponse{
 //[给用户使用]根据用户ID 获取全部订单信息
 message GetAllOrderRequest{
   int64 UserId = 1;
+  int32 OrderType = 2;
 }
 message GetAllOrderResponse{
   BaseResp BaseResp = 1;
@@ -88,8 +89,8 @@ message GetOrderAnalysisResponse{
 }
 
 service OrderService{
-//  rpc AddOrder(AddOrderRequest) returns (AddOrderResponse){}
-//  rpc DeleteOrder(DeleteOrderRequest) returns (DeleteOrderResponse){}
+  //  rpc AddOrder(AddOrderRequest) returns (AddOrderResponse){}
+  //  rpc DeleteOrder(DeleteOrderRequest) returns (DeleteOrderResponse){}
   rpc UpdateOrder(UpdateOrderRequest) returns (UpdateOrderResponse){}
   rpc GetAllOrder(GetAllOrderRequest) returns (GetAllOrderResponse){}
   rpc GetOrderAnalysis(GetOrderAnalysisRequest) returns (GetOrderAnalysisResponse){}

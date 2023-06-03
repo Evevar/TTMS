@@ -51,7 +51,7 @@ func InitPlayRPC() {
 
 func GetAllOrderService(ctx context.Context, req *order.GetAllOrderRequest) (resp *order.GetAllOrderResponse, err error) {
 	resp = &order.GetAllOrderResponse{BaseResp: &order.BaseResp{}}
-	resp.List, err = dao.GetAllOrder(ctx, int(req.UserId))
+	resp.List, err = dao.GetAllOrder(ctx, int(req.UserId), int(req.OrderType))
 	if err != nil {
 		resp.BaseResp.StatusCode = 1
 		resp.BaseResp.StatusMessage = err.Error()
@@ -107,7 +107,7 @@ func CommitOrderService(ctx context.Context, req *order.CommitOrderRequest) (res
 }
 func UpdateOrderService(ctx context.Context, req *order.UpdateOrderRequest) (resp *order.UpdateOrderResponse, err error) {
 	resp = &order.UpdateOrderResponse{BaseResp: &order.BaseResp{}}
-	err = dao.UpdateOrder(req.UserId, req.ScheduleId, req.SeatRow, req.SeatCol, time.Now().Format("2006-01-02 15:04:05"))
+	err = dao.UpdateOrder(req.UserId, req.ScheduleId, req.SeatRow, req.SeatCol, -1, time.Now().Format("2006-01-02 15:04:05"))
 	if err != nil {
 		resp.BaseResp.StatusCode = 1
 		resp.BaseResp.StatusMessage = err.Error()
