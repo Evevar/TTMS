@@ -33,6 +33,7 @@ func main() {
 		server.WithSuite(trace.NewDefaultServerSuite()),                    // tracer
 		server.WithRegistry(r),                                             // registry
 	)
+	service.LoadLocation()
 	dao.Init()
 	go nats.Init()
 	redis.Init()

@@ -32,6 +32,7 @@ func main() {
 		server.WithSuite(trace.NewDefaultServerSuite()),                    // tracer
 		server.WithRegistry(r),                                             // registry
 	)
+	mw.LoadLocation()
 	dao.Init()
 	mw.InitRedis()
 	service.InitPlayRPC()

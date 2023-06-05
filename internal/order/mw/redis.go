@@ -24,6 +24,7 @@ import (
 var client *redis.Client
 var delayQueue = "delay_queue"
 var targetQueue = "target_queue"
+var Loc *time.Location
 
 func InitRedis() {
 	client = redis.NewClient(&redis.Options{
@@ -34,6 +35,14 @@ func InitRedis() {
 	ctx := context.Background()
 	go toTargetQueue(ctx)
 	go eventLoop(ctx)
+}
+func LoadLocation() {
+	var err error
+	Loc, err = time.LoadLocation("Asia/Shanghai")
+	if err != nil {
+		log.Println("Error loading location:", err)
+		return
+	}
 }
 
 // ToDelayQueue 将任务添加到延迟队列
@@ -116,7 +125,6 @@ func eventLoop(ctx context.Context) {
 	for {
 		results, err := client.BLPop(ctx, time.Second*5, targetQueue).Result()
 		if err == redis.Nil {
-			log.Println(err)
 			continue
 		}
 		log.Println("now = ", time.Now().Format("2006-01-02 15:04:05"))

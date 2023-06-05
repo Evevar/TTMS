@@ -30,6 +30,7 @@ import (
 
 var playClient playservice.Client
 var orderClient orderservice.Client
+var Loc *time.Location
 
 func OrderPlayRPC() {
 	r, err := etcd.NewEtcdResolver([]string{consts.EtcdAddress})
@@ -75,7 +76,14 @@ func InitPlayRPC() {
 	}
 	playClient = c
 }
-
+func LoadLocation() {
+	var err error
+	Loc, err = time.LoadLocation("Asia/Shanghai")
+	if err != nil {
+		log.Println("Error loading location:", err)
+		return
+	}
+}
 func BatchAddTicketService(ctx context.Context, req *ticket.BatchAddTicketRequest) (resp *ticket.BatchAddTicketResponse, err error) {
 	//fmt.Println(req.ScheduleId, req.Price, req.PlayName, req.StudioId, req.List)
 	err = dao.BatchAddTicket(ctx, req.ScheduleId, req.Price, req.PlayName, req.StudioId, req.List)
@@ -144,6 +152,8 @@ func BuyTicketService(ctx context.Context, req *ticket.BuyTicketRequest) (resp *
 	resp = &ticket.BuyTicketResponse{BaseResp: &ticket.BaseResp{}}
 
 	deadline, _ := time.Parse("2006-01-02 15:04:05", schedule.Schedule.ShowTime)
+	deadline = deadline.In(Loc).Add(-8 * time.Hour)
+
 	log.Println("now = ", time.Now().Format("2006-01-02 15:04:05"))
 	log.Println("showtime = ", deadline)
 	log.Println("until = ", time.Until(deadline))
@@ -202,6 +212,7 @@ func ReturnTicketService(ctx context.Context, req *ticket.ReturnTicketRequest) (
 	resp = &ticket.ReturnTicketResponse{BaseResp: &ticket.BaseResp{}}
 
 	deadline, _ := time.Parse("2006-01-02 15:04:05", schedule.Schedule.ShowTime)
+	deadline = deadline.In(Loc).Add(-8 * time.Hour)
 	if time.Until(deadline) < 0 { //演出已经开始，停止退票
 		resp.BaseResp.StatusCode = 1
 		resp.BaseResp.StatusMessage = errors.New("已停止退票").Error()
