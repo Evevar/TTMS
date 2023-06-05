@@ -13,10 +13,17 @@ func AddOrder(UserId, ScheduleId, SeatRow, SeatCol int, Date string, Price int) 
 	return DB.Create(&o).Error
 }
 func UpdateOrder(UserId, ScheduleId int64, SeatRow, SeatCol int32, Type int32, Date string) error {
-	return DB.Model(&order.Order{}).Where("user_id = ? and schedule_id = ? and seat_row = ? and seat_col = ?", UserId, ScheduleId, SeatRow, SeatCol).UpdateColumns(map[string]interface{}{
+	tx := DB.Begin()
+	o := order.Order{}
+	tx.Model(&o).Where("user_id = ? and schedule_id = ? and seat_row = ? and seat_col = ?",
+		UserId, ScheduleId, SeatRow, SeatCol).Order("id desc").Find(&o)
+
+	err := tx.Model(&order.Order{}).Where("id = ? ", o.Id).UpdateColumns(map[string]interface{}{
 		"date": Date,
 		"type": Type,
 	}).Error
+	tx.Commit()
+	return err
 }
 
 func GetAllOrder(ctx context.Context, UserId, OrderType int) (orders []*order.Order, err error) {
