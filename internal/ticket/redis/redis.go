@@ -42,10 +42,11 @@ func InitAllTicket(ctx context.Context) error {
 }
 
 // AddTicket 添加票缓存
-func AddTicket(key string, price int32) {
+func AddTicket(ScheduleId, Row, Col int, price int32) {
+
 	ctx := context.Background()
-	redisClient.Set(ctx, key, 0, time.Hour)
-	redisClient.Set(ctx, fmt.Sprintf("%s;price", key), price, time.Hour)
+	redisClient.Set(ctx, fmt.Sprintf("%d;%d;%d", ScheduleId, Row, Col), 0, time.Hour)
+	redisClient.Set(ctx, fmt.Sprintf("%d;price", ScheduleId), price, 0)
 }
 
 // AcquireLock 分布式锁，加锁

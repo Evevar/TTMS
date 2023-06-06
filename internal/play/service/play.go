@@ -3,6 +3,7 @@ package service
 import (
 	"TTMS/configs/consts"
 	"TTMS/internal/play/dao"
+	"TTMS/internal/play/redis"
 	"TTMS/kitex_gen/play"
 	"TTMS/kitex_gen/studio"
 	"TTMS/kitex_gen/studio/studioservice"
@@ -87,6 +88,10 @@ func UpdatePlayService(ctx context.Context, req *play.UpdatePlayRequest) (resp *
 		resp.BaseResp.StatusMessage = err.Error()
 	} else {
 		resp.BaseResp.StatusMessage = "success"
+		if req.Price != 0 {
+			_, schList, _ := dao.PlayToSchedule(ctx, req.Id)
+			redis.UpdatePlayPrice(ctx, schList, int(req.Price))
+		}
 	}
 	return resp, nil
 }

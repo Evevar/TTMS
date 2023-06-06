@@ -88,7 +88,7 @@ func BatchAddTicketService(ctx context.Context, req *ticket.BatchAddTicketReques
 	//fmt.Println(req.ScheduleId, req.Price, req.PlayName, req.StudioId, req.List)
 	err = dao.BatchAddTicket(ctx, req.ScheduleId, req.Price, req.PlayName, req.StudioId, req.List)
 	for _, s := range req.List {
-		redis.AddTicket(fmt.Sprintf("%d;%d;%d", req.ScheduleId, s.Row, s.Col), req.Price)
+		redis.AddTicket(int(req.ScheduleId), int(s.Row), int(s.Col), req.Price)
 	}
 	resp = &ticket.BatchAddTicketResponse{BaseResp: &ticket.BaseResp{}}
 	if err != nil {
@@ -187,7 +187,7 @@ func BuyTicketService(ctx context.Context, req *ticket.BuyTicketRequest) (resp *
 	fmt.Println("time = ", t)
 	_, err = nats.JS.Publish("stream.order.buy",
 		[]byte(fmt.Sprintf("%d;%s;%s;%s", req.UserId, key, t,
-			redis.GetTicketPrice(ctx, fmt.Sprintf("%s;price", key)))))
+			redis.GetTicketPrice(ctx, fmt.Sprintf("%d;price", req.ScheduleId)))))
 	fmt.Println(err)
 	if err != nil {
 		log.Println(err)

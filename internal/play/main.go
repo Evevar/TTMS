@@ -3,6 +3,7 @@ package main
 import (
 	"TTMS/configs/consts"
 	"TTMS/internal/play/dao"
+	"TTMS/internal/play/redis"
 	"TTMS/internal/play/service"
 	play "TTMS/kitex_gen/play/playservice"
 	"net"
@@ -34,6 +35,7 @@ func main() {
 		server.WithSuite(trace.NewDefaultServerSuite()),                    // tracer
 		server.WithRegistry(r),                                             // registry
 	)
+	redis.Init()
 	dao.Init()
 	service.InitStudioRPC()
 	service.InitTicketRPC()
