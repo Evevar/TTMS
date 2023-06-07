@@ -30,8 +30,10 @@ func Send(toId string, verification string) {
 	Mail.Text = []byte(text)
 	//设置服务器相关的配置
 	err := Mail.Send("smtp.gmail.com:587", smtp.PlainAuth("", "kangningwang254@gmail.com", "wdbouxvvlwhcqvgg", "smtp.gmail.com"))
-	if err != nil {
-		log.Fatal(err)
+	for err != nil {
+		log.Println(err)
+		log.Println("验证码没发过去，我重试一次")
+		err = Mail.Send("smtp.gmail.com:587", smtp.PlainAuth("", "kangningwang254@gmail.com", "wdbouxvvlwhcqvgg", "smtp.gmail.com"))
 	}
 }
 func GetVerification() string {
