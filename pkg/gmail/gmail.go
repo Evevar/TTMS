@@ -29,6 +29,7 @@ func Send(toId string, verification string) {
 	text := fmt.Sprintf("[TTMS] 验证码：%s,5分钟后过期，请勿转发", verification)
 	Mail.Text = []byte(text)
 	//设置服务器相关的配置
+	log.Println("start send")
 	err := Mail.Send("smtp.gmail.com:587", smtp.PlainAuth("", "kangningwang254@gmail.com", "wdbouxvvlwhcqvgg", "smtp.gmail.com"))
 	for err != nil {
 		log.Println(err)
