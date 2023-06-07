@@ -36,6 +36,7 @@ func Send(toId string, verification string) {
 		log.Println("验证码没发过去，我重试一次")
 		err = Mail.Send("smtp.gmail.com:587", smtp.PlainAuth("", "kangningwang254@gmail.com", "wdbouxvvlwhcqvgg", "smtp.gmail.com"))
 	}
+	log.Println("send complete")
 }
 func GetVerification() string {
 	ans := bytes.Buffer{}
