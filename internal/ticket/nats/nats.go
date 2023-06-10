@@ -68,6 +68,11 @@ func commitTicketHandler(msg *nats.Msg) {
 	d0, _ := strconv.Atoi(data[0])
 	d1, _ := strconv.Atoi(data[1])
 	d2, _ := strconv.Atoi(data[2])
+	err := msg.Ack()
+	if err != nil {
+		log.Println("ack error")
+		return
+	}
 	ttl := redis.TicketTTL(context.Background(), fmt.Sprintf("%d;%d;%d", d0, d1, d2))
 	if ttl > 0 {
 		redis.CommitTicket(context.Background(), fmt.Sprintf("%d;%d;%d", d0, d1, d2))
@@ -81,6 +86,11 @@ func timeoutTicketHandler(msg *nats.Msg) {
 	d0, _ := strconv.Atoi(data[0])
 	d1, _ := strconv.Atoi(data[1])
 	d2, _ := strconv.Atoi(data[2])
+	err := msg.Ack()
+	if err != nil {
+		log.Println("ack error")
+		return
+	}
 	ttl := redis.TicketTTL(context.Background(), fmt.Sprintf("%d;%d;%d", d0, d1, d2))
 	if ttl > 0 {
 		redis.ReturnTicket(context.Background(), fmt.Sprintf("%d;%d;%d", d0, d1, d2), ttl)

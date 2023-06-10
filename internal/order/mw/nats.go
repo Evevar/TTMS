@@ -77,6 +77,11 @@ func AddOrderHandler(msg *nats.Msg) {
 	d2, _ := strconv.Atoi(data[2])
 	d3, _ := strconv.Atoi(data[3])
 	d5, _ := strconv.Atoi(data[5])
+	err := msg.Ack()
+	if err != nil {
+		log.Println("ack error")
+		return
+	}
 	t := float64(time.Now().Add(consts.OrderDelayTime).Unix())
 	//fmt.Println("time = ", time.Now().Format("2006-01-02 15:04:05"), " unix = ", time.Now().Unix())
 	//fmt.Println("time = ", time.Unix(int64(t), 0).Format("2006-01-02 15:04:05"), " unix = ", t)
@@ -84,12 +89,8 @@ func AddOrderHandler(msg *nats.Msg) {
 	//fmt.Println("orderInfo = ", orderInfo)
 	ToDelayQueue(context.Background(), orderInfo, t)
 	//fmt.Println(d0, d1, d2, d3, data[4])
-	err := dao.AddOrder(d0, d1, d2, d3, data[4], d5)
+	err = dao.AddOrder(d0, d1, d2, d3, data[4], d5)
 	if err != nil {
 		log.Panicln(err)
-	}
-	err = msg.Ack()
-	if err != nil {
-		return
 	}
 }
