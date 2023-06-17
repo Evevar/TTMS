@@ -9,6 +9,7 @@ import (
 
 func InitRouter() *gin.Engine {
 	r := gin.Default()
+	r.Use(Cors())
 	baseGroup := r.Group("/ttms")
 
 	baseGroup.POST("/user/create/", api.CreateUser)
@@ -58,6 +59,18 @@ func InitRouter() *gin.Engine {
 	orderGroup.GET("/all/", api.GetAllOrder)
 	orderGroup.GET("/analysis/", api.GetOrderAnalysis)
 	return r
+}
+func Cors() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(200)
+			return
+		}
+		c.Next()
+	}
 }
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
