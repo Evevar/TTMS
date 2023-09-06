@@ -23,7 +23,7 @@ func Init() {
 	//if err != nil {
 	//	panic(err)
 	//}
-	go LockRenewal()
+	//go LockRenewal()
 }
 
 // InitAllTicket 将所有票加载到redis缓存中（已弃用）
@@ -43,7 +43,6 @@ func InitAllTicket(ctx context.Context) error {
 
 // AddTicket 添加票缓存
 func AddTicket(ScheduleId, Row, Col int, price int32) {
-
 	ctx := context.Background()
 	redisClient.Set(ctx, fmt.Sprintf("%d;%d;%d", ScheduleId, Row, Col), 0, time.Hour)
 	redisClient.Set(ctx, fmt.Sprintf("%d;price", ScheduleId), price, 0)
@@ -51,7 +50,6 @@ func AddTicket(ScheduleId, Row, Col int, price int32) {
 
 // AcquireLock 分布式锁，加锁
 func AcquireLock(lockKey string) bool {
-	//result, err := redis.String(conn.Do("SET", lockKey, lockValue, "NX", "EX", lockTimeout))
 	result, err := redisClient.SetNX(context.Background(), lockKey, 1, time.Duration(consts.RedisLockTimeOut)).Result()
 	if err != nil || !result {
 		return false
@@ -69,27 +67,27 @@ func ReleaseLock(lockKey string) bool {
 }
 
 // LockRenewal 为分布式锁续期
-func LockRenewal() {
-	var cursor uint64 = 0
-	ctx := context.Background()
-	for range time.Tick(1 * time.Second) {
-		keys, next, err := redisClient.Scan(ctx, cursor, "lock;*", 10000).Result()
-		if err != nil {
-			log.Println(err)
-		}
-		cursor = next
-		for _, key := range keys {
-			d, err := redisClient.TTL(ctx, key).Result()
-			if err != nil {
-				log.Println(err)
-			}
-			if d < 2*time.Second { //锁过期时间不足2s时，对锁进行续期
-				redisClient.Expire(ctx, key, consts.RedisLockTimeOut)
-			}
-		}
-	}
+//func LockRenewal() {
+//	var cursor uint64 = 0
+//	ctx := context.Background()
+//	for range time.Tick(1 * time.Second) {
+//		keys, next, err := redisClient.Scan(ctx, cursor, "lock;*", 10000).Result()
+//		if err != nil {
+//			log.Println(err)
+//		}
+//		cursor = next
+//		for _, key := range keys {
+//			d, err := redisClient.TTL(ctx, key).Result()
+//			if err != nil {
+//				log.Println(err)
+//			}
+//			if d < 2*time.Second { //锁过期时间不足2s时，对锁进行续期
+//				redisClient.Expire(ctx, key, consts.RedisLockTimeOut)
+//			}
+//		}
+//	}
+//}
 
-}
 func TicketIsExist(key string) (bool, error) {
 	fmt.Println("key = ", key)
 	value, err := redisClient.Get(context.Background(), key).Result()

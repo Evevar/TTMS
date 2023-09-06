@@ -178,6 +178,7 @@ func BuyTicketService(ctx context.Context, req *ticket.BuyTicketRequest) (resp *
 		resp.BaseResp.StatusMessage = errors.New("票已经被买").Error()
 		return resp, nil
 	}
+	defer redis.ReleaseLock(fmt.Sprintf("lock;%s", key)) //释放锁
 	//抢到分布式锁,执行买票流程
 	//选择是否更新redis，并强制更新mysql
 	BuyTicket(ctx, req.ScheduleId, req.SeatRow, req.SeatCol, source)
@@ -196,7 +197,6 @@ func BuyTicketService(ctx context.Context, req *ticket.BuyTicketRequest) (resp *
 	} else {
 		resp.BaseResp.StatusMessage = "success"
 	}
-	redis.ReleaseLock(fmt.Sprintf("lock;%s", key)) //释放锁
 	return resp, nil
 }
 
