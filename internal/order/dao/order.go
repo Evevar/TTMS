@@ -16,7 +16,7 @@ func UpdateOrder(UserId, ScheduleId int64, SeatRow, SeatCol int32, Type int32, D
 	tx := DB.Begin()
 	o := order.Order{}
 	tx.Model(&o).Select("id").Where("user_id = ? and schedule_id = ? and seat_row = ? and seat_col = ?",
-		UserId, ScheduleId, SeatRow, SeatCol).Order("id desc").Limit(1).Find(&o.Id)
+		UserId, ScheduleId, SeatRow, SeatCol).Order("id desc").Find(&o.Id)
 
 	err := tx.Model(&order.Order{}).Where("id = ? ", o.Id).UpdateColumns(map[string]interface{}{
 		"date": Date,

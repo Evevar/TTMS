@@ -68,3 +68,22 @@ location /ttms/ {
 
 - cd 到script目录下
 - 执行 `bash ./stop.sh`
+
+## 性能优化
+
+- Kitex:
+  - client端引入长连接以及连接池
+  - client和server端同时开启多路复用
+  - server端调高连接限制以及每秒请求数限制
+
+- MySQL：
+  - 增加 `max_connections`的值，之前默认151,增加至1000,以应对较高并发量
+  - 为买票和订单服务数据库表中添加索引
+    - ticket_index ON `tickets`(`schedule_id`,`seat_row`,`seat_col`)
+    - order_index ON `orders`(`user_id`,`schedule_id`,`seat_row`,`seat_col`)
+  - 优化部分SQL,对于判断是否存在的查找语句，一律返回`id`，避免回表
+
+- 优化后情况：
+  - 单组30个请求，分别模拟多用户抢票，抢票完成之后，再次发送退票请求
+  - 开启200个线程进行压测，循环300次，共计180 0000次请求
+  - 单机能承载大约2000+QPS(本机同时运行服务器及压测应用，服务器配置大约为4核8G8线程)
