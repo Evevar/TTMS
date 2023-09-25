@@ -11,7 +11,6 @@ import (
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
 	etcd "github.com/kitex-contrib/registry-etcd"
-	trace "github.com/kitex-contrib/tracer-opentracing"
 	"net"
 )
 
@@ -26,11 +25,11 @@ func main() {
 	}
 	svr := order.NewServer(new(OrderServiceImpl),
 		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: consts.OrderServiceName}), // server name
-		server.WithServiceAddr(addr),                                       // address
-		server.WithLimit(&limit.Option{MaxConnections: 1000, MaxQPS: 100}), // limit
-		server.WithMuxTransport(),                                          // Multiplex
-		server.WithSuite(trace.NewDefaultServerSuite()),                    // tracer
-		server.WithRegistry(r),                                             // registry
+		server.WithServiceAddr(addr),                                         // address
+		server.WithLimit(&limit.Option{MaxConnections: 10000, MaxQPS: 5000}), // limit
+		server.WithMuxTransport(),                                            // Multiplex
+		//server.WithSuite(trace.NewDefaultServerSuite()),                     // tracer
+		server.WithRegistry(r), // registry
 	)
 	mw.LoadLocation()
 	dao.Init()

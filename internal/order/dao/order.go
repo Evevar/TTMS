@@ -15,8 +15,8 @@ func AddOrder(UserId, ScheduleId, SeatRow, SeatCol int, Date string, Price int) 
 func UpdateOrder(UserId, ScheduleId int64, SeatRow, SeatCol int32, Type int32, Date string) error {
 	tx := DB.Begin()
 	o := order.Order{}
-	tx.Model(&o).Where("user_id = ? and schedule_id = ? and seat_row = ? and seat_col = ?",
-		UserId, ScheduleId, SeatRow, SeatCol).Order("id desc").Find(&o)
+	tx.Model(&o).Select("id").Where("user_id = ? and schedule_id = ? and seat_row = ? and seat_col = ?",
+		UserId, ScheduleId, SeatRow, SeatCol).Order("id desc").Limit(1).Find(&o.Id)
 
 	err := tx.Model(&order.Order{}).Where("id = ? ", o.Id).UpdateColumns(map[string]interface{}{
 		"date": Date,
@@ -36,7 +36,7 @@ func GetAllOrder(ctx context.Context, UserId, OrderType int) (orders []*order.Or
 }
 
 func GetOrderAnalysis(ctx context.Context, ScheduleIdList []int64) (int64, int64, error) { //count,sum
-	rows, err := DB.WithContext(ctx).Model(&order.Order{}).Select("count(id),coalesce(sum(value),0)").Where("schedule_id in ?", ScheduleIdList).Rows()
+	rows, err := DB.WithContext(ctx).Model(&order.Order{}).Select("count(user_id),coalesce(sum(value),0)").Where("schedule_id in ?", ScheduleIdList).Rows()
 	if err != nil && strings.EqualFold(err.Error(), sql.ErrNoRows.Error()) {
 		log.Println(err)
 		log.Println(sql.ErrNoRows)

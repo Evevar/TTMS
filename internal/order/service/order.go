@@ -34,6 +34,7 @@ func InitPlayRPC() {
 
 	c, err := playservice.NewClient(
 		consts.PlayServiceName,
+		//client.WithLongConnection(connpool.IdleConfig{MinIdlePerAddress: 1, MaxIdlePerAddress: 100, MaxIdleGlobal: 10000, MaxIdleTimeout: time.Minute}),
 		//client.WithMiddleware(mw.CommonMiddleware),
 		//client.WithInstanceMW(mw.ClientMiddleware),
 		client.WithMuxConnection(1),                       // mux

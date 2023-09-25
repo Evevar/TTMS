@@ -12,6 +12,7 @@ services:
 #      - ./configs/conf.d/:/etc/nginx/conf.d/
   mysql:
     image: "mariadb:10.11.2"
+    command: [ "--max_connections=1000" ]
     ports:
       - "3307:3306"
     environment:
@@ -19,6 +20,8 @@ services:
       - MYSQL_USER=TTMS
       - MYSQL_PASSWORD=TTMS
       - MYSQL_RANDOM_ROOT_PASSWORD="yes"
+      #- MYSQL_MAX_CONNECTIONS = 300 #暂时不起作用
+      - MYSQL_DATABASE=high_frequency
     volumes:
       - ./script/mysql:/var/lib/mysql
   Etcd:

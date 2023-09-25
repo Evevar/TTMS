@@ -8,7 +8,6 @@ import (
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/retry"
 	etcd "github.com/kitex-contrib/registry-etcd"
-	trace "github.com/kitex-contrib/tracer-opentracing"
 	"time"
 )
 
@@ -22,14 +21,16 @@ func InitOrderRPC() {
 
 	c, err := orderservice.NewClient(
 		consts.OrderServiceName,
+		//client.WithShortConnection(),
+		//client.WithLongConnection(connpool.IdleConfig{MinIdlePerAddress: 1, MaxIdlePerAddress: 100, MaxIdleGlobal: 10000, MaxIdleTimeout: time.Minute}),
 		//client.WithMiddleware(mw.CommonMiddleware),
 		//client.WithInstanceMW(mw.ClientMiddleware),
 		client.WithMuxConnection(1),                       // mux
 		client.WithRPCTimeout(3*time.Second),              // rpc timeout
 		client.WithConnectTimeout(50*time.Millisecond),    // conn timeout
 		client.WithFailureRetry(retry.NewFailurePolicy()), // retry
-		client.WithSuite(trace.NewDefaultClientSuite()),   // tracer
-		client.WithResolver(r),                            // resolver
+		//client.WithSuite(trace.NewDefaultClientSuite()),   // tracer
+		client.WithResolver(r), // resolver
 	)
 	if err != nil {
 		panic(err)

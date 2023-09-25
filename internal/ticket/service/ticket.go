@@ -147,22 +147,8 @@ func BuyTicket(ctx context.Context, ScheduleId int64, SeatRow int32, SeatCol int
 
 }
 func BuyTicketService(ctx context.Context, req *ticket.BuyTicketRequest) (resp *ticket.BuyTicketResponse, err error) {
-	//先判断是否为有效的’买票时间‘
-	schedule, err := playClient.GetSchedule(ctx, &play.GetScheduleRequest{Id: req.ScheduleId})
 	resp = &ticket.BuyTicketResponse{BaseResp: &ticket.BaseResp{}}
-
-	deadline, _ := time.Parse("2006-01-02 15:04:05", schedule.Schedule.ShowTime)
-	deadline = deadline.In(Loc).Add(-8 * time.Hour)
-
-	log.Println("now = ", time.Now().Format("2006-01-02 15:04:05"))
-	log.Println("showtime = ", deadline)
-	log.Println("until = ", time.Until(deadline))
-	if time.Until(deadline) < 10*time.Minute { //距离开场已经不足10分钟，停止售票
-		resp.BaseResp.StatusCode = 1
-		resp.BaseResp.StatusMessage = errors.New("已停止售票").Error()
-		return resp, nil
-	}
-	//在有效的时间范围内，查看票是否还存在（没有被别人买）
+	//查看票是否还存在（没有被别人买）
 	key := fmt.Sprintf("%d;%d;%d", req.ScheduleId, req.SeatRow, req.SeatCol)
 
 	result, err, source := TicketIsExist(ctx, req.ScheduleId, req.SeatRow, req.SeatCol) //只查看票的状态，不抢票
@@ -179,6 +165,22 @@ func BuyTicketService(ctx context.Context, req *ticket.BuyTicketRequest) (resp *
 		return resp, nil
 	}
 	defer redis.ReleaseLock(fmt.Sprintf("lock;%s", key)) //释放锁
+
+	//判断是否为有效的’买票时间‘,多人抢票时，只让抢到分布式锁的用户进行时间检查
+	schedule, err := playClient.GetSchedule(ctx, &play.GetScheduleRequest{Id: req.ScheduleId})
+
+	deadline, _ := time.Parse("2006-01-02 15:04:05", schedule.Schedule.ShowTime)
+	deadline = deadline.In(Loc).Add(-8 * time.Hour)
+
+	log.Println("now = ", time.Now().Format("2006-01-02 15:04:05"))
+	log.Println("showtime = ", deadline)
+	log.Println("until = ", time.Until(deadline))
+	if time.Until(deadline) < 10*time.Minute { //距离开场已经不足10分钟，停止售票
+		resp.BaseResp.StatusCode = 1
+		resp.BaseResp.StatusMessage = errors.New("已停止售票").Error()
+		return resp, nil
+	}
+
 	//抢到分布式锁,执行买票流程
 	//选择是否更新redis，并强制更新mysql
 	BuyTicket(ctx, req.ScheduleId, req.SeatRow, req.SeatCol, source)

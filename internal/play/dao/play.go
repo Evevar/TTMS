@@ -161,7 +161,7 @@ func PlayToSchedule(ctx context.Context, id int64) (*play.Play, []int64, error) 
 }
 func GetSchedule(ctx context.Context, id int64) (*play.Schedule, error) {
 	schedule := play.Schedule{}
-	DB.WithContext(ctx).Model(&play.Schedule{}).Where("id = ? ", id).Find(&schedule).Limit(1)
+	DB.WithContext(ctx).Model(&play.Schedule{}).Where("id = ? ", id).Find(&schedule)
 	if schedule.Id > 0 {
 		return &schedule, nil
 	}

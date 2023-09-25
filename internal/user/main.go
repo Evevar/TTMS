@@ -11,7 +11,6 @@ import (
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
 	etcd "github.com/kitex-contrib/registry-etcd"
-	trace "github.com/kitex-contrib/tracer-opentracing"
 )
 
 func main() {
@@ -27,11 +26,11 @@ func main() {
 		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: consts.UserServiceName}), // server name
 		//server.WithMiddleware(mw.CommonMiddleware),                                          // middleWare
 		//server.WithMiddleware(mw.ServerMiddleware),
-		server.WithServiceAddr(addr),                                       // address
-		server.WithLimit(&limit.Option{MaxConnections: 1000, MaxQPS: 100}), // limit
-		server.WithMuxTransport(),                                          // 开启多路复用
-		server.WithSuite(trace.NewDefaultServerSuite()),                    // tracer
-		server.WithRegistry(r),                                             // registry
+		server.WithServiceAddr(addr),                                         // address
+		server.WithLimit(&limit.Option{MaxConnections: 10000, MaxQPS: 5000}), // limit
+		server.WithMuxTransport(),                                            // 开启多路复用
+		//server.WithSuite(trace.NewDefaultServerSuite()),                     // tracer
+		server.WithRegistry(r), // registry
 	)
 	dao.Init()
 	err = svr.Run()

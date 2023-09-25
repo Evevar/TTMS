@@ -47,17 +47,21 @@ func GetTicket(ctx context.Context, ScheduleId int64, SeatRow int32, SeatCol int
 }
 
 func BuyTicket(ctx context.Context, ScheduleId int64, SeatRow int32, SeatCol int32) {
-	err := DB.WithContext(ctx).Model(&ticket.Ticket{}).Where("schedule_id = ? and seat_row = ? and seat_col = ?", ScheduleId, SeatRow, SeatCol).Update("status", 9).Error
+	err := DB.WithContext(ctx).Model(&ticket.Ticket{}).Where("schedule_id = ? and seat_row = ? and seat_col = ?", ScheduleId, SeatRow, SeatCol).Limit(1).Update("status", 9).Error
 	if err != nil {
 		log.Panicln(err)
 	}
 }
 
 func ReturnTicket(ctx context.Context, ScheduleId int64, SeatRow int32, SeatCol int32) {
+	//t := ticket.Ticket{}
+	//DB.WithContext(ctx).Where("schedule_id = ? and seat_row = ? and seat_col = ?", ScheduleId, SeatRow, SeatCol).Find(&t)
+	//if t.Status != 0 {
 	err := DB.WithContext(ctx).Model(&ticket.Ticket{}).Where("schedule_id = ? and seat_row = ? and seat_col = ?", ScheduleId, SeatRow, SeatCol).Update("status", 0).Error
 	if err != nil {
 		log.Panicln(err)
 	}
+	//}
 }
 
 func CommitTicket(ctx context.Context, ScheduleId int64, SeatRow int32, SeatCol int32) {

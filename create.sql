@@ -68,3 +68,9 @@ CREATE TABLE IF NOT EXISTS `orders` (
     `type` INTEGER NOT NULL COMMENT '交易类型，1-买票，-1-退票',
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
+
+CREATE INDEX ticket_index ON
+`tickets`(`schedule_id`,`seat_row`,`seat_col`);
+
+CREATE INDEX order_index ON
+`orders`(`user_id`,`schedule_id`,`seat_row`,`seat_col`);

@@ -29,4 +29,7 @@ func Init() {
 	if err != nil {
 		panic(err)
 	}
+	sqlDB, _ := DB.DB()
+	sqlDB.SetMaxOpenConns(100)
+	sqlDB.SetMaxIdleConns(10)
 }
