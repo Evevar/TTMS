@@ -38,6 +38,8 @@ services:
       - REDIS_PASSWORD=redis
     ports:
       - "6378:6379"
+    volumes:
+      - ./script/redis/data:/data
   #启动时有几秒的时间不能工作，吓我一跳，还以为配置哪里错了
   nats1:
     container_name: nats1

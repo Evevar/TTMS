@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS `orders` (
     `seat_col` INTEGER NOT NULL,
     `date` VARCHAR(255) NOT NULL COMMENT '订单处理时间，2006-01-02 15:04:05',
     `value` INTEGER NOT NULL COMMENT '票价',
-    `type` INTEGER NOT NULL COMMENT '交易类型，1-买票，-1-退票',
+    `type` INTEGER NOT NULL COMMENT '交易类型，1-买票，-1-退票，2-尚未支付',
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
