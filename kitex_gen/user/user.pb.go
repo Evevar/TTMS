@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.28.1
 // 	protoc        v3.21.12
-// source: IDLs/user.proto
+// source: api/user.proto
 
 package user
 
