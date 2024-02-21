@@ -1,5 +1,7 @@
 #!/bin/bash
 
+mkdir -p log
+
 WEB_LOG_FILE=./log/web.log
 USER_LOG_FILE=./log/user.log
 PLAY_LOG_FILE=./log/play.log

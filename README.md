@@ -40,6 +40,7 @@
 
 ## 部署（单机模拟分布式环境）
 
+- 首先确认go版本为1.16～1.20
 - cd 到TTMS主目录下，执行`docker-compose up -d`，一键部署
 - 在云服务器上部署时，需要用nginx从默认的80端口转发到web网关层的8080端口，并解决跨域问题，nginx配置如下，在
 
@@ -62,7 +63,8 @@ location /ttms/ {
 ## 运行（单机模拟分布式环境）
 
 - cd 到script目录下
-- 执行 `bash ./bootstrap.sh`
+- 执行 `bash ./build.sh`（构建）
+- 执行 `bash ./bootstrap.sh`（启动）
 
 ## 终止（单机模拟分布式环境）
 
