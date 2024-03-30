@@ -129,6 +129,9 @@ func eventLoop(ctx context.Context) {
 		}
 		log.Println("now = ", time.Now().Format("2006-01-02 15:04:05"))
 		log.Println("results = ", results)
+		if len(results) == 0 {
+			continue
+		}
 		results = results[1:]
 		log.Println("results = ", results)
 		for _, result := range results {

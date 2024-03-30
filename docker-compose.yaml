@@ -16,14 +16,15 @@ services:
     ports:
       - "3307:3306"
     environment:
+      - MYSQL_ROOT_PASSWORD=myroot
       - MYSQL_DATABASE=TTMS
       - MYSQL_USER=TTMS
       - MYSQL_PASSWORD=TTMS
-      - MYSQL_RANDOM_ROOT_PASSWORD="yes"
       #- MYSQL_MAX_CONNECTIONS = 300 #暂时不起作用
       - MYSQL_DATABASE=high_frequency
     volumes:
       - ./script/mysql:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
   Etcd:
     image: "quay.io/coreos/etcd:v3.5.5"
     environment:

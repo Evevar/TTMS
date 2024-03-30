@@ -56,3 +56,11 @@ func DeleteOrder(ctx context.Context, userId, scheduleId, seatRow, seatCol int) 
 	log.Println(&o)
 	return err
 }
+func GetOrderCount(ctx context.Context, scheduleId, seatRow, seatCol int, types []int) int64 {
+	var count int64 = 0
+	err := DB.WithContext(ctx).Model(&order.Order{}).Where("schedule_id = ? and seat_row = ? and seat_col = ? and type in (?)", scheduleId, seatRow, seatCol, types).Count(&count).Error
+	if err != nil {
+		log.Println(ctx, "GetOrderCount err =", err)
+	}
+	return count
+}

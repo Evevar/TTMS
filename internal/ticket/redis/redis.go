@@ -66,7 +66,7 @@ func ReleaseLock(lockKey string) bool {
 	return true
 }
 
-// LockRenewal 为分布式锁续期
+// LockRenewal 为分布式锁续期,这种场景下不需要续
 //func LockRenewal() {
 //	var cursor uint64 = 0
 //	ctx := context.Background()
@@ -89,9 +89,9 @@ func ReleaseLock(lockKey string) bool {
 //}
 
 func TicketIsExist(key string) (bool, error) {
-	fmt.Println("key = ", key)
+	//fmt.Println("key = ", key)
 	value, err := redisClient.Get(context.Background(), key).Result()
-	fmt.Println("value = ", value, " err = ", err)
+	//fmt.Println("value = ", value, " err = ", err)
 	if err == redis.Nil {
 		return false, nil
 	}

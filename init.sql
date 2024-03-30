@@ -1,3 +1,8 @@
+GRANT ALL PRIVILEGES ON TTMS.* TO 'TTMS'@'%';
+create database if not exists TTMS;
+FLUSH PRIVILEGES;
+use TTMS;
+
 CREATE TABLE IF NOT EXISTS `users` (
     `id` INTEGER NOT NULL auto_increment,
     `type` INTEGER NOT NULL COMMENT '1-销售，2-经理，9-系统管理员',
@@ -68,9 +73,3 @@ CREATE TABLE IF NOT EXISTS `orders` (
     `type` INTEGER NOT NULL COMMENT '交易类型，1-买票，-1-退票，2-尚未支付',
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
-
-CREATE INDEX ticket_index ON
-`tickets`(`schedule_id`,`seat_row`,`seat_col`);
-
-CREATE INDEX order_index ON
-`orders`(`user_id`,`schedule_id`,`seat_row`,`seat_col`);

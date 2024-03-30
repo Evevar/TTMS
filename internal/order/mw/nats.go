@@ -77,9 +77,21 @@ func AddOrderHandler(msg *nats.Msg) {
 	d2, _ := strconv.Atoi(data[2])
 	d3, _ := strconv.Atoi(data[3])
 	d5, _ := strconv.Atoi(data[5])
+
+	ctx := context.Background()
+	oldTicketCount := dao.GetOrderCount(ctx, d1, d2, d3, []int{1, 2})
+	if oldTicketCount > 0 {
+		//终止此消息，再次保证了一张票只能被一个人买到
+		err := msg.Term()
+		if err != nil {
+			log.Println(ctx, "Term error", err)
+		}
+		return
+	}
+
 	err := msg.Ack()
 	if err != nil {
-		log.Println("ack error")
+		log.Println(ctx, "ack error", err)
 		return
 	}
 	t := float64(time.Now().Add(consts.OrderDelayTime).Unix())
@@ -87,7 +99,7 @@ func AddOrderHandler(msg *nats.Msg) {
 	//fmt.Println("time = ", time.Unix(int64(t), 0).Format("2006-01-02 15:04:05"), " unix = ", t)
 	orderInfo := strings.Join(data[:4], ";")
 	//fmt.Println("orderInfo = ", orderInfo)
-	ToDelayQueue(context.Background(), orderInfo, t)
+	ToDelayQueue(ctx, orderInfo, t)
 	//fmt.Println(d0, d1, d2, d3, data[4])
 	err = dao.AddOrder(d0, d1, d2, d3, data[4], d5)
 	if err != nil {

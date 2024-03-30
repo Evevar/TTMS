@@ -143,7 +143,10 @@ func BuyTicket(ctx context.Context, ScheduleId int64, SeatRow int32, SeatCol int
 		redis.BuyTicket(ctx, fmt.Sprintf("%d;%d;%d", ScheduleId, SeatRow, SeatCol))
 	}
 	//source=="mysql"，无论是否更新redis，mysql是一定要更新的
-	go dao.BuyTicket(ctx, ScheduleId, SeatRow, SeatCol)
+	/*考虑一个问题（前提：redis的票过期后）：
+	redis分布式锁被释放前，异步更新db能否完成，若不能完成就会有超卖的风险
+	直接用同步操作也可以，就是接口速度会慢一些，但是放心*/
+	dao.BuyTicket(ctx, ScheduleId, SeatRow, SeatCol)
 
 }
 func BuyTicketService(ctx context.Context, req *ticket.BuyTicketRequest) (resp *ticket.BuyTicketResponse, err error) {
@@ -172,9 +175,9 @@ func BuyTicketService(ctx context.Context, req *ticket.BuyTicketRequest) (resp *
 	deadline, _ := time.Parse("2006-01-02 15:04:05", schedule.Schedule.ShowTime)
 	deadline = deadline.In(Loc).Add(-8 * time.Hour)
 
-	log.Println("now = ", time.Now().Format("2006-01-02 15:04:05"))
-	log.Println("showtime = ", deadline)
-	log.Println("until = ", time.Until(deadline))
+	//log.Println("now = ", time.Now().Format("2006-01-02 15:04:05"))
+	//log.Println("showtime = ", deadline)
+	//log.Println("until = ", time.Until(deadline))
 	if time.Until(deadline) < 10*time.Minute { //距离开场已经不足10分钟，停止售票
 		resp.BaseResp.StatusCode = 1
 		resp.BaseResp.StatusMessage = errors.New("已停止售票").Error()
@@ -187,13 +190,13 @@ func BuyTicketService(ctx context.Context, req *ticket.BuyTicketRequest) (resp *
 
 	//成功抢到票,发送创建订单消息
 	t := time.Now().Format("2006-01-02 15:04:05")
-	fmt.Println("time = ", t)
-	_, err = nats.JS.Publish("stream.order.buy",
+	//fmt.Println("time = ", t)
+	pubAck, err := nats.JS.Publish("stream.order.buy",
 		[]byte(fmt.Sprintf("%d;%s;%s;%s", req.UserId, key, t,
 			redis.GetTicketPrice(ctx, fmt.Sprintf("%d;price", req.ScheduleId)))))
-	fmt.Println(err)
+
 	if err != nil {
-		log.Println(err)
+		log.Println(ctx, "pubAck:", pubAck, "err=", err.Error())
 		resp.BaseResp.StatusCode = 1
 		resp.BaseResp.StatusMessage = err.Error()
 	} else {
