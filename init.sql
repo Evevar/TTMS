@@ -1,5 +1,5 @@
-GRANT ALL PRIVILEGES ON TTMS.* TO 'TTMS'@'%';
 create database if not exists TTMS;
+GRANT ALL PRIVILEGES ON TTMS.* TO 'TTMS'@'%';
 FLUSH PRIVILEGES;
 use TTMS;
 
