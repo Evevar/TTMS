@@ -1,7 +1,6 @@
 create database if not exists TTMS;
 GRANT ALL PRIVILEGES ON TTMS.* TO 'TTMS'@'%';
 FLUSH PRIVILEGES;
-select sleep(1);
 use TTMS;
 CREATE TABLE IF NOT EXISTS `users` (
     `id` INTEGER NOT NULL auto_increment,
