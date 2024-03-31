@@ -1,8 +1,8 @@
 create database if not exists TTMS;
 GRANT ALL PRIVILEGES ON TTMS.* TO 'TTMS'@'%';
 FLUSH PRIVILEGES;
+select sleep(1);
 use TTMS;
-
 CREATE TABLE IF NOT EXISTS `users` (
     `id` INTEGER NOT NULL auto_increment,
     `type` INTEGER NOT NULL COMMENT '1-销售，2-经理，9-系统管理员',
