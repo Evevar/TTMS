@@ -28,7 +28,7 @@ func main() {
 		//server.WithMiddleware(mw.ServerMiddleware),
 		server.WithServiceAddr(addr),                                         // address
 		server.WithLimit(&limit.Option{MaxConnections: 10000, MaxQPS: 5000}), // limit
-		server.WithMuxTransport(),                                            // Multiplex
+		//server.WithMuxTransport(),                                            // Multiplex，win不支持
 		//server.WithSuite(trace.NewDefaultServerSuite()),                     // tracer
 		server.WithRegistry(r), // registry
 	)
