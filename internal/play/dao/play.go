@@ -24,10 +24,12 @@ func AddPlay(ctx context.Context, PlayInfo *play.Play) error {
 	}
 	return DB.WithContext(ctx).Create(&PlayInfo).Error
 }
-func GetAllPlay(ctx context.Context, Current, PageSize int) ([]*play.Play, error) {
+func GetAllPlay(ctx context.Context, Current, PageSize int) ([]*play.Play, int64, error) {
 	plays := make([]*play.Play, PageSize)
 	tx := DB.WithContext(ctx).Offset((Current - 1) * PageSize).Limit(PageSize).Find(&plays)
-	return plays, tx.Error
+	var total int64
+	tx = DB.WithContext(ctx).Model(&play.Play{}).Count(&total)
+	return plays, total, tx.Error
 }
 func GetPlayById(Id int64) (*play.Play, error) {
 	p := &play.Play{Id: Id}
@@ -91,10 +93,12 @@ func IsConflict(m result, S []result) bool {
 	}
 	return false
 }
-func GetAllSchedule(ctx context.Context, Current, PageSize int) ([]*play.Schedule, error) {
+func GetAllSchedule(ctx context.Context, Current, PageSize int) ([]*play.Schedule, int64, error) {
 	schedules := make([]*play.Schedule, PageSize)
 	tx := DB.WithContext(ctx).Order("show_time desc").Offset((Current - 1) * PageSize).Limit(PageSize).Find(&schedules)
-	return schedules, tx.Error
+	var total int64
+	tx = DB.WithContext(ctx).Model(&play.Schedule{}).Order("show_time desc").Count(&total)
+	return schedules, total, tx.Error
 }
 
 func UpdateSchedule(ctx context.Context, SInfo *play.Schedule) error {

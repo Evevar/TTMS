@@ -62,9 +62,13 @@ message GetAllOrderRequest{
   int64 UserId = 1;
   int32 OrderType = 2;
 }
+message GetAllOrderResponseData{
+  int64 Total = 1;
+  repeated Order List = 2;
+}
 message GetAllOrderResponse{
   BaseResp BaseResp = 1;
-  repeated Order List = 2;
+  GetAllOrderResponseData Data = 2;
 }
 
 //票房

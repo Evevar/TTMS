@@ -591,6 +591,46 @@ func (x *GetAllPlayRequest) fastReadField2(buf []byte, _type int8) (offset int, 
 	return offset, err
 }
 
+func (x *GetAllPlayResponseData) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 2:
+		offset, err = x.fastReadField2(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_GetAllPlayResponseData[number], err)
+}
+
+func (x *GetAllPlayResponseData) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.Total, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
+}
+
+func (x *GetAllPlayResponseData) fastReadField2(buf []byte, _type int8) (offset int, err error) {
+	var v Play
+	offset, err = fastpb.ReadMessage(buf, _type, &v)
+	if err != nil {
+		return offset, err
+	}
+	x.List = append(x.List, &v)
+	return offset, nil
+}
+
 func (x *GetAllPlayResponse) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
 	switch number {
 	case 1:
@@ -627,12 +667,12 @@ func (x *GetAllPlayResponse) fastReadField1(buf []byte, _type int8) (offset int,
 }
 
 func (x *GetAllPlayResponse) fastReadField2(buf []byte, _type int8) (offset int, err error) {
-	var v Play
+	var v GetAllPlayResponseData
 	offset, err = fastpb.ReadMessage(buf, _type, &v)
 	if err != nil {
 		return offset, err
 	}
-	x.List = append(x.List, &v)
+	x.Data = &v
 	return offset, nil
 }
 
@@ -1106,6 +1146,46 @@ func (x *Result) fastReadField8(buf []byte, _type int8) (offset int, err error) 
 	return offset, err
 }
 
+func (x *GetAllScheduleResponseData) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 2:
+		offset, err = x.fastReadField2(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_GetAllScheduleResponseData[number], err)
+}
+
+func (x *GetAllScheduleResponseData) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.Total, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
+}
+
+func (x *GetAllScheduleResponseData) fastReadField2(buf []byte, _type int8) (offset int, err error) {
+	var v Result
+	offset, err = fastpb.ReadMessage(buf, _type, &v)
+	if err != nil {
+		return offset, err
+	}
+	x.List = append(x.List, &v)
+	return offset, nil
+}
+
 func (x *GetAllScheduleResponse) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
 	switch number {
 	case 1:
@@ -1142,12 +1222,12 @@ func (x *GetAllScheduleResponse) fastReadField1(buf []byte, _type int8) (offset 
 }
 
 func (x *GetAllScheduleResponse) fastReadField2(buf []byte, _type int8) (offset int, err error) {
-	var v Result
+	var v GetAllScheduleResponseData
 	offset, err = fastpb.ReadMessage(buf, _type, &v)
 	if err != nil {
 		return offset, err
 	}
-	x.List = append(x.List, &v)
+	x.Data = &v
 	return offset, nil
 }
 
@@ -1164,7 +1244,7 @@ func (x *BaseResp) fastWriteField1(buf []byte) (offset int) {
 	if x.StatusCode == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 1, x.StatusCode)
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetStatusCode())
 	return offset
 }
 
@@ -1172,7 +1252,7 @@ func (x *BaseResp) fastWriteField2(buf []byte) (offset int) {
 	if x.StatusMessage == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 2, x.StatusMessage)
+	offset += fastpb.WriteString(buf[offset:], 2, x.GetStatusMessage())
 	return offset
 }
 
@@ -1196,7 +1276,7 @@ func (x *Play) fastWriteField1(buf []byte) (offset int) {
 	if x.Id == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 1, x.Id)
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetId())
 	return offset
 }
 
@@ -1204,7 +1284,7 @@ func (x *Play) fastWriteField2(buf []byte) (offset int) {
 	if x.Name == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 2, x.Name)
+	offset += fastpb.WriteString(buf[offset:], 2, x.GetName())
 	return offset
 }
 
@@ -1212,7 +1292,7 @@ func (x *Play) fastWriteField3(buf []byte) (offset int) {
 	if x.Type == 0 {
 		return offset
 	}
-	offset += fastpb.WriteUint32(buf[offset:], 3, x.Type)
+	offset += fastpb.WriteUint32(buf[offset:], 3, x.GetType())
 	return offset
 }
 
@@ -1220,7 +1300,7 @@ func (x *Play) fastWriteField4(buf []byte) (offset int) {
 	if x.Area == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 4, x.Area)
+	offset += fastpb.WriteString(buf[offset:], 4, x.GetArea())
 	return offset
 }
 
@@ -1228,7 +1308,7 @@ func (x *Play) fastWriteField5(buf []byte) (offset int) {
 	if x.Rating == 0 {
 		return offset
 	}
-	offset += fastpb.WriteUint32(buf[offset:], 5, x.Rating)
+	offset += fastpb.WriteUint32(buf[offset:], 5, x.GetRating())
 	return offset
 }
 
@@ -1236,7 +1316,7 @@ func (x *Play) fastWriteField6(buf []byte) (offset int) {
 	if x.Duration == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 6, x.Duration)
+	offset += fastpb.WriteString(buf[offset:], 6, x.GetDuration())
 	return offset
 }
 
@@ -1244,7 +1324,7 @@ func (x *Play) fastWriteField7(buf []byte) (offset int) {
 	if x.StartDate == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 7, x.StartDate)
+	offset += fastpb.WriteString(buf[offset:], 7, x.GetStartDate())
 	return offset
 }
 
@@ -1252,7 +1332,7 @@ func (x *Play) fastWriteField8(buf []byte) (offset int) {
 	if x.EndDate == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 8, x.EndDate)
+	offset += fastpb.WriteString(buf[offset:], 8, x.GetEndDate())
 	return offset
 }
 
@@ -1260,7 +1340,7 @@ func (x *Play) fastWriteField9(buf []byte) (offset int) {
 	if x.Price == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 9, x.Price)
+	offset += fastpb.WriteInt64(buf[offset:], 9, x.GetPrice())
 	return offset
 }
 
@@ -1283,7 +1363,7 @@ func (x *AddPlayRequest) fastWriteField1(buf []byte) (offset int) {
 	if x.Name == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 1, x.Name)
+	offset += fastpb.WriteString(buf[offset:], 1, x.GetName())
 	return offset
 }
 
@@ -1291,7 +1371,7 @@ func (x *AddPlayRequest) fastWriteField2(buf []byte) (offset int) {
 	if x.Type == 0 {
 		return offset
 	}
-	offset += fastpb.WriteUint32(buf[offset:], 2, x.Type)
+	offset += fastpb.WriteUint32(buf[offset:], 2, x.GetType())
 	return offset
 }
 
@@ -1299,7 +1379,7 @@ func (x *AddPlayRequest) fastWriteField3(buf []byte) (offset int) {
 	if x.Area == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 3, x.Area)
+	offset += fastpb.WriteString(buf[offset:], 3, x.GetArea())
 	return offset
 }
 
@@ -1307,7 +1387,7 @@ func (x *AddPlayRequest) fastWriteField4(buf []byte) (offset int) {
 	if x.Rating == 0 {
 		return offset
 	}
-	offset += fastpb.WriteUint32(buf[offset:], 4, x.Rating)
+	offset += fastpb.WriteUint32(buf[offset:], 4, x.GetRating())
 	return offset
 }
 
@@ -1315,7 +1395,7 @@ func (x *AddPlayRequest) fastWriteField5(buf []byte) (offset int) {
 	if x.Duration == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 5, x.Duration)
+	offset += fastpb.WriteString(buf[offset:], 5, x.GetDuration())
 	return offset
 }
 
@@ -1323,7 +1403,7 @@ func (x *AddPlayRequest) fastWriteField6(buf []byte) (offset int) {
 	if x.StartDate == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 6, x.StartDate)
+	offset += fastpb.WriteString(buf[offset:], 6, x.GetStartDate())
 	return offset
 }
 
@@ -1331,7 +1411,7 @@ func (x *AddPlayRequest) fastWriteField7(buf []byte) (offset int) {
 	if x.EndDate == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 7, x.EndDate)
+	offset += fastpb.WriteString(buf[offset:], 7, x.GetEndDate())
 	return offset
 }
 
@@ -1339,7 +1419,7 @@ func (x *AddPlayRequest) fastWriteField8(buf []byte) (offset int) {
 	if x.Price == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 8, x.Price)
+	offset += fastpb.WriteInt64(buf[offset:], 8, x.GetPrice())
 	return offset
 }
 
@@ -1355,7 +1435,7 @@ func (x *AddPlayResponse) fastWriteField1(buf []byte) (offset int) {
 	if x.BaseResp == nil {
 		return offset
 	}
-	offset += fastpb.WriteMessage(buf[offset:], 1, x.BaseResp)
+	offset += fastpb.WriteMessage(buf[offset:], 1, x.GetBaseResp())
 	return offset
 }
 
@@ -1379,7 +1459,7 @@ func (x *UpdatePlayRequest) fastWriteField1(buf []byte) (offset int) {
 	if x.Id == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 1, x.Id)
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetId())
 	return offset
 }
 
@@ -1387,7 +1467,7 @@ func (x *UpdatePlayRequest) fastWriteField2(buf []byte) (offset int) {
 	if x.Name == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 2, x.Name)
+	offset += fastpb.WriteString(buf[offset:], 2, x.GetName())
 	return offset
 }
 
@@ -1395,7 +1475,7 @@ func (x *UpdatePlayRequest) fastWriteField3(buf []byte) (offset int) {
 	if x.Type == 0 {
 		return offset
 	}
-	offset += fastpb.WriteUint32(buf[offset:], 3, x.Type)
+	offset += fastpb.WriteUint32(buf[offset:], 3, x.GetType())
 	return offset
 }
 
@@ -1403,7 +1483,7 @@ func (x *UpdatePlayRequest) fastWriteField4(buf []byte) (offset int) {
 	if x.Area == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 4, x.Area)
+	offset += fastpb.WriteString(buf[offset:], 4, x.GetArea())
 	return offset
 }
 
@@ -1411,7 +1491,7 @@ func (x *UpdatePlayRequest) fastWriteField5(buf []byte) (offset int) {
 	if x.Rating == 0 {
 		return offset
 	}
-	offset += fastpb.WriteUint32(buf[offset:], 5, x.Rating)
+	offset += fastpb.WriteUint32(buf[offset:], 5, x.GetRating())
 	return offset
 }
 
@@ -1419,7 +1499,7 @@ func (x *UpdatePlayRequest) fastWriteField6(buf []byte) (offset int) {
 	if x.Duration == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 6, x.Duration)
+	offset += fastpb.WriteString(buf[offset:], 6, x.GetDuration())
 	return offset
 }
 
@@ -1427,7 +1507,7 @@ func (x *UpdatePlayRequest) fastWriteField7(buf []byte) (offset int) {
 	if x.StartDate == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 7, x.StartDate)
+	offset += fastpb.WriteString(buf[offset:], 7, x.GetStartDate())
 	return offset
 }
 
@@ -1435,7 +1515,7 @@ func (x *UpdatePlayRequest) fastWriteField8(buf []byte) (offset int) {
 	if x.EndDate == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 8, x.EndDate)
+	offset += fastpb.WriteString(buf[offset:], 8, x.GetEndDate())
 	return offset
 }
 
@@ -1443,7 +1523,7 @@ func (x *UpdatePlayRequest) fastWriteField9(buf []byte) (offset int) {
 	if x.Price == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 9, x.Price)
+	offset += fastpb.WriteInt64(buf[offset:], 9, x.GetPrice())
 	return offset
 }
 
@@ -1459,7 +1539,7 @@ func (x *UpdatePlayResponse) fastWriteField1(buf []byte) (offset int) {
 	if x.BaseResp == nil {
 		return offset
 	}
-	offset += fastpb.WriteMessage(buf[offset:], 1, x.BaseResp)
+	offset += fastpb.WriteMessage(buf[offset:], 1, x.GetBaseResp())
 	return offset
 }
 
@@ -1475,7 +1555,7 @@ func (x *DeletePlayRequest) fastWriteField1(buf []byte) (offset int) {
 	if x.Id == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 1, x.Id)
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetId())
 	return offset
 }
 
@@ -1491,7 +1571,7 @@ func (x *DeletePlayResponse) fastWriteField1(buf []byte) (offset int) {
 	if x.BaseResp == nil {
 		return offset
 	}
-	offset += fastpb.WriteMessage(buf[offset:], 1, x.BaseResp)
+	offset += fastpb.WriteMessage(buf[offset:], 1, x.GetBaseResp())
 	return offset
 }
 
@@ -1507,7 +1587,7 @@ func (x *PlayToScheduleRequest) fastWriteField1(buf []byte) (offset int) {
 	if x.Id == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 1, x.Id)
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetId())
 	return offset
 }
 
@@ -1525,7 +1605,7 @@ func (x *PlayToScheduleResponse) fastWriteField1(buf []byte) (offset int) {
 	if x.BaseResp == nil {
 		return offset
 	}
-	offset += fastpb.WriteMessage(buf[offset:], 1, x.BaseResp)
+	offset += fastpb.WriteMessage(buf[offset:], 1, x.GetBaseResp())
 	return offset
 }
 
@@ -1533,7 +1613,7 @@ func (x *PlayToScheduleResponse) fastWriteField2(buf []byte) (offset int) {
 	if x.Play == nil {
 		return offset
 	}
-	offset += fastpb.WriteMessage(buf[offset:], 2, x.Play)
+	offset += fastpb.WriteMessage(buf[offset:], 2, x.GetPlay())
 	return offset
 }
 
@@ -1541,10 +1621,10 @@ func (x *PlayToScheduleResponse) fastWriteField3(buf []byte) (offset int) {
 	if len(x.ScheduleList) == 0 {
 		return offset
 	}
-	offset += fastpb.WriteListPacked(buf[offset:], 3, len(x.ScheduleList),
+	offset += fastpb.WriteListPacked(buf[offset:], 3, len(x.GetScheduleList()),
 		func(buf []byte, numTagOrKey, numIdxOrVal int32) int {
 			offset := 0
-			offset += fastpb.WriteInt64(buf[offset:], numTagOrKey, x.ScheduleList[numIdxOrVal])
+			offset += fastpb.WriteInt64(buf[offset:], numTagOrKey, x.GetScheduleList()[numIdxOrVal])
 			return offset
 		})
 	return offset
@@ -1563,7 +1643,7 @@ func (x *GetAllPlayRequest) fastWriteField1(buf []byte) (offset int) {
 	if x.Current == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt32(buf[offset:], 1, x.Current)
+	offset += fastpb.WriteInt32(buf[offset:], 1, x.GetCurrent())
 	return offset
 }
 
@@ -1571,7 +1651,34 @@ func (x *GetAllPlayRequest) fastWriteField2(buf []byte) (offset int) {
 	if x.PageSize == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt32(buf[offset:], 2, x.PageSize)
+	offset += fastpb.WriteInt32(buf[offset:], 2, x.GetPageSize())
+	return offset
+}
+
+func (x *GetAllPlayResponseData) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	offset += x.fastWriteField2(buf[offset:])
+	return offset
+}
+
+func (x *GetAllPlayResponseData) fastWriteField1(buf []byte) (offset int) {
+	if x.Total == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetTotal())
+	return offset
+}
+
+func (x *GetAllPlayResponseData) fastWriteField2(buf []byte) (offset int) {
+	if x.List == nil {
+		return offset
+	}
+	for i := range x.GetList() {
+		offset += fastpb.WriteMessage(buf[offset:], 2, x.GetList()[i])
+	}
 	return offset
 }
 
@@ -1588,17 +1695,15 @@ func (x *GetAllPlayResponse) fastWriteField1(buf []byte) (offset int) {
 	if x.BaseResp == nil {
 		return offset
 	}
-	offset += fastpb.WriteMessage(buf[offset:], 1, x.BaseResp)
+	offset += fastpb.WriteMessage(buf[offset:], 1, x.GetBaseResp())
 	return offset
 }
 
 func (x *GetAllPlayResponse) fastWriteField2(buf []byte) (offset int) {
-	if x.List == nil {
+	if x.Data == nil {
 		return offset
 	}
-	for i := range x.List {
-		offset += fastpb.WriteMessage(buf[offset:], 2, x.List[i])
-	}
+	offset += fastpb.WriteMessage(buf[offset:], 2, x.GetData())
 	return offset
 }
 
@@ -1617,7 +1722,7 @@ func (x *Schedule) fastWriteField1(buf []byte) (offset int) {
 	if x.Id == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 1, x.Id)
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetId())
 	return offset
 }
 
@@ -1625,7 +1730,7 @@ func (x *Schedule) fastWriteField2(buf []byte) (offset int) {
 	if x.PlayId == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 2, x.PlayId)
+	offset += fastpb.WriteInt64(buf[offset:], 2, x.GetPlayId())
 	return offset
 }
 
@@ -1633,7 +1738,7 @@ func (x *Schedule) fastWriteField3(buf []byte) (offset int) {
 	if x.StudioId == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 3, x.StudioId)
+	offset += fastpb.WriteInt64(buf[offset:], 3, x.GetStudioId())
 	return offset
 }
 
@@ -1641,7 +1746,7 @@ func (x *Schedule) fastWriteField4(buf []byte) (offset int) {
 	if x.ShowTime == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 4, x.ShowTime)
+	offset += fastpb.WriteString(buf[offset:], 4, x.GetShowTime())
 	return offset
 }
 
@@ -1659,7 +1764,7 @@ func (x *AddScheduleRequest) fastWriteField1(buf []byte) (offset int) {
 	if x.PlayId == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 1, x.PlayId)
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetPlayId())
 	return offset
 }
 
@@ -1667,7 +1772,7 @@ func (x *AddScheduleRequest) fastWriteField2(buf []byte) (offset int) {
 	if x.StudioId == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 2, x.StudioId)
+	offset += fastpb.WriteInt64(buf[offset:], 2, x.GetStudioId())
 	return offset
 }
 
@@ -1675,7 +1780,7 @@ func (x *AddScheduleRequest) fastWriteField3(buf []byte) (offset int) {
 	if x.ShowTime == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 3, x.ShowTime)
+	offset += fastpb.WriteString(buf[offset:], 3, x.GetShowTime())
 	return offset
 }
 
@@ -1691,7 +1796,7 @@ func (x *AddScheduleResponse) fastWriteField1(buf []byte) (offset int) {
 	if x.BaseResp == nil {
 		return offset
 	}
-	offset += fastpb.WriteMessage(buf[offset:], 1, x.BaseResp)
+	offset += fastpb.WriteMessage(buf[offset:], 1, x.GetBaseResp())
 	return offset
 }
 
@@ -1710,7 +1815,7 @@ func (x *UpdateScheduleRequest) fastWriteField1(buf []byte) (offset int) {
 	if x.Id == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 1, x.Id)
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetId())
 	return offset
 }
 
@@ -1718,7 +1823,7 @@ func (x *UpdateScheduleRequest) fastWriteField2(buf []byte) (offset int) {
 	if x.PlayId == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 2, x.PlayId)
+	offset += fastpb.WriteInt64(buf[offset:], 2, x.GetPlayId())
 	return offset
 }
 
@@ -1726,7 +1831,7 @@ func (x *UpdateScheduleRequest) fastWriteField3(buf []byte) (offset int) {
 	if x.StudioId == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 3, x.StudioId)
+	offset += fastpb.WriteInt64(buf[offset:], 3, x.GetStudioId())
 	return offset
 }
 
@@ -1734,7 +1839,7 @@ func (x *UpdateScheduleRequest) fastWriteField4(buf []byte) (offset int) {
 	if x.ShowTime == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 4, x.ShowTime)
+	offset += fastpb.WriteString(buf[offset:], 4, x.GetShowTime())
 	return offset
 }
 
@@ -1750,7 +1855,7 @@ func (x *UpdateScheduleResponse) fastWriteField1(buf []byte) (offset int) {
 	if x.BaseResp == nil {
 		return offset
 	}
-	offset += fastpb.WriteMessage(buf[offset:], 1, x.BaseResp)
+	offset += fastpb.WriteMessage(buf[offset:], 1, x.GetBaseResp())
 	return offset
 }
 
@@ -1766,7 +1871,7 @@ func (x *DeleteScheduleRequest) fastWriteField1(buf []byte) (offset int) {
 	if x.Id == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 1, x.Id)
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetId())
 	return offset
 }
 
@@ -1782,7 +1887,7 @@ func (x *DeleteScheduleResponse) fastWriteField1(buf []byte) (offset int) {
 	if x.BaseResp == nil {
 		return offset
 	}
-	offset += fastpb.WriteMessage(buf[offset:], 1, x.BaseResp)
+	offset += fastpb.WriteMessage(buf[offset:], 1, x.GetBaseResp())
 	return offset
 }
 
@@ -1798,7 +1903,7 @@ func (x *GetScheduleRequest) fastWriteField1(buf []byte) (offset int) {
 	if x.Id == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 1, x.Id)
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetId())
 	return offset
 }
 
@@ -1815,7 +1920,7 @@ func (x *GetScheduleResponse) fastWriteField1(buf []byte) (offset int) {
 	if x.BaseResp == nil {
 		return offset
 	}
-	offset += fastpb.WriteMessage(buf[offset:], 1, x.BaseResp)
+	offset += fastpb.WriteMessage(buf[offset:], 1, x.GetBaseResp())
 	return offset
 }
 
@@ -1823,7 +1928,7 @@ func (x *GetScheduleResponse) fastWriteField2(buf []byte) (offset int) {
 	if x.Schedule == nil {
 		return offset
 	}
-	offset += fastpb.WriteMessage(buf[offset:], 2, x.Schedule)
+	offset += fastpb.WriteMessage(buf[offset:], 2, x.GetSchedule())
 	return offset
 }
 
@@ -1840,7 +1945,7 @@ func (x *GetAllScheduleRequest) fastWriteField1(buf []byte) (offset int) {
 	if x.Current == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt32(buf[offset:], 1, x.Current)
+	offset += fastpb.WriteInt32(buf[offset:], 1, x.GetCurrent())
 	return offset
 }
 
@@ -1848,7 +1953,7 @@ func (x *GetAllScheduleRequest) fastWriteField2(buf []byte) (offset int) {
 	if x.PageSize == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt32(buf[offset:], 2, x.PageSize)
+	offset += fastpb.WriteInt32(buf[offset:], 2, x.GetPageSize())
 	return offset
 }
 
@@ -1871,7 +1976,7 @@ func (x *Result) fastWriteField1(buf []byte) (offset int) {
 	if x.Id == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 1, x.Id)
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetId())
 	return offset
 }
 
@@ -1879,7 +1984,7 @@ func (x *Result) fastWriteField2(buf []byte) (offset int) {
 	if x.PlayName == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 2, x.PlayName)
+	offset += fastpb.WriteString(buf[offset:], 2, x.GetPlayName())
 	return offset
 }
 
@@ -1887,7 +1992,7 @@ func (x *Result) fastWriteField3(buf []byte) (offset int) {
 	if x.Area == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 3, x.Area)
+	offset += fastpb.WriteString(buf[offset:], 3, x.GetArea())
 	return offset
 }
 
@@ -1895,7 +2000,7 @@ func (x *Result) fastWriteField4(buf []byte) (offset int) {
 	if x.Rating == 0 {
 		return offset
 	}
-	offset += fastpb.WriteUint32(buf[offset:], 4, x.Rating)
+	offset += fastpb.WriteUint32(buf[offset:], 4, x.GetRating())
 	return offset
 }
 
@@ -1903,7 +2008,7 @@ func (x *Result) fastWriteField5(buf []byte) (offset int) {
 	if x.Duration == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 5, x.Duration)
+	offset += fastpb.WriteString(buf[offset:], 5, x.GetDuration())
 	return offset
 }
 
@@ -1911,7 +2016,7 @@ func (x *Result) fastWriteField6(buf []byte) (offset int) {
 	if x.ShowTime == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 6, x.ShowTime)
+	offset += fastpb.WriteString(buf[offset:], 6, x.GetShowTime())
 	return offset
 }
 
@@ -1919,7 +2024,7 @@ func (x *Result) fastWriteField7(buf []byte) (offset int) {
 	if x.Price == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 7, x.Price)
+	offset += fastpb.WriteInt64(buf[offset:], 7, x.GetPrice())
 	return offset
 }
 
@@ -1927,7 +2032,34 @@ func (x *Result) fastWriteField8(buf []byte) (offset int) {
 	if x.StudioName == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 8, x.StudioName)
+	offset += fastpb.WriteString(buf[offset:], 8, x.GetStudioName())
+	return offset
+}
+
+func (x *GetAllScheduleResponseData) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	offset += x.fastWriteField2(buf[offset:])
+	return offset
+}
+
+func (x *GetAllScheduleResponseData) fastWriteField1(buf []byte) (offset int) {
+	if x.Total == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetTotal())
+	return offset
+}
+
+func (x *GetAllScheduleResponseData) fastWriteField2(buf []byte) (offset int) {
+	if x.List == nil {
+		return offset
+	}
+	for i := range x.GetList() {
+		offset += fastpb.WriteMessage(buf[offset:], 2, x.GetList()[i])
+	}
 	return offset
 }
 
@@ -1944,17 +2076,15 @@ func (x *GetAllScheduleResponse) fastWriteField1(buf []byte) (offset int) {
 	if x.BaseResp == nil {
 		return offset
 	}
-	offset += fastpb.WriteMessage(buf[offset:], 1, x.BaseResp)
+	offset += fastpb.WriteMessage(buf[offset:], 1, x.GetBaseResp())
 	return offset
 }
 
 func (x *GetAllScheduleResponse) fastWriteField2(buf []byte) (offset int) {
-	if x.List == nil {
+	if x.Data == nil {
 		return offset
 	}
-	for i := range x.List {
-		offset += fastpb.WriteMessage(buf[offset:], 2, x.List[i])
-	}
+	offset += fastpb.WriteMessage(buf[offset:], 2, x.GetData())
 	return offset
 }
 
@@ -1971,7 +2101,7 @@ func (x *BaseResp) sizeField1() (n int) {
 	if x.StatusCode == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(1, x.StatusCode)
+	n += fastpb.SizeInt64(1, x.GetStatusCode())
 	return n
 }
 
@@ -1979,7 +2109,7 @@ func (x *BaseResp) sizeField2() (n int) {
 	if x.StatusMessage == "" {
 		return n
 	}
-	n += fastpb.SizeString(2, x.StatusMessage)
+	n += fastpb.SizeString(2, x.GetStatusMessage())
 	return n
 }
 
@@ -2003,7 +2133,7 @@ func (x *Play) sizeField1() (n int) {
 	if x.Id == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(1, x.Id)
+	n += fastpb.SizeInt64(1, x.GetId())
 	return n
 }
 
@@ -2011,7 +2141,7 @@ func (x *Play) sizeField2() (n int) {
 	if x.Name == "" {
 		return n
 	}
-	n += fastpb.SizeString(2, x.Name)
+	n += fastpb.SizeString(2, x.GetName())
 	return n
 }
 
@@ -2019,7 +2149,7 @@ func (x *Play) sizeField3() (n int) {
 	if x.Type == 0 {
 		return n
 	}
-	n += fastpb.SizeUint32(3, x.Type)
+	n += fastpb.SizeUint32(3, x.GetType())
 	return n
 }
 
@@ -2027,7 +2157,7 @@ func (x *Play) sizeField4() (n int) {
 	if x.Area == "" {
 		return n
 	}
-	n += fastpb.SizeString(4, x.Area)
+	n += fastpb.SizeString(4, x.GetArea())
 	return n
 }
 
@@ -2035,7 +2165,7 @@ func (x *Play) sizeField5() (n int) {
 	if x.Rating == 0 {
 		return n
 	}
-	n += fastpb.SizeUint32(5, x.Rating)
+	n += fastpb.SizeUint32(5, x.GetRating())
 	return n
 }
 
@@ -2043,7 +2173,7 @@ func (x *Play) sizeField6() (n int) {
 	if x.Duration == "" {
 		return n
 	}
-	n += fastpb.SizeString(6, x.Duration)
+	n += fastpb.SizeString(6, x.GetDuration())
 	return n
 }
 
@@ -2051,7 +2181,7 @@ func (x *Play) sizeField7() (n int) {
 	if x.StartDate == "" {
 		return n
 	}
-	n += fastpb.SizeString(7, x.StartDate)
+	n += fastpb.SizeString(7, x.GetStartDate())
 	return n
 }
 
@@ -2059,7 +2189,7 @@ func (x *Play) sizeField8() (n int) {
 	if x.EndDate == "" {
 		return n
 	}
-	n += fastpb.SizeString(8, x.EndDate)
+	n += fastpb.SizeString(8, x.GetEndDate())
 	return n
 }
 
@@ -2067,7 +2197,7 @@ func (x *Play) sizeField9() (n int) {
 	if x.Price == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(9, x.Price)
+	n += fastpb.SizeInt64(9, x.GetPrice())
 	return n
 }
 
@@ -2090,7 +2220,7 @@ func (x *AddPlayRequest) sizeField1() (n int) {
 	if x.Name == "" {
 		return n
 	}
-	n += fastpb.SizeString(1, x.Name)
+	n += fastpb.SizeString(1, x.GetName())
 	return n
 }
 
@@ -2098,7 +2228,7 @@ func (x *AddPlayRequest) sizeField2() (n int) {
 	if x.Type == 0 {
 		return n
 	}
-	n += fastpb.SizeUint32(2, x.Type)
+	n += fastpb.SizeUint32(2, x.GetType())
 	return n
 }
 
@@ -2106,7 +2236,7 @@ func (x *AddPlayRequest) sizeField3() (n int) {
 	if x.Area == "" {
 		return n
 	}
-	n += fastpb.SizeString(3, x.Area)
+	n += fastpb.SizeString(3, x.GetArea())
 	return n
 }
 
@@ -2114,7 +2244,7 @@ func (x *AddPlayRequest) sizeField4() (n int) {
 	if x.Rating == 0 {
 		return n
 	}
-	n += fastpb.SizeUint32(4, x.Rating)
+	n += fastpb.SizeUint32(4, x.GetRating())
 	return n
 }
 
@@ -2122,7 +2252,7 @@ func (x *AddPlayRequest) sizeField5() (n int) {
 	if x.Duration == "" {
 		return n
 	}
-	n += fastpb.SizeString(5, x.Duration)
+	n += fastpb.SizeString(5, x.GetDuration())
 	return n
 }
 
@@ -2130,7 +2260,7 @@ func (x *AddPlayRequest) sizeField6() (n int) {
 	if x.StartDate == "" {
 		return n
 	}
-	n += fastpb.SizeString(6, x.StartDate)
+	n += fastpb.SizeString(6, x.GetStartDate())
 	return n
 }
 
@@ -2138,7 +2268,7 @@ func (x *AddPlayRequest) sizeField7() (n int) {
 	if x.EndDate == "" {
 		return n
 	}
-	n += fastpb.SizeString(7, x.EndDate)
+	n += fastpb.SizeString(7, x.GetEndDate())
 	return n
 }
 
@@ -2146,7 +2276,7 @@ func (x *AddPlayRequest) sizeField8() (n int) {
 	if x.Price == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(8, x.Price)
+	n += fastpb.SizeInt64(8, x.GetPrice())
 	return n
 }
 
@@ -2162,7 +2292,7 @@ func (x *AddPlayResponse) sizeField1() (n int) {
 	if x.BaseResp == nil {
 		return n
 	}
-	n += fastpb.SizeMessage(1, x.BaseResp)
+	n += fastpb.SizeMessage(1, x.GetBaseResp())
 	return n
 }
 
@@ -2186,7 +2316,7 @@ func (x *UpdatePlayRequest) sizeField1() (n int) {
 	if x.Id == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(1, x.Id)
+	n += fastpb.SizeInt64(1, x.GetId())
 	return n
 }
 
@@ -2194,7 +2324,7 @@ func (x *UpdatePlayRequest) sizeField2() (n int) {
 	if x.Name == "" {
 		return n
 	}
-	n += fastpb.SizeString(2, x.Name)
+	n += fastpb.SizeString(2, x.GetName())
 	return n
 }
 
@@ -2202,7 +2332,7 @@ func (x *UpdatePlayRequest) sizeField3() (n int) {
 	if x.Type == 0 {
 		return n
 	}
-	n += fastpb.SizeUint32(3, x.Type)
+	n += fastpb.SizeUint32(3, x.GetType())
 	return n
 }
 
@@ -2210,7 +2340,7 @@ func (x *UpdatePlayRequest) sizeField4() (n int) {
 	if x.Area == "" {
 		return n
 	}
-	n += fastpb.SizeString(4, x.Area)
+	n += fastpb.SizeString(4, x.GetArea())
 	return n
 }
 
@@ -2218,7 +2348,7 @@ func (x *UpdatePlayRequest) sizeField5() (n int) {
 	if x.Rating == 0 {
 		return n
 	}
-	n += fastpb.SizeUint32(5, x.Rating)
+	n += fastpb.SizeUint32(5, x.GetRating())
 	return n
 }
 
@@ -2226,7 +2356,7 @@ func (x *UpdatePlayRequest) sizeField6() (n int) {
 	if x.Duration == "" {
 		return n
 	}
-	n += fastpb.SizeString(6, x.Duration)
+	n += fastpb.SizeString(6, x.GetDuration())
 	return n
 }
 
@@ -2234,7 +2364,7 @@ func (x *UpdatePlayRequest) sizeField7() (n int) {
 	if x.StartDate == "" {
 		return n
 	}
-	n += fastpb.SizeString(7, x.StartDate)
+	n += fastpb.SizeString(7, x.GetStartDate())
 	return n
 }
 
@@ -2242,7 +2372,7 @@ func (x *UpdatePlayRequest) sizeField8() (n int) {
 	if x.EndDate == "" {
 		return n
 	}
-	n += fastpb.SizeString(8, x.EndDate)
+	n += fastpb.SizeString(8, x.GetEndDate())
 	return n
 }
 
@@ -2250,7 +2380,7 @@ func (x *UpdatePlayRequest) sizeField9() (n int) {
 	if x.Price == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(9, x.Price)
+	n += fastpb.SizeInt64(9, x.GetPrice())
 	return n
 }
 
@@ -2266,7 +2396,7 @@ func (x *UpdatePlayResponse) sizeField1() (n int) {
 	if x.BaseResp == nil {
 		return n
 	}
-	n += fastpb.SizeMessage(1, x.BaseResp)
+	n += fastpb.SizeMessage(1, x.GetBaseResp())
 	return n
 }
 
@@ -2282,7 +2412,7 @@ func (x *DeletePlayRequest) sizeField1() (n int) {
 	if x.Id == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(1, x.Id)
+	n += fastpb.SizeInt64(1, x.GetId())
 	return n
 }
 
@@ -2298,7 +2428,7 @@ func (x *DeletePlayResponse) sizeField1() (n int) {
 	if x.BaseResp == nil {
 		return n
 	}
-	n += fastpb.SizeMessage(1, x.BaseResp)
+	n += fastpb.SizeMessage(1, x.GetBaseResp())
 	return n
 }
 
@@ -2314,7 +2444,7 @@ func (x *PlayToScheduleRequest) sizeField1() (n int) {
 	if x.Id == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(1, x.Id)
+	n += fastpb.SizeInt64(1, x.GetId())
 	return n
 }
 
@@ -2332,7 +2462,7 @@ func (x *PlayToScheduleResponse) sizeField1() (n int) {
 	if x.BaseResp == nil {
 		return n
 	}
-	n += fastpb.SizeMessage(1, x.BaseResp)
+	n += fastpb.SizeMessage(1, x.GetBaseResp())
 	return n
 }
 
@@ -2340,7 +2470,7 @@ func (x *PlayToScheduleResponse) sizeField2() (n int) {
 	if x.Play == nil {
 		return n
 	}
-	n += fastpb.SizeMessage(2, x.Play)
+	n += fastpb.SizeMessage(2, x.GetPlay())
 	return n
 }
 
@@ -2348,10 +2478,10 @@ func (x *PlayToScheduleResponse) sizeField3() (n int) {
 	if len(x.ScheduleList) == 0 {
 		return n
 	}
-	n += fastpb.SizeListPacked(3, len(x.ScheduleList),
+	n += fastpb.SizeListPacked(3, len(x.GetScheduleList()),
 		func(numTagOrKey, numIdxOrVal int32) int {
 			n := 0
-			n += fastpb.SizeInt64(numTagOrKey, x.ScheduleList[numIdxOrVal])
+			n += fastpb.SizeInt64(numTagOrKey, x.GetScheduleList()[numIdxOrVal])
 			return n
 		})
 	return n
@@ -2370,7 +2500,7 @@ func (x *GetAllPlayRequest) sizeField1() (n int) {
 	if x.Current == 0 {
 		return n
 	}
-	n += fastpb.SizeInt32(1, x.Current)
+	n += fastpb.SizeInt32(1, x.GetCurrent())
 	return n
 }
 
@@ -2378,7 +2508,34 @@ func (x *GetAllPlayRequest) sizeField2() (n int) {
 	if x.PageSize == 0 {
 		return n
 	}
-	n += fastpb.SizeInt32(2, x.PageSize)
+	n += fastpb.SizeInt32(2, x.GetPageSize())
+	return n
+}
+
+func (x *GetAllPlayResponseData) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	n += x.sizeField2()
+	return n
+}
+
+func (x *GetAllPlayResponseData) sizeField1() (n int) {
+	if x.Total == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(1, x.GetTotal())
+	return n
+}
+
+func (x *GetAllPlayResponseData) sizeField2() (n int) {
+	if x.List == nil {
+		return n
+	}
+	for i := range x.GetList() {
+		n += fastpb.SizeMessage(2, x.GetList()[i])
+	}
 	return n
 }
 
@@ -2395,17 +2552,15 @@ func (x *GetAllPlayResponse) sizeField1() (n int) {
 	if x.BaseResp == nil {
 		return n
 	}
-	n += fastpb.SizeMessage(1, x.BaseResp)
+	n += fastpb.SizeMessage(1, x.GetBaseResp())
 	return n
 }
 
 func (x *GetAllPlayResponse) sizeField2() (n int) {
-	if x.List == nil {
+	if x.Data == nil {
 		return n
 	}
-	for i := range x.List {
-		n += fastpb.SizeMessage(2, x.List[i])
-	}
+	n += fastpb.SizeMessage(2, x.GetData())
 	return n
 }
 
@@ -2424,7 +2579,7 @@ func (x *Schedule) sizeField1() (n int) {
 	if x.Id == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(1, x.Id)
+	n += fastpb.SizeInt64(1, x.GetId())
 	return n
 }
 
@@ -2432,7 +2587,7 @@ func (x *Schedule) sizeField2() (n int) {
 	if x.PlayId == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(2, x.PlayId)
+	n += fastpb.SizeInt64(2, x.GetPlayId())
 	return n
 }
 
@@ -2440,7 +2595,7 @@ func (x *Schedule) sizeField3() (n int) {
 	if x.StudioId == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(3, x.StudioId)
+	n += fastpb.SizeInt64(3, x.GetStudioId())
 	return n
 }
 
@@ -2448,7 +2603,7 @@ func (x *Schedule) sizeField4() (n int) {
 	if x.ShowTime == "" {
 		return n
 	}
-	n += fastpb.SizeString(4, x.ShowTime)
+	n += fastpb.SizeString(4, x.GetShowTime())
 	return n
 }
 
@@ -2466,7 +2621,7 @@ func (x *AddScheduleRequest) sizeField1() (n int) {
 	if x.PlayId == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(1, x.PlayId)
+	n += fastpb.SizeInt64(1, x.GetPlayId())
 	return n
 }
 
@@ -2474,7 +2629,7 @@ func (x *AddScheduleRequest) sizeField2() (n int) {
 	if x.StudioId == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(2, x.StudioId)
+	n += fastpb.SizeInt64(2, x.GetStudioId())
 	return n
 }
 
@@ -2482,7 +2637,7 @@ func (x *AddScheduleRequest) sizeField3() (n int) {
 	if x.ShowTime == "" {
 		return n
 	}
-	n += fastpb.SizeString(3, x.ShowTime)
+	n += fastpb.SizeString(3, x.GetShowTime())
 	return n
 }
 
@@ -2498,7 +2653,7 @@ func (x *AddScheduleResponse) sizeField1() (n int) {
 	if x.BaseResp == nil {
 		return n
 	}
-	n += fastpb.SizeMessage(1, x.BaseResp)
+	n += fastpb.SizeMessage(1, x.GetBaseResp())
 	return n
 }
 
@@ -2517,7 +2672,7 @@ func (x *UpdateScheduleRequest) sizeField1() (n int) {
 	if x.Id == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(1, x.Id)
+	n += fastpb.SizeInt64(1, x.GetId())
 	return n
 }
 
@@ -2525,7 +2680,7 @@ func (x *UpdateScheduleRequest) sizeField2() (n int) {
 	if x.PlayId == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(2, x.PlayId)
+	n += fastpb.SizeInt64(2, x.GetPlayId())
 	return n
 }
 
@@ -2533,7 +2688,7 @@ func (x *UpdateScheduleRequest) sizeField3() (n int) {
 	if x.StudioId == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(3, x.StudioId)
+	n += fastpb.SizeInt64(3, x.GetStudioId())
 	return n
 }
 
@@ -2541,7 +2696,7 @@ func (x *UpdateScheduleRequest) sizeField4() (n int) {
 	if x.ShowTime == "" {
 		return n
 	}
-	n += fastpb.SizeString(4, x.ShowTime)
+	n += fastpb.SizeString(4, x.GetShowTime())
 	return n
 }
 
@@ -2557,7 +2712,7 @@ func (x *UpdateScheduleResponse) sizeField1() (n int) {
 	if x.BaseResp == nil {
 		return n
 	}
-	n += fastpb.SizeMessage(1, x.BaseResp)
+	n += fastpb.SizeMessage(1, x.GetBaseResp())
 	return n
 }
 
@@ -2573,7 +2728,7 @@ func (x *DeleteScheduleRequest) sizeField1() (n int) {
 	if x.Id == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(1, x.Id)
+	n += fastpb.SizeInt64(1, x.GetId())
 	return n
 }
 
@@ -2589,7 +2744,7 @@ func (x *DeleteScheduleResponse) sizeField1() (n int) {
 	if x.BaseResp == nil {
 		return n
 	}
-	n += fastpb.SizeMessage(1, x.BaseResp)
+	n += fastpb.SizeMessage(1, x.GetBaseResp())
 	return n
 }
 
@@ -2605,7 +2760,7 @@ func (x *GetScheduleRequest) sizeField1() (n int) {
 	if x.Id == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(1, x.Id)
+	n += fastpb.SizeInt64(1, x.GetId())
 	return n
 }
 
@@ -2622,7 +2777,7 @@ func (x *GetScheduleResponse) sizeField1() (n int) {
 	if x.BaseResp == nil {
 		return n
 	}
-	n += fastpb.SizeMessage(1, x.BaseResp)
+	n += fastpb.SizeMessage(1, x.GetBaseResp())
 	return n
 }
 
@@ -2630,7 +2785,7 @@ func (x *GetScheduleResponse) sizeField2() (n int) {
 	if x.Schedule == nil {
 		return n
 	}
-	n += fastpb.SizeMessage(2, x.Schedule)
+	n += fastpb.SizeMessage(2, x.GetSchedule())
 	return n
 }
 
@@ -2647,7 +2802,7 @@ func (x *GetAllScheduleRequest) sizeField1() (n int) {
 	if x.Current == 0 {
 		return n
 	}
-	n += fastpb.SizeInt32(1, x.Current)
+	n += fastpb.SizeInt32(1, x.GetCurrent())
 	return n
 }
 
@@ -2655,7 +2810,7 @@ func (x *GetAllScheduleRequest) sizeField2() (n int) {
 	if x.PageSize == 0 {
 		return n
 	}
-	n += fastpb.SizeInt32(2, x.PageSize)
+	n += fastpb.SizeInt32(2, x.GetPageSize())
 	return n
 }
 
@@ -2678,7 +2833,7 @@ func (x *Result) sizeField1() (n int) {
 	if x.Id == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(1, x.Id)
+	n += fastpb.SizeInt64(1, x.GetId())
 	return n
 }
 
@@ -2686,7 +2841,7 @@ func (x *Result) sizeField2() (n int) {
 	if x.PlayName == "" {
 		return n
 	}
-	n += fastpb.SizeString(2, x.PlayName)
+	n += fastpb.SizeString(2, x.GetPlayName())
 	return n
 }
 
@@ -2694,7 +2849,7 @@ func (x *Result) sizeField3() (n int) {
 	if x.Area == "" {
 		return n
 	}
-	n += fastpb.SizeString(3, x.Area)
+	n += fastpb.SizeString(3, x.GetArea())
 	return n
 }
 
@@ -2702,7 +2857,7 @@ func (x *Result) sizeField4() (n int) {
 	if x.Rating == 0 {
 		return n
 	}
-	n += fastpb.SizeUint32(4, x.Rating)
+	n += fastpb.SizeUint32(4, x.GetRating())
 	return n
 }
 
@@ -2710,7 +2865,7 @@ func (x *Result) sizeField5() (n int) {
 	if x.Duration == "" {
 		return n
 	}
-	n += fastpb.SizeString(5, x.Duration)
+	n += fastpb.SizeString(5, x.GetDuration())
 	return n
 }
 
@@ -2718,7 +2873,7 @@ func (x *Result) sizeField6() (n int) {
 	if x.ShowTime == "" {
 		return n
 	}
-	n += fastpb.SizeString(6, x.ShowTime)
+	n += fastpb.SizeString(6, x.GetShowTime())
 	return n
 }
 
@@ -2726,7 +2881,7 @@ func (x *Result) sizeField7() (n int) {
 	if x.Price == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(7, x.Price)
+	n += fastpb.SizeInt64(7, x.GetPrice())
 	return n
 }
 
@@ -2734,7 +2889,34 @@ func (x *Result) sizeField8() (n int) {
 	if x.StudioName == "" {
 		return n
 	}
-	n += fastpb.SizeString(8, x.StudioName)
+	n += fastpb.SizeString(8, x.GetStudioName())
+	return n
+}
+
+func (x *GetAllScheduleResponseData) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	n += x.sizeField2()
+	return n
+}
+
+func (x *GetAllScheduleResponseData) sizeField1() (n int) {
+	if x.Total == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(1, x.GetTotal())
+	return n
+}
+
+func (x *GetAllScheduleResponseData) sizeField2() (n int) {
+	if x.List == nil {
+		return n
+	}
+	for i := range x.GetList() {
+		n += fastpb.SizeMessage(2, x.GetList()[i])
+	}
 	return n
 }
 
@@ -2751,17 +2933,15 @@ func (x *GetAllScheduleResponse) sizeField1() (n int) {
 	if x.BaseResp == nil {
 		return n
 	}
-	n += fastpb.SizeMessage(1, x.BaseResp)
+	n += fastpb.SizeMessage(1, x.GetBaseResp())
 	return n
 }
 
 func (x *GetAllScheduleResponse) sizeField2() (n int) {
-	if x.List == nil {
+	if x.Data == nil {
 		return n
 	}
-	for i := range x.List {
-		n += fastpb.SizeMessage(2, x.List[i])
-	}
+	n += fastpb.SizeMessage(2, x.GetData())
 	return n
 }
 
@@ -2836,9 +3016,14 @@ var fieldIDToName_GetAllPlayRequest = map[int32]string{
 	2: "PageSize",
 }
 
+var fieldIDToName_GetAllPlayResponseData = map[int32]string{
+	1: "Total",
+	2: "List",
+}
+
 var fieldIDToName_GetAllPlayResponse = map[int32]string{
 	1: "BaseResp",
-	2: "List",
+	2: "Data",
 }
 
 var fieldIDToName_Schedule = map[int32]string{
@@ -2902,7 +3087,12 @@ var fieldIDToName_Result = map[int32]string{
 	8: "StudioName",
 }
 
+var fieldIDToName_GetAllScheduleResponseData = map[int32]string{
+	1: "Total",
+	2: "List",
+}
+
 var fieldIDToName_GetAllScheduleResponse = map[int32]string{
 	1: "BaseResp",
-	2: "List",
+	2: "Data",
 }

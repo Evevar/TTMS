@@ -66,9 +66,13 @@ message GetAllPlayRequest{
   int32 Current = 1;//当前页
   int32 PageSize = 2; //一页数据条数
 }
+message GetAllPlayResponseData{
+  int64 Total = 1;
+  repeated Play List = 2;
+}
 message GetAllPlayResponse{
   BaseResp BaseResp = 1;
-  repeated Play List = 2;
+  GetAllPlayResponseData Data = 2;
 }
 //每创建一个演出计划，就要立即生成对应的演出票（就像创建演出厅时自动生成座位一样）
 message Schedule{//演出计划
@@ -127,9 +131,13 @@ message Result{
   int64 Price = 7;//票价
   string StudioName = 8;//演出厅名称
 }
+message GetAllScheduleResponseData{
+  int64 Total = 1;
+  repeated Result List = 2;
+}
 message GetAllScheduleResponse{
   BaseResp BaseResp = 1;
-  repeated Result List = 2;
+  GetAllScheduleResponseData Data = 2;
 }
 
 service PlayService{

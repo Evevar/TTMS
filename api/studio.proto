@@ -28,9 +28,13 @@ message GetAllStudioRequest{
   int32 Current = 1;//当前页
   int32 PageSize = 2; //一页数据条数
 }
+message GetAllStudioResponseData{
+  int64 Total = 1;
+  repeated Studio List = 2;
+}
 message GetAllStudioResponse{
   BaseResp BaseResp = 1;
-  repeated Studio List = 2;
+  GetAllStudioResponseData Data = 2;
 }
 
 //获取z指定演出厅信息
@@ -84,9 +88,13 @@ message GetAllSeatRequest{
   int32 Current = 2;//当前页
   int32 PageSize = 3; //一页数据条数
 }
+message GetAllSeatResponseData{
+  int64 Total = 1;
+  repeated Seat List = 2;
+}
 message GetAllSeatResponse{
   BaseResp BaseResp = 1;
-  repeated Seat List = 2;
+  GetAllSeatResponseData Data = 2;
 }
 
 //修改指定座位

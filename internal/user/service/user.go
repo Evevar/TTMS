@@ -49,9 +49,9 @@ func UserLoginService(ctx context.Context, req *user.UserLoginRequest) (*user.Us
 	return resp, nil
 }
 func GetAllUserService(ctx context.Context, req *user.GetAllUserRequest) (*user.GetAllUserResponse, error) {
-	resp := &user.GetAllUserResponse{BaseResp: &user.BaseResp{}}
+	resp := &user.GetAllUserResponse{BaseResp: &user.BaseResp{}, Data: &user.GetAllUserResponseData{}}
 	var err error
-	resp.List, err = dao.GetAllUser(ctx, int(req.Current), int(req.PageSize))
+	resp.Data.List, resp.Data.Total, err = dao.GetAllUser(ctx, int(req.Current), int(req.PageSize))
 	if err != nil {
 		resp.BaseResp.StatusCode = 1
 		resp.BaseResp.StatusMessage = err.Error()

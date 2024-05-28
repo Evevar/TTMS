@@ -59,13 +59,15 @@ func UserLogin(ctx context.Context, userInfo *user.User) (*user.User, error) {
 	return &user.User{}, errors.New("未找到该用户")
 }
 
-func GetAllUser(ctx context.Context, current, pageSize int) ([]*user.User, error) {
+func GetAllUser(ctx context.Context, current, pageSize int) ([]*user.User, int64, error) {
 	users := make([]*user.User, pageSize)
 	tx := DB.WithContext(ctx).Offset((current - 1) * pageSize).Limit(pageSize).Find(&users)
 	for i, _ := range users {
 		users[i].Password = "***"
 	}
-	return users, tx.Error
+	var total int64
+	tx.WithContext(ctx).Count(&total)
+	return users, total, tx.Error
 }
 func ChangeUserPassword(ctx context.Context, UserId int, Password, NewPassword string) error {
 	u := user.User{}
