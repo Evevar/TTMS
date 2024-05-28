@@ -347,6 +347,46 @@ func (x *GetAllOrderRequest) fastReadField2(buf []byte, _type int8) (offset int,
 	return offset, err
 }
 
+func (x *GetAllOrderResponseData) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 2:
+		offset, err = x.fastReadField2(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_GetAllOrderResponseData[number], err)
+}
+
+func (x *GetAllOrderResponseData) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.Total, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
+}
+
+func (x *GetAllOrderResponseData) fastReadField2(buf []byte, _type int8) (offset int, err error) {
+	var v Order
+	offset, err = fastpb.ReadMessage(buf, _type, &v)
+	if err != nil {
+		return offset, err
+	}
+	x.List = append(x.List, &v)
+	return offset, nil
+}
+
 func (x *GetAllOrderResponse) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
 	switch number {
 	case 1:
@@ -383,12 +423,12 @@ func (x *GetAllOrderResponse) fastReadField1(buf []byte, _type int8) (offset int
 }
 
 func (x *GetAllOrderResponse) fastReadField2(buf []byte, _type int8) (offset int, err error) {
-	var v Order
+	var v GetAllOrderResponseData
 	offset, err = fastpb.ReadMessage(buf, _type, &v)
 	if err != nil {
 		return offset, err
 	}
-	x.List = append(x.List, &v)
+	x.Data = &v
 	return offset, nil
 }
 
@@ -580,7 +620,7 @@ func (x *BaseResp) fastWriteField1(buf []byte) (offset int) {
 	if x.StatusCode == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 1, x.StatusCode)
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetStatusCode())
 	return offset
 }
 
@@ -588,7 +628,7 @@ func (x *BaseResp) fastWriteField2(buf []byte) (offset int) {
 	if x.StatusMessage == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 2, x.StatusMessage)
+	offset += fastpb.WriteString(buf[offset:], 2, x.GetStatusMessage())
 	return offset
 }
 
@@ -611,7 +651,7 @@ func (x *Order) fastWriteField1(buf []byte) (offset int) {
 	if x.Id == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 1, x.Id)
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetId())
 	return offset
 }
 
@@ -619,7 +659,7 @@ func (x *Order) fastWriteField2(buf []byte) (offset int) {
 	if x.UserId == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 2, x.UserId)
+	offset += fastpb.WriteInt64(buf[offset:], 2, x.GetUserId())
 	return offset
 }
 
@@ -627,7 +667,7 @@ func (x *Order) fastWriteField3(buf []byte) (offset int) {
 	if x.ScheduleId == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 3, x.ScheduleId)
+	offset += fastpb.WriteInt64(buf[offset:], 3, x.GetScheduleId())
 	return offset
 }
 
@@ -635,7 +675,7 @@ func (x *Order) fastWriteField4(buf []byte) (offset int) {
 	if x.SeatRow == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt32(buf[offset:], 4, x.SeatRow)
+	offset += fastpb.WriteInt32(buf[offset:], 4, x.GetSeatRow())
 	return offset
 }
 
@@ -643,7 +683,7 @@ func (x *Order) fastWriteField5(buf []byte) (offset int) {
 	if x.SeatCol == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt32(buf[offset:], 5, x.SeatCol)
+	offset += fastpb.WriteInt32(buf[offset:], 5, x.GetSeatCol())
 	return offset
 }
 
@@ -651,7 +691,7 @@ func (x *Order) fastWriteField6(buf []byte) (offset int) {
 	if x.Date == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 6, x.Date)
+	offset += fastpb.WriteString(buf[offset:], 6, x.GetDate())
 	return offset
 }
 
@@ -659,7 +699,7 @@ func (x *Order) fastWriteField7(buf []byte) (offset int) {
 	if x.Value == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt32(buf[offset:], 7, x.Value)
+	offset += fastpb.WriteInt32(buf[offset:], 7, x.GetValue())
 	return offset
 }
 
@@ -667,7 +707,7 @@ func (x *Order) fastWriteField8(buf []byte) (offset int) {
 	if x.Type == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt32(buf[offset:], 8, x.Type)
+	offset += fastpb.WriteInt32(buf[offset:], 8, x.GetType())
 	return offset
 }
 
@@ -686,7 +726,7 @@ func (x *CommitOrderRequest) fastWriteField1(buf []byte) (offset int) {
 	if x.UserId == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 1, x.UserId)
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetUserId())
 	return offset
 }
 
@@ -694,7 +734,7 @@ func (x *CommitOrderRequest) fastWriteField2(buf []byte) (offset int) {
 	if x.ScheduleId == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 2, x.ScheduleId)
+	offset += fastpb.WriteInt64(buf[offset:], 2, x.GetScheduleId())
 	return offset
 }
 
@@ -702,7 +742,7 @@ func (x *CommitOrderRequest) fastWriteField3(buf []byte) (offset int) {
 	if x.SeatRow == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt32(buf[offset:], 3, x.SeatRow)
+	offset += fastpb.WriteInt32(buf[offset:], 3, x.GetSeatRow())
 	return offset
 }
 
@@ -710,7 +750,7 @@ func (x *CommitOrderRequest) fastWriteField4(buf []byte) (offset int) {
 	if x.SeatCol == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt32(buf[offset:], 4, x.SeatCol)
+	offset += fastpb.WriteInt32(buf[offset:], 4, x.GetSeatCol())
 	return offset
 }
 
@@ -726,7 +766,7 @@ func (x *CommitOrderResponse) fastWriteField1(buf []byte) (offset int) {
 	if x.BaseResp == nil {
 		return offset
 	}
-	offset += fastpb.WriteMessage(buf[offset:], 1, x.BaseResp)
+	offset += fastpb.WriteMessage(buf[offset:], 1, x.GetBaseResp())
 	return offset
 }
 
@@ -745,7 +785,7 @@ func (x *UpdateOrderRequest) fastWriteField1(buf []byte) (offset int) {
 	if x.UserId == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 1, x.UserId)
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetUserId())
 	return offset
 }
 
@@ -753,7 +793,7 @@ func (x *UpdateOrderRequest) fastWriteField2(buf []byte) (offset int) {
 	if x.ScheduleId == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 2, x.ScheduleId)
+	offset += fastpb.WriteInt64(buf[offset:], 2, x.GetScheduleId())
 	return offset
 }
 
@@ -761,7 +801,7 @@ func (x *UpdateOrderRequest) fastWriteField3(buf []byte) (offset int) {
 	if x.SeatRow == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt32(buf[offset:], 3, x.SeatRow)
+	offset += fastpb.WriteInt32(buf[offset:], 3, x.GetSeatRow())
 	return offset
 }
 
@@ -769,7 +809,7 @@ func (x *UpdateOrderRequest) fastWriteField4(buf []byte) (offset int) {
 	if x.SeatCol == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt32(buf[offset:], 4, x.SeatCol)
+	offset += fastpb.WriteInt32(buf[offset:], 4, x.GetSeatCol())
 	return offset
 }
 
@@ -785,7 +825,7 @@ func (x *UpdateOrderResponse) fastWriteField1(buf []byte) (offset int) {
 	if x.BaseResp == nil {
 		return offset
 	}
-	offset += fastpb.WriteMessage(buf[offset:], 1, x.BaseResp)
+	offset += fastpb.WriteMessage(buf[offset:], 1, x.GetBaseResp())
 	return offset
 }
 
@@ -802,7 +842,7 @@ func (x *GetAllOrderRequest) fastWriteField1(buf []byte) (offset int) {
 	if x.UserId == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 1, x.UserId)
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetUserId())
 	return offset
 }
 
@@ -810,7 +850,34 @@ func (x *GetAllOrderRequest) fastWriteField2(buf []byte) (offset int) {
 	if x.OrderType == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt32(buf[offset:], 2, x.OrderType)
+	offset += fastpb.WriteInt32(buf[offset:], 2, x.GetOrderType())
+	return offset
+}
+
+func (x *GetAllOrderResponseData) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	offset += x.fastWriteField2(buf[offset:])
+	return offset
+}
+
+func (x *GetAllOrderResponseData) fastWriteField1(buf []byte) (offset int) {
+	if x.Total == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetTotal())
+	return offset
+}
+
+func (x *GetAllOrderResponseData) fastWriteField2(buf []byte) (offset int) {
+	if x.List == nil {
+		return offset
+	}
+	for i := range x.GetList() {
+		offset += fastpb.WriteMessage(buf[offset:], 2, x.GetList()[i])
+	}
 	return offset
 }
 
@@ -827,17 +894,15 @@ func (x *GetAllOrderResponse) fastWriteField1(buf []byte) (offset int) {
 	if x.BaseResp == nil {
 		return offset
 	}
-	offset += fastpb.WriteMessage(buf[offset:], 1, x.BaseResp)
+	offset += fastpb.WriteMessage(buf[offset:], 1, x.GetBaseResp())
 	return offset
 }
 
 func (x *GetAllOrderResponse) fastWriteField2(buf []byte) (offset int) {
-	if x.List == nil {
+	if x.Data == nil {
 		return offset
 	}
-	for i := range x.List {
-		offset += fastpb.WriteMessage(buf[offset:], 2, x.List[i])
-	}
+	offset += fastpb.WriteMessage(buf[offset:], 2, x.GetData())
 	return offset
 }
 
@@ -861,7 +926,7 @@ func (x *OrderAnalysis) fastWriteField1(buf []byte) (offset int) {
 	if x.PlayId == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 1, x.PlayId)
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetPlayId())
 	return offset
 }
 
@@ -869,7 +934,7 @@ func (x *OrderAnalysis) fastWriteField2(buf []byte) (offset int) {
 	if x.PlayName == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 2, x.PlayName)
+	offset += fastpb.WriteString(buf[offset:], 2, x.GetPlayName())
 	return offset
 }
 
@@ -877,7 +942,7 @@ func (x *OrderAnalysis) fastWriteField3(buf []byte) (offset int) {
 	if x.PlayArea == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 3, x.PlayArea)
+	offset += fastpb.WriteString(buf[offset:], 3, x.GetPlayArea())
 	return offset
 }
 
@@ -885,7 +950,7 @@ func (x *OrderAnalysis) fastWriteField4(buf []byte) (offset int) {
 	if x.PlayDuration == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 4, x.PlayDuration)
+	offset += fastpb.WriteString(buf[offset:], 4, x.GetPlayDuration())
 	return offset
 }
 
@@ -893,7 +958,7 @@ func (x *OrderAnalysis) fastWriteField5(buf []byte) (offset int) {
 	if x.StartData == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 5, x.StartData)
+	offset += fastpb.WriteString(buf[offset:], 5, x.GetStartData())
 	return offset
 }
 
@@ -901,7 +966,7 @@ func (x *OrderAnalysis) fastWriteField6(buf []byte) (offset int) {
 	if x.EndData == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 6, x.EndData)
+	offset += fastpb.WriteString(buf[offset:], 6, x.GetEndData())
 	return offset
 }
 
@@ -909,7 +974,7 @@ func (x *OrderAnalysis) fastWriteField7(buf []byte) (offset int) {
 	if x.TotalTicket == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 7, x.TotalTicket)
+	offset += fastpb.WriteInt64(buf[offset:], 7, x.GetTotalTicket())
 	return offset
 }
 
@@ -917,7 +982,7 @@ func (x *OrderAnalysis) fastWriteField8(buf []byte) (offset int) {
 	if x.Sales == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 8, x.Sales)
+	offset += fastpb.WriteInt64(buf[offset:], 8, x.GetSales())
 	return offset
 }
 
@@ -925,7 +990,7 @@ func (x *OrderAnalysis) fastWriteField9(buf []byte) (offset int) {
 	if x.Price == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt32(buf[offset:], 9, x.Price)
+	offset += fastpb.WriteInt32(buf[offset:], 9, x.GetPrice())
 	return offset
 }
 
@@ -941,7 +1006,7 @@ func (x *GetOrderAnalysisRequest) fastWriteField1(buf []byte) (offset int) {
 	if x.PlayId == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 1, x.PlayId)
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetPlayId())
 	return offset
 }
 
@@ -958,7 +1023,7 @@ func (x *GetOrderAnalysisResponse) fastWriteField1(buf []byte) (offset int) {
 	if x.BaseResp == nil {
 		return offset
 	}
-	offset += fastpb.WriteMessage(buf[offset:], 1, x.BaseResp)
+	offset += fastpb.WriteMessage(buf[offset:], 1, x.GetBaseResp())
 	return offset
 }
 
@@ -966,7 +1031,7 @@ func (x *GetOrderAnalysisResponse) fastWriteField2(buf []byte) (offset int) {
 	if x.OrderAnalysis == nil {
 		return offset
 	}
-	offset += fastpb.WriteMessage(buf[offset:], 2, x.OrderAnalysis)
+	offset += fastpb.WriteMessage(buf[offset:], 2, x.GetOrderAnalysis())
 	return offset
 }
 
@@ -983,7 +1048,7 @@ func (x *BaseResp) sizeField1() (n int) {
 	if x.StatusCode == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(1, x.StatusCode)
+	n += fastpb.SizeInt64(1, x.GetStatusCode())
 	return n
 }
 
@@ -991,7 +1056,7 @@ func (x *BaseResp) sizeField2() (n int) {
 	if x.StatusMessage == "" {
 		return n
 	}
-	n += fastpb.SizeString(2, x.StatusMessage)
+	n += fastpb.SizeString(2, x.GetStatusMessage())
 	return n
 }
 
@@ -1014,7 +1079,7 @@ func (x *Order) sizeField1() (n int) {
 	if x.Id == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(1, x.Id)
+	n += fastpb.SizeInt64(1, x.GetId())
 	return n
 }
 
@@ -1022,7 +1087,7 @@ func (x *Order) sizeField2() (n int) {
 	if x.UserId == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(2, x.UserId)
+	n += fastpb.SizeInt64(2, x.GetUserId())
 	return n
 }
 
@@ -1030,7 +1095,7 @@ func (x *Order) sizeField3() (n int) {
 	if x.ScheduleId == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(3, x.ScheduleId)
+	n += fastpb.SizeInt64(3, x.GetScheduleId())
 	return n
 }
 
@@ -1038,7 +1103,7 @@ func (x *Order) sizeField4() (n int) {
 	if x.SeatRow == 0 {
 		return n
 	}
-	n += fastpb.SizeInt32(4, x.SeatRow)
+	n += fastpb.SizeInt32(4, x.GetSeatRow())
 	return n
 }
 
@@ -1046,7 +1111,7 @@ func (x *Order) sizeField5() (n int) {
 	if x.SeatCol == 0 {
 		return n
 	}
-	n += fastpb.SizeInt32(5, x.SeatCol)
+	n += fastpb.SizeInt32(5, x.GetSeatCol())
 	return n
 }
 
@@ -1054,7 +1119,7 @@ func (x *Order) sizeField6() (n int) {
 	if x.Date == "" {
 		return n
 	}
-	n += fastpb.SizeString(6, x.Date)
+	n += fastpb.SizeString(6, x.GetDate())
 	return n
 }
 
@@ -1062,7 +1127,7 @@ func (x *Order) sizeField7() (n int) {
 	if x.Value == 0 {
 		return n
 	}
-	n += fastpb.SizeInt32(7, x.Value)
+	n += fastpb.SizeInt32(7, x.GetValue())
 	return n
 }
 
@@ -1070,7 +1135,7 @@ func (x *Order) sizeField8() (n int) {
 	if x.Type == 0 {
 		return n
 	}
-	n += fastpb.SizeInt32(8, x.Type)
+	n += fastpb.SizeInt32(8, x.GetType())
 	return n
 }
 
@@ -1089,7 +1154,7 @@ func (x *CommitOrderRequest) sizeField1() (n int) {
 	if x.UserId == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(1, x.UserId)
+	n += fastpb.SizeInt64(1, x.GetUserId())
 	return n
 }
 
@@ -1097,7 +1162,7 @@ func (x *CommitOrderRequest) sizeField2() (n int) {
 	if x.ScheduleId == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(2, x.ScheduleId)
+	n += fastpb.SizeInt64(2, x.GetScheduleId())
 	return n
 }
 
@@ -1105,7 +1170,7 @@ func (x *CommitOrderRequest) sizeField3() (n int) {
 	if x.SeatRow == 0 {
 		return n
 	}
-	n += fastpb.SizeInt32(3, x.SeatRow)
+	n += fastpb.SizeInt32(3, x.GetSeatRow())
 	return n
 }
 
@@ -1113,7 +1178,7 @@ func (x *CommitOrderRequest) sizeField4() (n int) {
 	if x.SeatCol == 0 {
 		return n
 	}
-	n += fastpb.SizeInt32(4, x.SeatCol)
+	n += fastpb.SizeInt32(4, x.GetSeatCol())
 	return n
 }
 
@@ -1129,7 +1194,7 @@ func (x *CommitOrderResponse) sizeField1() (n int) {
 	if x.BaseResp == nil {
 		return n
 	}
-	n += fastpb.SizeMessage(1, x.BaseResp)
+	n += fastpb.SizeMessage(1, x.GetBaseResp())
 	return n
 }
 
@@ -1148,7 +1213,7 @@ func (x *UpdateOrderRequest) sizeField1() (n int) {
 	if x.UserId == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(1, x.UserId)
+	n += fastpb.SizeInt64(1, x.GetUserId())
 	return n
 }
 
@@ -1156,7 +1221,7 @@ func (x *UpdateOrderRequest) sizeField2() (n int) {
 	if x.ScheduleId == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(2, x.ScheduleId)
+	n += fastpb.SizeInt64(2, x.GetScheduleId())
 	return n
 }
 
@@ -1164,7 +1229,7 @@ func (x *UpdateOrderRequest) sizeField3() (n int) {
 	if x.SeatRow == 0 {
 		return n
 	}
-	n += fastpb.SizeInt32(3, x.SeatRow)
+	n += fastpb.SizeInt32(3, x.GetSeatRow())
 	return n
 }
 
@@ -1172,7 +1237,7 @@ func (x *UpdateOrderRequest) sizeField4() (n int) {
 	if x.SeatCol == 0 {
 		return n
 	}
-	n += fastpb.SizeInt32(4, x.SeatCol)
+	n += fastpb.SizeInt32(4, x.GetSeatCol())
 	return n
 }
 
@@ -1188,7 +1253,7 @@ func (x *UpdateOrderResponse) sizeField1() (n int) {
 	if x.BaseResp == nil {
 		return n
 	}
-	n += fastpb.SizeMessage(1, x.BaseResp)
+	n += fastpb.SizeMessage(1, x.GetBaseResp())
 	return n
 }
 
@@ -1205,7 +1270,7 @@ func (x *GetAllOrderRequest) sizeField1() (n int) {
 	if x.UserId == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(1, x.UserId)
+	n += fastpb.SizeInt64(1, x.GetUserId())
 	return n
 }
 
@@ -1213,7 +1278,34 @@ func (x *GetAllOrderRequest) sizeField2() (n int) {
 	if x.OrderType == 0 {
 		return n
 	}
-	n += fastpb.SizeInt32(2, x.OrderType)
+	n += fastpb.SizeInt32(2, x.GetOrderType())
+	return n
+}
+
+func (x *GetAllOrderResponseData) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	n += x.sizeField2()
+	return n
+}
+
+func (x *GetAllOrderResponseData) sizeField1() (n int) {
+	if x.Total == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(1, x.GetTotal())
+	return n
+}
+
+func (x *GetAllOrderResponseData) sizeField2() (n int) {
+	if x.List == nil {
+		return n
+	}
+	for i := range x.GetList() {
+		n += fastpb.SizeMessage(2, x.GetList()[i])
+	}
 	return n
 }
 
@@ -1230,17 +1322,15 @@ func (x *GetAllOrderResponse) sizeField1() (n int) {
 	if x.BaseResp == nil {
 		return n
 	}
-	n += fastpb.SizeMessage(1, x.BaseResp)
+	n += fastpb.SizeMessage(1, x.GetBaseResp())
 	return n
 }
 
 func (x *GetAllOrderResponse) sizeField2() (n int) {
-	if x.List == nil {
+	if x.Data == nil {
 		return n
 	}
-	for i := range x.List {
-		n += fastpb.SizeMessage(2, x.List[i])
-	}
+	n += fastpb.SizeMessage(2, x.GetData())
 	return n
 }
 
@@ -1264,7 +1354,7 @@ func (x *OrderAnalysis) sizeField1() (n int) {
 	if x.PlayId == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(1, x.PlayId)
+	n += fastpb.SizeInt64(1, x.GetPlayId())
 	return n
 }
 
@@ -1272,7 +1362,7 @@ func (x *OrderAnalysis) sizeField2() (n int) {
 	if x.PlayName == "" {
 		return n
 	}
-	n += fastpb.SizeString(2, x.PlayName)
+	n += fastpb.SizeString(2, x.GetPlayName())
 	return n
 }
 
@@ -1280,7 +1370,7 @@ func (x *OrderAnalysis) sizeField3() (n int) {
 	if x.PlayArea == "" {
 		return n
 	}
-	n += fastpb.SizeString(3, x.PlayArea)
+	n += fastpb.SizeString(3, x.GetPlayArea())
 	return n
 }
 
@@ -1288,7 +1378,7 @@ func (x *OrderAnalysis) sizeField4() (n int) {
 	if x.PlayDuration == "" {
 		return n
 	}
-	n += fastpb.SizeString(4, x.PlayDuration)
+	n += fastpb.SizeString(4, x.GetPlayDuration())
 	return n
 }
 
@@ -1296,7 +1386,7 @@ func (x *OrderAnalysis) sizeField5() (n int) {
 	if x.StartData == "" {
 		return n
 	}
-	n += fastpb.SizeString(5, x.StartData)
+	n += fastpb.SizeString(5, x.GetStartData())
 	return n
 }
 
@@ -1304,7 +1394,7 @@ func (x *OrderAnalysis) sizeField6() (n int) {
 	if x.EndData == "" {
 		return n
 	}
-	n += fastpb.SizeString(6, x.EndData)
+	n += fastpb.SizeString(6, x.GetEndData())
 	return n
 }
 
@@ -1312,7 +1402,7 @@ func (x *OrderAnalysis) sizeField7() (n int) {
 	if x.TotalTicket == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(7, x.TotalTicket)
+	n += fastpb.SizeInt64(7, x.GetTotalTicket())
 	return n
 }
 
@@ -1320,7 +1410,7 @@ func (x *OrderAnalysis) sizeField8() (n int) {
 	if x.Sales == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(8, x.Sales)
+	n += fastpb.SizeInt64(8, x.GetSales())
 	return n
 }
 
@@ -1328,7 +1418,7 @@ func (x *OrderAnalysis) sizeField9() (n int) {
 	if x.Price == 0 {
 		return n
 	}
-	n += fastpb.SizeInt32(9, x.Price)
+	n += fastpb.SizeInt32(9, x.GetPrice())
 	return n
 }
 
@@ -1344,7 +1434,7 @@ func (x *GetOrderAnalysisRequest) sizeField1() (n int) {
 	if x.PlayId == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(1, x.PlayId)
+	n += fastpb.SizeInt64(1, x.GetPlayId())
 	return n
 }
 
@@ -1361,7 +1451,7 @@ func (x *GetOrderAnalysisResponse) sizeField1() (n int) {
 	if x.BaseResp == nil {
 		return n
 	}
-	n += fastpb.SizeMessage(1, x.BaseResp)
+	n += fastpb.SizeMessage(1, x.GetBaseResp())
 	return n
 }
 
@@ -1369,7 +1459,7 @@ func (x *GetOrderAnalysisResponse) sizeField2() (n int) {
 	if x.OrderAnalysis == nil {
 		return n
 	}
-	n += fastpb.SizeMessage(2, x.OrderAnalysis)
+	n += fastpb.SizeMessage(2, x.GetOrderAnalysis())
 	return n
 }
 
@@ -1416,9 +1506,14 @@ var fieldIDToName_GetAllOrderRequest = map[int32]string{
 	2: "OrderType",
 }
 
+var fieldIDToName_GetAllOrderResponseData = map[int32]string{
+	1: "Total",
+	2: "List",
+}
+
 var fieldIDToName_GetAllOrderResponse = map[int32]string{
 	1: "BaseResp",
-	2: "List",
+	2: "Data",
 }
 
 var fieldIDToName_OrderAnalysis = map[int32]string{

@@ -19,15 +19,16 @@ func AddStudioService(ctx context.Context, req *studio.AddStudioRequest) (resp *
 }
 
 func GetAllStudioService(ctx context.Context, req *studio.GetAllStudioRequest) (resp *studio.GetAllStudioResponse, err error) {
-	studios, err := dao.GetAllStudio(ctx, int(req.Current), int(req.PageSize))
-	resp = &studio.GetAllStudioResponse{BaseResp: &studio.BaseResp{}}
+	studios, total, err := dao.GetAllStudio(ctx, int(req.Current), int(req.PageSize))
+	resp = &studio.GetAllStudioResponse{BaseResp: &studio.BaseResp{}, Data: &studio.GetAllStudioResponseData{}}
 	if err != nil {
 		resp.BaseResp.StatusCode = 1
 		resp.BaseResp.StatusMessage = err.Error()
 	} else {
 		resp.BaseResp.StatusMessage = "success"
 	}
-	resp.List = studios
+	resp.Data.List = studios
+	resp.Data.Total = total
 	return resp, nil
 }
 

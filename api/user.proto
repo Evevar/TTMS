@@ -24,7 +24,7 @@ message CreateUserRequest{
 }
 message CreateUserResponse {
   BaseResp BaseResp = 1;
-  int64 UserId=2;
+  int64 UserId = 2;
 }
 //用户登录
 message UserLoginRequest{
@@ -41,9 +41,13 @@ message GetAllUserRequest{
   int32 Current = 1;//当前页
   int32 PageSize = 2; //一页数据条数
 }
+message GetAllUserResponseData{
+  int64 Total = 1;
+  repeated User List = 2;
+}
 message GetAllUserResponse{
   BaseResp BaseResp = 1;
-  repeated User List = 2;
+  GetAllUserResponseData Data = 2;
 }
 //修改密码
 message ChangeUserPasswordRequest{

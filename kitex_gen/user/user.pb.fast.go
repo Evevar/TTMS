@@ -342,6 +342,46 @@ func (x *GetAllUserRequest) fastReadField2(buf []byte, _type int8) (offset int, 
 	return offset, err
 }
 
+func (x *GetAllUserResponseData) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 2:
+		offset, err = x.fastReadField2(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_GetAllUserResponseData[number], err)
+}
+
+func (x *GetAllUserResponseData) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.Total, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
+}
+
+func (x *GetAllUserResponseData) fastReadField2(buf []byte, _type int8) (offset int, err error) {
+	var v User
+	offset, err = fastpb.ReadMessage(buf, _type, &v)
+	if err != nil {
+		return offset, err
+	}
+	x.List = append(x.List, &v)
+	return offset, nil
+}
+
 func (x *GetAllUserResponse) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
 	switch number {
 	case 1:
@@ -378,12 +418,12 @@ func (x *GetAllUserResponse) fastReadField1(buf []byte, _type int8) (offset int,
 }
 
 func (x *GetAllUserResponse) fastReadField2(buf []byte, _type int8) (offset int, err error) {
-	var v User
+	var v GetAllUserResponseData
 	offset, err = fastpb.ReadMessage(buf, _type, &v)
 	if err != nil {
 		return offset, err
 	}
-	x.List = append(x.List, &v)
+	x.Data = &v
 	return offset, nil
 }
 
@@ -805,7 +845,7 @@ func (x *BaseResp) fastWriteField1(buf []byte) (offset int) {
 	if x.StatusCode == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 1, x.StatusCode)
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetStatusCode())
 	return offset
 }
 
@@ -813,7 +853,7 @@ func (x *BaseResp) fastWriteField2(buf []byte) (offset int) {
 	if x.StatusMessage == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 2, x.StatusMessage)
+	offset += fastpb.WriteString(buf[offset:], 2, x.GetStatusMessage())
 	return offset
 }
 
@@ -833,7 +873,7 @@ func (x *User) fastWriteField1(buf []byte) (offset int) {
 	if x.Id == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 1, x.Id)
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetId())
 	return offset
 }
 
@@ -841,7 +881,7 @@ func (x *User) fastWriteField2(buf []byte) (offset int) {
 	if x.Type == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt32(buf[offset:], 2, x.Type)
+	offset += fastpb.WriteInt32(buf[offset:], 2, x.GetType())
 	return offset
 }
 
@@ -849,7 +889,7 @@ func (x *User) fastWriteField3(buf []byte) (offset int) {
 	if x.Name == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 3, x.Name)
+	offset += fastpb.WriteString(buf[offset:], 3, x.GetName())
 	return offset
 }
 
@@ -857,7 +897,7 @@ func (x *User) fastWriteField4(buf []byte) (offset int) {
 	if x.Password == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 4, x.Password)
+	offset += fastpb.WriteString(buf[offset:], 4, x.GetPassword())
 	return offset
 }
 
@@ -865,7 +905,7 @@ func (x *User) fastWriteField5(buf []byte) (offset int) {
 	if x.Email == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 5, x.Email)
+	offset += fastpb.WriteString(buf[offset:], 5, x.GetEmail())
 	return offset
 }
 
@@ -885,7 +925,7 @@ func (x *CreateUserRequest) fastWriteField1(buf []byte) (offset int) {
 	if x.Type == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt32(buf[offset:], 1, x.Type)
+	offset += fastpb.WriteInt32(buf[offset:], 1, x.GetType())
 	return offset
 }
 
@@ -893,7 +933,7 @@ func (x *CreateUserRequest) fastWriteField2(buf []byte) (offset int) {
 	if x.Name == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 2, x.Name)
+	offset += fastpb.WriteString(buf[offset:], 2, x.GetName())
 	return offset
 }
 
@@ -901,7 +941,7 @@ func (x *CreateUserRequest) fastWriteField3(buf []byte) (offset int) {
 	if x.Password == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 3, x.Password)
+	offset += fastpb.WriteString(buf[offset:], 3, x.GetPassword())
 	return offset
 }
 
@@ -909,7 +949,7 @@ func (x *CreateUserRequest) fastWriteField4(buf []byte) (offset int) {
 	if x.Email == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 4, x.Email)
+	offset += fastpb.WriteString(buf[offset:], 4, x.GetEmail())
 	return offset
 }
 
@@ -917,7 +957,7 @@ func (x *CreateUserRequest) fastWriteField5(buf []byte) (offset int) {
 	if x.Token == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 5, x.Token)
+	offset += fastpb.WriteString(buf[offset:], 5, x.GetToken())
 	return offset
 }
 
@@ -934,7 +974,7 @@ func (x *CreateUserResponse) fastWriteField1(buf []byte) (offset int) {
 	if x.BaseResp == nil {
 		return offset
 	}
-	offset += fastpb.WriteMessage(buf[offset:], 1, x.BaseResp)
+	offset += fastpb.WriteMessage(buf[offset:], 1, x.GetBaseResp())
 	return offset
 }
 
@@ -942,7 +982,7 @@ func (x *CreateUserResponse) fastWriteField2(buf []byte) (offset int) {
 	if x.UserId == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 2, x.UserId)
+	offset += fastpb.WriteInt64(buf[offset:], 2, x.GetUserId())
 	return offset
 }
 
@@ -959,7 +999,7 @@ func (x *UserLoginRequest) fastWriteField1(buf []byte) (offset int) {
 	if x.UserId == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 1, x.UserId)
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetUserId())
 	return offset
 }
 
@@ -967,7 +1007,7 @@ func (x *UserLoginRequest) fastWriteField2(buf []byte) (offset int) {
 	if x.Password == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 2, x.Password)
+	offset += fastpb.WriteString(buf[offset:], 2, x.GetPassword())
 	return offset
 }
 
@@ -985,7 +1025,7 @@ func (x *UserLoginResponse) fastWriteField1(buf []byte) (offset int) {
 	if x.BaseResp == nil {
 		return offset
 	}
-	offset += fastpb.WriteMessage(buf[offset:], 1, x.BaseResp)
+	offset += fastpb.WriteMessage(buf[offset:], 1, x.GetBaseResp())
 	return offset
 }
 
@@ -993,7 +1033,7 @@ func (x *UserLoginResponse) fastWriteField2(buf []byte) (offset int) {
 	if x.Token == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 2, x.Token)
+	offset += fastpb.WriteString(buf[offset:], 2, x.GetToken())
 	return offset
 }
 
@@ -1001,7 +1041,7 @@ func (x *UserLoginResponse) fastWriteField3(buf []byte) (offset int) {
 	if x.UserInfo == nil {
 		return offset
 	}
-	offset += fastpb.WriteMessage(buf[offset:], 3, x.UserInfo)
+	offset += fastpb.WriteMessage(buf[offset:], 3, x.GetUserInfo())
 	return offset
 }
 
@@ -1018,7 +1058,7 @@ func (x *GetAllUserRequest) fastWriteField1(buf []byte) (offset int) {
 	if x.Current == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt32(buf[offset:], 1, x.Current)
+	offset += fastpb.WriteInt32(buf[offset:], 1, x.GetCurrent())
 	return offset
 }
 
@@ -1026,7 +1066,34 @@ func (x *GetAllUserRequest) fastWriteField2(buf []byte) (offset int) {
 	if x.PageSize == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt32(buf[offset:], 2, x.PageSize)
+	offset += fastpb.WriteInt32(buf[offset:], 2, x.GetPageSize())
+	return offset
+}
+
+func (x *GetAllUserResponseData) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	offset += x.fastWriteField2(buf[offset:])
+	return offset
+}
+
+func (x *GetAllUserResponseData) fastWriteField1(buf []byte) (offset int) {
+	if x.Total == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetTotal())
+	return offset
+}
+
+func (x *GetAllUserResponseData) fastWriteField2(buf []byte) (offset int) {
+	if x.List == nil {
+		return offset
+	}
+	for i := range x.GetList() {
+		offset += fastpb.WriteMessage(buf[offset:], 2, x.GetList()[i])
+	}
 	return offset
 }
 
@@ -1043,17 +1110,15 @@ func (x *GetAllUserResponse) fastWriteField1(buf []byte) (offset int) {
 	if x.BaseResp == nil {
 		return offset
 	}
-	offset += fastpb.WriteMessage(buf[offset:], 1, x.BaseResp)
+	offset += fastpb.WriteMessage(buf[offset:], 1, x.GetBaseResp())
 	return offset
 }
 
 func (x *GetAllUserResponse) fastWriteField2(buf []byte) (offset int) {
-	if x.List == nil {
+	if x.Data == nil {
 		return offset
 	}
-	for i := range x.List {
-		offset += fastpb.WriteMessage(buf[offset:], 2, x.List[i])
-	}
+	offset += fastpb.WriteMessage(buf[offset:], 2, x.GetData())
 	return offset
 }
 
@@ -1071,7 +1136,7 @@ func (x *ChangeUserPasswordRequest) fastWriteField1(buf []byte) (offset int) {
 	if x.UserId == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 1, x.UserId)
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetUserId())
 	return offset
 }
 
@@ -1079,7 +1144,7 @@ func (x *ChangeUserPasswordRequest) fastWriteField2(buf []byte) (offset int) {
 	if x.Password == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 2, x.Password)
+	offset += fastpb.WriteString(buf[offset:], 2, x.GetPassword())
 	return offset
 }
 
@@ -1087,7 +1152,7 @@ func (x *ChangeUserPasswordRequest) fastWriteField3(buf []byte) (offset int) {
 	if x.NewPassword == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 3, x.NewPassword)
+	offset += fastpb.WriteString(buf[offset:], 3, x.GetNewPassword())
 	return offset
 }
 
@@ -1103,7 +1168,7 @@ func (x *ChangeUserPasswordResponse) fastWriteField1(buf []byte) (offset int) {
 	if x.BaseResp == nil {
 		return offset
 	}
-	offset += fastpb.WriteMessage(buf[offset:], 1, x.BaseResp)
+	offset += fastpb.WriteMessage(buf[offset:], 1, x.GetBaseResp())
 	return offset
 }
 
@@ -1119,7 +1184,7 @@ func (x *DeleteUserRequest) fastWriteField1(buf []byte) (offset int) {
 	if x.UserId == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 1, x.UserId)
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetUserId())
 	return offset
 }
 
@@ -1135,7 +1200,7 @@ func (x *DeleteUserResponse) fastWriteField1(buf []byte) (offset int) {
 	if x.BaseResp == nil {
 		return offset
 	}
-	offset += fastpb.WriteMessage(buf[offset:], 1, x.BaseResp)
+	offset += fastpb.WriteMessage(buf[offset:], 1, x.GetBaseResp())
 	return offset
 }
 
@@ -1151,7 +1216,7 @@ func (x *GetUserInfoRequest) fastWriteField1(buf []byte) (offset int) {
 	if x.UserId == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 1, x.UserId)
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetUserId())
 	return offset
 }
 
@@ -1168,7 +1233,7 @@ func (x *GetUserInfoResponse) fastWriteField1(buf []byte) (offset int) {
 	if x.BaseResp == nil {
 		return offset
 	}
-	offset += fastpb.WriteMessage(buf[offset:], 1, x.BaseResp)
+	offset += fastpb.WriteMessage(buf[offset:], 1, x.GetBaseResp())
 	return offset
 }
 
@@ -1176,7 +1241,7 @@ func (x *GetUserInfoResponse) fastWriteField2(buf []byte) (offset int) {
 	if x.User == nil {
 		return offset
 	}
-	offset += fastpb.WriteMessage(buf[offset:], 2, x.User)
+	offset += fastpb.WriteMessage(buf[offset:], 2, x.GetUser())
 	return offset
 }
 
@@ -1194,7 +1259,7 @@ func (x *BindEmailRequest) fastWriteField1(buf []byte) (offset int) {
 	if x.Email == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 1, x.Email)
+	offset += fastpb.WriteString(buf[offset:], 1, x.GetEmail())
 	return offset
 }
 
@@ -1202,7 +1267,7 @@ func (x *BindEmailRequest) fastWriteField2(buf []byte) (offset int) {
 	if x.Verification == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 2, x.Verification)
+	offset += fastpb.WriteString(buf[offset:], 2, x.GetVerification())
 	return offset
 }
 
@@ -1210,7 +1275,7 @@ func (x *BindEmailRequest) fastWriteField3(buf []byte) (offset int) {
 	if x.UserId == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 3, x.UserId)
+	offset += fastpb.WriteInt64(buf[offset:], 3, x.GetUserId())
 	return offset
 }
 
@@ -1226,7 +1291,7 @@ func (x *BindEmailResponse) fastWriteField1(buf []byte) (offset int) {
 	if x.BaseResp == nil {
 		return offset
 	}
-	offset += fastpb.WriteMessage(buf[offset:], 1, x.BaseResp)
+	offset += fastpb.WriteMessage(buf[offset:], 1, x.GetBaseResp())
 	return offset
 }
 
@@ -1242,7 +1307,7 @@ func (x *GetVerificationRequest) fastWriteField1(buf []byte) (offset int) {
 	if x.Email == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 1, x.Email)
+	offset += fastpb.WriteString(buf[offset:], 1, x.GetEmail())
 	return offset
 }
 
@@ -1258,7 +1323,7 @@ func (x *GetVerificationResponse) fastWriteField1(buf []byte) (offset int) {
 	if x.BaseResp == nil {
 		return offset
 	}
-	offset += fastpb.WriteMessage(buf[offset:], 1, x.BaseResp)
+	offset += fastpb.WriteMessage(buf[offset:], 1, x.GetBaseResp())
 	return offset
 }
 
@@ -1276,7 +1341,7 @@ func (x *ForgetPasswordRequest) fastWriteField1(buf []byte) (offset int) {
 	if x.Email == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 1, x.Email)
+	offset += fastpb.WriteString(buf[offset:], 1, x.GetEmail())
 	return offset
 }
 
@@ -1284,7 +1349,7 @@ func (x *ForgetPasswordRequest) fastWriteField2(buf []byte) (offset int) {
 	if x.Verification == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 2, x.Verification)
+	offset += fastpb.WriteString(buf[offset:], 2, x.GetVerification())
 	return offset
 }
 
@@ -1292,7 +1357,7 @@ func (x *ForgetPasswordRequest) fastWriteField3(buf []byte) (offset int) {
 	if x.NewPassword == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 3, x.NewPassword)
+	offset += fastpb.WriteString(buf[offset:], 3, x.GetNewPassword())
 	return offset
 }
 
@@ -1308,7 +1373,7 @@ func (x *ForgetPasswordResponse) fastWriteField1(buf []byte) (offset int) {
 	if x.BaseResp == nil {
 		return offset
 	}
-	offset += fastpb.WriteMessage(buf[offset:], 1, x.BaseResp)
+	offset += fastpb.WriteMessage(buf[offset:], 1, x.GetBaseResp())
 	return offset
 }
 
@@ -1325,7 +1390,7 @@ func (x *BaseResp) sizeField1() (n int) {
 	if x.StatusCode == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(1, x.StatusCode)
+	n += fastpb.SizeInt64(1, x.GetStatusCode())
 	return n
 }
 
@@ -1333,7 +1398,7 @@ func (x *BaseResp) sizeField2() (n int) {
 	if x.StatusMessage == "" {
 		return n
 	}
-	n += fastpb.SizeString(2, x.StatusMessage)
+	n += fastpb.SizeString(2, x.GetStatusMessage())
 	return n
 }
 
@@ -1353,7 +1418,7 @@ func (x *User) sizeField1() (n int) {
 	if x.Id == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(1, x.Id)
+	n += fastpb.SizeInt64(1, x.GetId())
 	return n
 }
 
@@ -1361,7 +1426,7 @@ func (x *User) sizeField2() (n int) {
 	if x.Type == 0 {
 		return n
 	}
-	n += fastpb.SizeInt32(2, x.Type)
+	n += fastpb.SizeInt32(2, x.GetType())
 	return n
 }
 
@@ -1369,7 +1434,7 @@ func (x *User) sizeField3() (n int) {
 	if x.Name == "" {
 		return n
 	}
-	n += fastpb.SizeString(3, x.Name)
+	n += fastpb.SizeString(3, x.GetName())
 	return n
 }
 
@@ -1377,7 +1442,7 @@ func (x *User) sizeField4() (n int) {
 	if x.Password == "" {
 		return n
 	}
-	n += fastpb.SizeString(4, x.Password)
+	n += fastpb.SizeString(4, x.GetPassword())
 	return n
 }
 
@@ -1385,7 +1450,7 @@ func (x *User) sizeField5() (n int) {
 	if x.Email == "" {
 		return n
 	}
-	n += fastpb.SizeString(5, x.Email)
+	n += fastpb.SizeString(5, x.GetEmail())
 	return n
 }
 
@@ -1405,7 +1470,7 @@ func (x *CreateUserRequest) sizeField1() (n int) {
 	if x.Type == 0 {
 		return n
 	}
-	n += fastpb.SizeInt32(1, x.Type)
+	n += fastpb.SizeInt32(1, x.GetType())
 	return n
 }
 
@@ -1413,7 +1478,7 @@ func (x *CreateUserRequest) sizeField2() (n int) {
 	if x.Name == "" {
 		return n
 	}
-	n += fastpb.SizeString(2, x.Name)
+	n += fastpb.SizeString(2, x.GetName())
 	return n
 }
 
@@ -1421,7 +1486,7 @@ func (x *CreateUserRequest) sizeField3() (n int) {
 	if x.Password == "" {
 		return n
 	}
-	n += fastpb.SizeString(3, x.Password)
+	n += fastpb.SizeString(3, x.GetPassword())
 	return n
 }
 
@@ -1429,7 +1494,7 @@ func (x *CreateUserRequest) sizeField4() (n int) {
 	if x.Email == "" {
 		return n
 	}
-	n += fastpb.SizeString(4, x.Email)
+	n += fastpb.SizeString(4, x.GetEmail())
 	return n
 }
 
@@ -1437,7 +1502,7 @@ func (x *CreateUserRequest) sizeField5() (n int) {
 	if x.Token == "" {
 		return n
 	}
-	n += fastpb.SizeString(5, x.Token)
+	n += fastpb.SizeString(5, x.GetToken())
 	return n
 }
 
@@ -1454,7 +1519,7 @@ func (x *CreateUserResponse) sizeField1() (n int) {
 	if x.BaseResp == nil {
 		return n
 	}
-	n += fastpb.SizeMessage(1, x.BaseResp)
+	n += fastpb.SizeMessage(1, x.GetBaseResp())
 	return n
 }
 
@@ -1462,7 +1527,7 @@ func (x *CreateUserResponse) sizeField2() (n int) {
 	if x.UserId == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(2, x.UserId)
+	n += fastpb.SizeInt64(2, x.GetUserId())
 	return n
 }
 
@@ -1479,7 +1544,7 @@ func (x *UserLoginRequest) sizeField1() (n int) {
 	if x.UserId == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(1, x.UserId)
+	n += fastpb.SizeInt64(1, x.GetUserId())
 	return n
 }
 
@@ -1487,7 +1552,7 @@ func (x *UserLoginRequest) sizeField2() (n int) {
 	if x.Password == "" {
 		return n
 	}
-	n += fastpb.SizeString(2, x.Password)
+	n += fastpb.SizeString(2, x.GetPassword())
 	return n
 }
 
@@ -1505,7 +1570,7 @@ func (x *UserLoginResponse) sizeField1() (n int) {
 	if x.BaseResp == nil {
 		return n
 	}
-	n += fastpb.SizeMessage(1, x.BaseResp)
+	n += fastpb.SizeMessage(1, x.GetBaseResp())
 	return n
 }
 
@@ -1513,7 +1578,7 @@ func (x *UserLoginResponse) sizeField2() (n int) {
 	if x.Token == "" {
 		return n
 	}
-	n += fastpb.SizeString(2, x.Token)
+	n += fastpb.SizeString(2, x.GetToken())
 	return n
 }
 
@@ -1521,7 +1586,7 @@ func (x *UserLoginResponse) sizeField3() (n int) {
 	if x.UserInfo == nil {
 		return n
 	}
-	n += fastpb.SizeMessage(3, x.UserInfo)
+	n += fastpb.SizeMessage(3, x.GetUserInfo())
 	return n
 }
 
@@ -1538,7 +1603,7 @@ func (x *GetAllUserRequest) sizeField1() (n int) {
 	if x.Current == 0 {
 		return n
 	}
-	n += fastpb.SizeInt32(1, x.Current)
+	n += fastpb.SizeInt32(1, x.GetCurrent())
 	return n
 }
 
@@ -1546,7 +1611,34 @@ func (x *GetAllUserRequest) sizeField2() (n int) {
 	if x.PageSize == 0 {
 		return n
 	}
-	n += fastpb.SizeInt32(2, x.PageSize)
+	n += fastpb.SizeInt32(2, x.GetPageSize())
+	return n
+}
+
+func (x *GetAllUserResponseData) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	n += x.sizeField2()
+	return n
+}
+
+func (x *GetAllUserResponseData) sizeField1() (n int) {
+	if x.Total == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(1, x.GetTotal())
+	return n
+}
+
+func (x *GetAllUserResponseData) sizeField2() (n int) {
+	if x.List == nil {
+		return n
+	}
+	for i := range x.GetList() {
+		n += fastpb.SizeMessage(2, x.GetList()[i])
+	}
 	return n
 }
 
@@ -1563,17 +1655,15 @@ func (x *GetAllUserResponse) sizeField1() (n int) {
 	if x.BaseResp == nil {
 		return n
 	}
-	n += fastpb.SizeMessage(1, x.BaseResp)
+	n += fastpb.SizeMessage(1, x.GetBaseResp())
 	return n
 }
 
 func (x *GetAllUserResponse) sizeField2() (n int) {
-	if x.List == nil {
+	if x.Data == nil {
 		return n
 	}
-	for i := range x.List {
-		n += fastpb.SizeMessage(2, x.List[i])
-	}
+	n += fastpb.SizeMessage(2, x.GetData())
 	return n
 }
 
@@ -1591,7 +1681,7 @@ func (x *ChangeUserPasswordRequest) sizeField1() (n int) {
 	if x.UserId == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(1, x.UserId)
+	n += fastpb.SizeInt64(1, x.GetUserId())
 	return n
 }
 
@@ -1599,7 +1689,7 @@ func (x *ChangeUserPasswordRequest) sizeField2() (n int) {
 	if x.Password == "" {
 		return n
 	}
-	n += fastpb.SizeString(2, x.Password)
+	n += fastpb.SizeString(2, x.GetPassword())
 	return n
 }
 
@@ -1607,7 +1697,7 @@ func (x *ChangeUserPasswordRequest) sizeField3() (n int) {
 	if x.NewPassword == "" {
 		return n
 	}
-	n += fastpb.SizeString(3, x.NewPassword)
+	n += fastpb.SizeString(3, x.GetNewPassword())
 	return n
 }
 
@@ -1623,7 +1713,7 @@ func (x *ChangeUserPasswordResponse) sizeField1() (n int) {
 	if x.BaseResp == nil {
 		return n
 	}
-	n += fastpb.SizeMessage(1, x.BaseResp)
+	n += fastpb.SizeMessage(1, x.GetBaseResp())
 	return n
 }
 
@@ -1639,7 +1729,7 @@ func (x *DeleteUserRequest) sizeField1() (n int) {
 	if x.UserId == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(1, x.UserId)
+	n += fastpb.SizeInt64(1, x.GetUserId())
 	return n
 }
 
@@ -1655,7 +1745,7 @@ func (x *DeleteUserResponse) sizeField1() (n int) {
 	if x.BaseResp == nil {
 		return n
 	}
-	n += fastpb.SizeMessage(1, x.BaseResp)
+	n += fastpb.SizeMessage(1, x.GetBaseResp())
 	return n
 }
 
@@ -1671,7 +1761,7 @@ func (x *GetUserInfoRequest) sizeField1() (n int) {
 	if x.UserId == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(1, x.UserId)
+	n += fastpb.SizeInt64(1, x.GetUserId())
 	return n
 }
 
@@ -1688,7 +1778,7 @@ func (x *GetUserInfoResponse) sizeField1() (n int) {
 	if x.BaseResp == nil {
 		return n
 	}
-	n += fastpb.SizeMessage(1, x.BaseResp)
+	n += fastpb.SizeMessage(1, x.GetBaseResp())
 	return n
 }
 
@@ -1696,7 +1786,7 @@ func (x *GetUserInfoResponse) sizeField2() (n int) {
 	if x.User == nil {
 		return n
 	}
-	n += fastpb.SizeMessage(2, x.User)
+	n += fastpb.SizeMessage(2, x.GetUser())
 	return n
 }
 
@@ -1714,7 +1804,7 @@ func (x *BindEmailRequest) sizeField1() (n int) {
 	if x.Email == "" {
 		return n
 	}
-	n += fastpb.SizeString(1, x.Email)
+	n += fastpb.SizeString(1, x.GetEmail())
 	return n
 }
 
@@ -1722,7 +1812,7 @@ func (x *BindEmailRequest) sizeField2() (n int) {
 	if x.Verification == "" {
 		return n
 	}
-	n += fastpb.SizeString(2, x.Verification)
+	n += fastpb.SizeString(2, x.GetVerification())
 	return n
 }
 
@@ -1730,7 +1820,7 @@ func (x *BindEmailRequest) sizeField3() (n int) {
 	if x.UserId == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(3, x.UserId)
+	n += fastpb.SizeInt64(3, x.GetUserId())
 	return n
 }
 
@@ -1746,7 +1836,7 @@ func (x *BindEmailResponse) sizeField1() (n int) {
 	if x.BaseResp == nil {
 		return n
 	}
-	n += fastpb.SizeMessage(1, x.BaseResp)
+	n += fastpb.SizeMessage(1, x.GetBaseResp())
 	return n
 }
 
@@ -1762,7 +1852,7 @@ func (x *GetVerificationRequest) sizeField1() (n int) {
 	if x.Email == "" {
 		return n
 	}
-	n += fastpb.SizeString(1, x.Email)
+	n += fastpb.SizeString(1, x.GetEmail())
 	return n
 }
 
@@ -1778,7 +1868,7 @@ func (x *GetVerificationResponse) sizeField1() (n int) {
 	if x.BaseResp == nil {
 		return n
 	}
-	n += fastpb.SizeMessage(1, x.BaseResp)
+	n += fastpb.SizeMessage(1, x.GetBaseResp())
 	return n
 }
 
@@ -1796,7 +1886,7 @@ func (x *ForgetPasswordRequest) sizeField1() (n int) {
 	if x.Email == "" {
 		return n
 	}
-	n += fastpb.SizeString(1, x.Email)
+	n += fastpb.SizeString(1, x.GetEmail())
 	return n
 }
 
@@ -1804,7 +1894,7 @@ func (x *ForgetPasswordRequest) sizeField2() (n int) {
 	if x.Verification == "" {
 		return n
 	}
-	n += fastpb.SizeString(2, x.Verification)
+	n += fastpb.SizeString(2, x.GetVerification())
 	return n
 }
 
@@ -1812,7 +1902,7 @@ func (x *ForgetPasswordRequest) sizeField3() (n int) {
 	if x.NewPassword == "" {
 		return n
 	}
-	n += fastpb.SizeString(3, x.NewPassword)
+	n += fastpb.SizeString(3, x.GetNewPassword())
 	return n
 }
 
@@ -1828,7 +1918,7 @@ func (x *ForgetPasswordResponse) sizeField1() (n int) {
 	if x.BaseResp == nil {
 		return n
 	}
-	n += fastpb.SizeMessage(1, x.BaseResp)
+	n += fastpb.SizeMessage(1, x.GetBaseResp())
 	return n
 }
 
@@ -1874,9 +1964,14 @@ var fieldIDToName_GetAllUserRequest = map[int32]string{
 	2: "PageSize",
 }
 
+var fieldIDToName_GetAllUserResponseData = map[int32]string{
+	1: "Total",
+	2: "List",
+}
+
 var fieldIDToName_GetAllUserResponse = map[int32]string{
 	1: "BaseResp",
-	2: "List",
+	2: "Data",
 }
 
 var fieldIDToName_ChangeUserPasswordRequest = map[int32]string{

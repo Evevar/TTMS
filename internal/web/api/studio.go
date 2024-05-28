@@ -13,7 +13,7 @@ import (
 func AddStudio(c *gin.Context) {
 	req := &studio.AddStudioRequest{}
 	if err := c.Bind(req); err != nil {
-		log.Println("err = ", err, " req = ", req)
+		log.Println("err = ", err, " req = ", req.Name)
 		c.JSON(http.StatusBadRequest, "bind error")
 		return
 	}

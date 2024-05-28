@@ -14,12 +14,14 @@ func AddStudio(ctx context.Context, Name string, row, col int64) error {
 	}
 	return AddBatchSeat(ctx, &s)
 }
-func GetAllStudio(ctx context.Context, Current, PageSize int) ([]*studio.Studio, error) {
+func GetAllStudio(ctx context.Context, Current, PageSize int) ([]*studio.Studio, int64, error) {
 	studios := make([]*studio.Studio, PageSize)
 	tx := DB.WithContext(ctx).Select("studios.*,count(s.studio_id) as seats_count").
 		Joins("join seats as s on studios.id=s.studio_id").Where("s.status=1").
 		Group("studios.id").Offset((Current - 1) * PageSize).Limit(PageSize).Find(&studios)
-	return studios, tx.Error
+	var total int64
+	tx = DB.WithContext(ctx).Model(&Studio{}).Count(&total)
+	return studios, total, tx.Error
 }
 
 func GetStudio(ctx context.Context, id int) (*studio.Studio, error) {

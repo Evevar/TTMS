@@ -109,8 +109,8 @@ func DeletePlayService(ctx context.Context, req *play.DeletePlayRequest) (resp *
 }
 
 func GetAllPlayService(ctx context.Context, req *play.GetAllPlayRequest) (resp *play.GetAllPlayResponse, err error) {
-	resp = &play.GetAllPlayResponse{BaseResp: &play.BaseResp{}}
-	resp.List, err = dao.GetAllPlay(ctx, int(req.Current), int(req.PageSize))
+	resp = &play.GetAllPlayResponse{BaseResp: &play.BaseResp{}, Data: &play.GetAllPlayResponseData{}}
+	resp.Data.List, resp.Data.Total, err = dao.GetAllPlay(ctx, int(req.Current), int(req.PageSize))
 	if err != nil {
 		resp.BaseResp.StatusCode = 1
 		resp.BaseResp.StatusMessage = err.Error()
@@ -138,8 +138,7 @@ func AddScheduleService(ctx context.Context, req *play.AddScheduleRequest) (resp
 	}
 	re, _ := studioClient.GetAllSeat(ctx, &studio.GetAllSeatRequest{StudioId: req.StudioId, Current: 0, PageSize: 1000})
 	p, err := dao.GetPlayById(req.PlayId)
-	//log.Println(re.List)
-	_, err = ticketClient.BatchAddTicket(ctx, &ticket.BatchAddTicketRequest{ScheduleId: id, StudioId: req.StudioId, Price: int32(p.Price), PlayName: p.Name, List: re.List})
+	_, err = ticketClient.BatchAddTicket(ctx, &ticket.BatchAddTicketRequest{ScheduleId: id, StudioId: req.StudioId, Price: int32(p.Price), PlayName: p.Name, List: re.Data.List})
 	if err != nil {
 		resp.BaseResp.StatusCode = 1
 		resp.BaseResp.StatusMessage = err.Error()
@@ -175,9 +174,9 @@ func DeleteScheduleService(ctx context.Context, req *play.DeleteScheduleRequest)
 	return resp, nil
 }
 func GetAllScheduleService(ctx context.Context, req *play.GetAllScheduleRequest) (resp *play.GetAllScheduleResponse, err error) {
-	resp = &play.GetAllScheduleResponse{BaseResp: &play.BaseResp{}}
-	resp.List = make([]*play.Result, 0, req.PageSize)
-	schedules, err := dao.GetAllSchedule(ctx, int(req.Current), int(req.PageSize))
+	resp = &play.GetAllScheduleResponse{BaseResp: &play.BaseResp{}, Data: &play.GetAllScheduleResponseData{}}
+	resp.Data.List = make([]*play.Result, 0, req.PageSize)
+	schedules, total, err := dao.GetAllSchedule(ctx, int(req.Current), int(req.PageSize))
 	log.Println("schedule = ", schedules)
 	for i, sch := range schedules {
 		p, _ := dao.GetPlayById(sch.PlayId)
@@ -186,18 +185,19 @@ func GetAllScheduleService(ctx context.Context, req *play.GetAllScheduleRequest)
 		log.Println("studio = ", resp1.Result)
 		log.Println("err1 = ", err1)
 		//log.Println("i = ", i, "resp.List[i] = ", resp.List[i])
-		resp.List = append(resp.List, new(play.Result))
-		resp.List[i].Id = sch.Id
-		resp.List[i].PlayName = p.Name
-		resp.List[i].Area = p.Area
-		resp.List[i].Rating = p.Rating
-		resp.List[i].Duration = p.Duration
-		resp.List[i].ShowTime = sch.ShowTime
-		resp.List[i].Price = p.Price
-		resp.List[i].StudioName = resp1.Result.Name
-		log.Println("Result = ", resp.List)
+		resp.Data.List = append(resp.Data.List, new(play.Result))
+		resp.Data.List[i].Id = sch.Id
+		resp.Data.List[i].PlayName = p.Name
+		resp.Data.List[i].Area = p.Area
+		resp.Data.List[i].Rating = p.Rating
+		resp.Data.List[i].Duration = p.Duration
+		resp.Data.List[i].ShowTime = sch.ShowTime
+		resp.Data.List[i].Price = p.Price
+		resp.Data.List[i].StudioName = resp1.Result.Name
+		log.Println("Result = ", resp.Data.List)
 	}
-	log.Println("Result = ", resp.List)
+	resp.Data.Total = total
+	log.Println("Result = ", resp.Data.List)
 	if err != nil {
 		resp.BaseResp.StatusCode = 1
 		resp.BaseResp.StatusMessage = err.Error()

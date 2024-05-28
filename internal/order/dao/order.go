@@ -26,11 +26,13 @@ func UpdateOrder(UserId, ScheduleId int64, SeatRow, SeatCol int32, Type int32, D
 	return err
 }
 
-func GetAllOrder(ctx context.Context, UserId, OrderType int) (orders []*order.Order, err error) {
+func GetAllOrder(ctx context.Context, UserId, OrderType int) (orders []*order.Order, total int64, err error) {
 	if OrderType == 2 {
 		err = DB.WithContext(ctx).Where("user_id = ? and type = ?", UserId, OrderType).Order("date desc").Find(&orders).Error
+		DB.WithContext(ctx).Where("user_id = ? and type = ?", UserId, OrderType).Order("date desc").Count(&total)
 	} else {
 		err = DB.WithContext(ctx).Where("user_id = ? and type != 2", UserId).Order("date desc").Find(&orders).Error
+		DB.WithContext(ctx).Model(&order.Order{}).Where("user_id = ? and type != 2", UserId).Order("date desc").Count(&total)
 	}
 	return
 }

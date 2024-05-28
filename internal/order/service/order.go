@@ -51,8 +51,8 @@ func InitPlayRPC() {
 }
 
 func GetAllOrderService(ctx context.Context, req *order.GetAllOrderRequest) (resp *order.GetAllOrderResponse, err error) {
-	resp = &order.GetAllOrderResponse{BaseResp: &order.BaseResp{}}
-	resp.List, err = dao.GetAllOrder(ctx, int(req.UserId), int(req.OrderType))
+	resp = &order.GetAllOrderResponse{BaseResp: &order.BaseResp{}, Data: &order.GetAllOrderResponseData{}}
+	resp.Data.List, resp.Data.Total, err = dao.GetAllOrder(ctx, int(req.UserId), int(req.OrderType))
 	if err != nil {
 		resp.BaseResp.StatusCode = 1
 		resp.BaseResp.StatusMessage = err.Error()

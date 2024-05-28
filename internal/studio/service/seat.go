@@ -24,15 +24,16 @@ func AddSeatService(ctx context.Context, req *studio.AddSeatRequest) (*studio.Ad
 	return resp, nil
 }
 func GetAllSeatService(ctx context.Context, req *studio.GetAllSeatRequest) (*studio.GetAllSeatResponse, error) {
-	seats, err := dao.GetAllSeat(ctx, int(req.StudioId), int(req.Current), int(req.PageSize))
-	resp := &studio.GetAllSeatResponse{BaseResp: &studio.BaseResp{}}
+	seats, total, err := dao.GetAllSeat(ctx, int(req.StudioId), int(req.Current), int(req.PageSize))
+	resp := &studio.GetAllSeatResponse{BaseResp: &studio.BaseResp{}, Data: &studio.GetAllSeatResponseData{}}
 	if err != nil {
 		resp.BaseResp.StatusCode = 1
 		resp.BaseResp.StatusMessage = err.Error()
 	} else {
 		resp.BaseResp.StatusMessage = "success"
 	}
-	resp.List = seats
+	resp.Data.List = seats
+	resp.Data.Total = total
 	return resp, nil
 }
 func UpdateSeatService(ctx context.Context, req *studio.UpdateSeatRequest) (*studio.UpdateSeatResponse, error) {
