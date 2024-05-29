@@ -4,9 +4,11 @@ import (
 	"TTMS/configs/consts"
 	"TTMS/internal/user/dao"
 	user "TTMS/kitex_gen/user/userservice"
+	"net"
+	"time"
+
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/limit"
-	"net"
 
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
@@ -28,6 +30,7 @@ func main() {
 		//server.WithMiddleware(mw.ServerMiddleware),
 		server.WithServiceAddr(addr),                                         // address
 		server.WithLimit(&limit.Option{MaxConnections: 10000, MaxQPS: 5000}), // limit
+		server.WithReadWriteTimeout(10*time.Second),
 		//server.WithMuxTransport(),                                            // 开启多路复用，win不支持
 		//server.WithSuite(trace.NewDefaultServerSuite()),                     // tracer
 		server.WithRegistry(r), // registry

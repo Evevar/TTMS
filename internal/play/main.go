@@ -6,8 +6,10 @@ import (
 	"TTMS/internal/play/redis"
 	"TTMS/internal/play/service"
 	play "TTMS/kitex_gen/play/playservice"
-	"github.com/cloudwego/kitex/pkg/limit"
 	"net"
+	"time"
+
+	"github.com/cloudwego/kitex/pkg/limit"
 
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
@@ -26,6 +28,7 @@ func main() {
 	}
 	svr := play.NewServer(new(PlayServiceImpl),
 		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: consts.PlayServiceName}), // server name
+		server.WithReadWriteTimeout(10*time.Second),
 		//server.WithMiddleware(mw.CommonMiddleware),                                          // middleWare
 		//server.WithMiddleware(mw.ServerMiddleware),
 		server.WithServiceAddr(addr),                                         // address

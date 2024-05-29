@@ -26,8 +26,8 @@ func InitPlayRPC() {
 		//client.WithMiddleware(mw.CommonMiddleware),
 		//client.WithInstanceMW(mw.ClientMiddleware),
 		//client.WithMuxConnection(1),                       // mux
-		client.WithRPCTimeout(3*time.Second),              // rpc timeout
-		client.WithConnectTimeout(50*time.Millisecond),    // conn timeout
+		client.WithRPCTimeout(10*time.Second),             // rpc timeout
+		client.WithConnectTimeout(5*time.Second),          // conn timeout
 		client.WithFailureRetry(retry.NewFailurePolicy()), // retry
 		//client.WithSuite(trace.NewDefaultClientSuite()),   // tracer
 		client.WithResolver(r), // resolver

@@ -3,7 +3,7 @@
 # 获取并杀死指定的进程
 function stop_service {
     local process_name=$1
-    local pids=$(tasklist //FI "IMAGENAME eq ${process_name}.exe" //FO CSV | tail -n +2 | awk -F',' '{print $2}' | tr -d '"')
+    local pids=$(tasklist //FI "IMAGENAME eq ${process_name}" //FO CSV | tail -n +2 | awk -F',' '{print $2}' | tr -d '"')
 
     if [[ -n "$pids" ]]; then
         for pid in $pids; do
