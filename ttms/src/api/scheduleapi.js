@@ -3,7 +3,7 @@ import axios from "../utils/request";
 
 //演出厅列表
 export const $schedule = async (params) => {
-    let { data } = await axios.get('ttms/schedule/all', {
+    let { data } = await axios.get('ttms/schedule/all/', {
         params: {
             Current: params,
             PageSize: 10
@@ -23,7 +23,7 @@ export const $addschedule = async (params) => {
     let newhour = hour.toString()
     let newriqi = params.ShowTime.$y + '-' + mon + '-' + day + newhour.substring(15, 24)
     console.log(newriqi)
-    let { data } = await axios.post('ttms/schedule/add', {
+    let { data } = await axios.post('ttms/schedule/add/', {
         "PlayId": parseInt(params.PlayId),
         "StudioId": parseInt(params.StudioId),
         "ShowTime": newriqi,
@@ -34,7 +34,7 @@ export const $addschedule = async (params) => {
 
 //删除演出厅
 export const $delschedule = async (params) => {
-    let { data } = await axios.post('ttms/schedule/delete', { "Id": parseInt(params.Id) })
+    let { data } = await axios.post('ttms/schedule/delete/', { "Id": parseInt(params.Id) })
     return data
 }
 
@@ -45,7 +45,7 @@ export const $reviseschedule = async (params) => {
     let hour = params.ShowTime.$d
     let newhour = hour.toString()
     let newriqi = params.ShowTime.$y + '-' + mon + '-' + day + newhour.substring(15, 24)
-    let { data } = await axios.post('ttms/schedule/update', {
+    let { data } = await axios.post('ttms/schedule/update/', {
 
 
         "Id": parseInt(params.Id),

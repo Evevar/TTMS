@@ -4,7 +4,7 @@ import axios from "../utils/request";
 export const $seat = async (value) => {
 
     // console.log(value)
-    let { data } = await axios.get('ttms/seat/all', {
+    let { data } = await axios.get('ttms/seat/all/', {
         params: {
             StudioId: value.selectchage,
             Current: value.Current,
@@ -20,7 +20,7 @@ export const $seat = async (value) => {
 
 export const $delseat = async (params) => {
     // console.log(params.deldata)
-    let { data } = await axios.post('ttms/seat/delete', {
+    let { data } = await axios.post('ttms/seat/delete/', {
         "StudioId": parseInt(params.deldata.StudioId),
         "Row": parseInt(params.deldata.Row),
         "Col": parseInt(params.deldata.Col)
@@ -30,7 +30,7 @@ export const $delseat = async (params) => {
 
 
 export const $addseat = async (params) => {
-    let { data } = await axios.post('ttms/seat/add', {
+    let { data } = await axios.post('ttms/seat/add/', {
         "StudioId": parseInt(params.StudioId),
         "Row": parseInt(params.Row),
         "Col": parseInt(params.Col),
@@ -41,7 +41,7 @@ export const $addseat = async (params) => {
 
 
 export const $reviseseat = async (params) => {
-    let { data } = await axios.post('ttms/seat/update', {
+    let { data } = await axios.post('ttms/seat/update/', {
         "StudioId": parseInt(params.StudioId),
         "Row": parseInt(params.Row),
         "Col": parseInt(params.Col),

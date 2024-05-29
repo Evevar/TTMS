@@ -2,7 +2,7 @@ import axios from "../utils/request";
 
 //演出厅列表
 export const $play = async (params) => {
-    let { data } = await axios.get('ttms/play/all', {
+    let { data } = await axios.get('ttms/play/all/', {
         params: {
             Current: params,
             PageSize: 10
@@ -23,7 +23,7 @@ export const $addplay = async (params) => {
     let endmon = (params.EndDate.$M + 1) < 10 ? '0' + (params.EndDate.$M + 1) : params.EndDate.$M + 1
     let endday = (params.EndDate.$D + 1) < 10 ? '0' + params.EndDate.$D : params.EndDate.$D
     let endnewriqi = params.EndDate.$y + '-' + endmon + '-' + endday
-    let { data } = await axios.post('ttms/play/add', {
+    let { data } = await axios.post('ttms/play/add/', {
         "Name": params.Name,
         "Type": parseInt(params.Type),
         "Area": params.Area,
@@ -39,7 +39,7 @@ export const $addplay = async (params) => {
 
 //删除演出厅
 export const $delplay = async (params) => {
-    let { data } = await axios.post('ttms/play/delete', { "Id": parseInt(params.Id) })
+    let { data } = await axios.post('ttms/play/delete/', { "Id": parseInt(params.Id) })
     return data
 }
 
@@ -53,7 +53,7 @@ export const $reviseplay = async (params) => {
     let endday = (params.EndDate.$D + 1) < 10 ? '0' + params.EndDate.$D : params.EndDate.$D
     let endnewriqi = params.EndDate.$y + '-' + endmon + '-' + endday
     // console.log(endnewriqi)
-    let { data } = await axios.post('ttms/play/update', {
+    let { data } = await axios.post('ttms/play/update/', {
         "Id": parseInt(params.Id),
         "Name": params.Name,
         "Type": parseInt(params.Type),
@@ -69,7 +69,7 @@ export const $reviseplay = async (params) => {
 
 
 export const $order = async (params) => {
-    let { data } = await axios.get('ttms/order/analysis', {
+    let { data } = await axios.get('ttms/order/analysis/', {
         params: {
             PlayId: parseInt(params.PlayId)
         }
