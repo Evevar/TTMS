@@ -3,13 +3,15 @@ package main
 import (
 	"TTMS/internal/web/api"
 	"TTMS/pkg/jwt"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 )
 
 func InitRouter() *gin.Engine {
 	r := gin.Default()
-	r.Use(Cors())
+	r.Use(cors.Default())
 	baseGroup := r.Group("/ttms")
 
 	baseGroup.POST("/user/create/", api.CreateUser)
@@ -64,9 +66,8 @@ func Cors() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		method := c.Request.Method
 		origin := c.Request.Header.Get("Origin")
+		log.Println("origin=", origin)
 		if origin != "" {
-			origin := c.Request.Header.Get("Origin")
-
 			c.Header("Access-Control-Allow-Origin", origin)
 			c.Header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, UPDATE")
 			c.Header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization")
