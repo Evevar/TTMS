@@ -26,8 +26,8 @@ func InitTicketRPC() {
 		//client.WithShortConnection(),
 		client.WithLongConnection(connpool.IdleConfig{MinIdlePerAddress: 3, MaxIdlePerAddress: 100, MaxIdleGlobal: 10000, MaxIdleTimeout: time.Minute}),
 		//client.WithMuxConnection(1),                       // mux
-		client.WithRPCTimeout(10*time.Second),             // rpc timeout
-		client.WithConnectTimeout(5*time.Second),          // conn timeout
+		client.WithRPCTimeout(consts.RPCTimeout),          // rpc timeout
+		client.WithConnectTimeout(consts.ConnectTimeout),  // conn timeout
 		client.WithFailureRetry(retry.NewFailurePolicy()), // retry
 		//client.WithSuite(trace.NewDefaultClientSuite()),   // tracer
 		client.WithResolver(r), // resolver

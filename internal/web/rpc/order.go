@@ -5,7 +5,6 @@ import (
 	"TTMS/kitex_gen/order"
 	"TTMS/kitex_gen/order/orderservice"
 	"context"
-	"time"
 
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/retry"
@@ -27,8 +26,8 @@ func InitOrderRPC() {
 		//client.WithMiddleware(mw.CommonMiddleware),
 		//client.WithInstanceMW(mw.ClientMiddleware),
 		//client.WithMuxConnection(1),                       // mux
-		client.WithRPCTimeout(10*time.Second),             // rpc timeout
-		client.WithConnectTimeout(5*time.Second),          // conn timeout
+		client.WithRPCTimeout(consts.RPCTimeout),          // rpc timeout
+		client.WithConnectTimeout(consts.ConnectTimeout),  // conn timeout
 		client.WithFailureRetry(retry.NewFailurePolicy()), // retry
 		//client.WithSuite(trace.NewDefaultClientSuite()),   // tracer
 		client.WithResolver(r), // resolver

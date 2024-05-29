@@ -16,12 +16,13 @@ import (
 	"TTMS/kitex_gen/play/playservice"
 	"context"
 	"fmt"
+	"log"
+	"time"
+
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/retry"
 	etcd "github.com/kitex-contrib/registry-etcd"
 	trace "github.com/kitex-contrib/tracer-opentracing"
-	"log"
-	"time"
 )
 
 var playClient playservice.Client
@@ -37,9 +38,9 @@ func InitPlayRPC() {
 		//client.WithLongConnection(connpool.IdleConfig{MinIdlePerAddress: 1, MaxIdlePerAddress: 100, MaxIdleGlobal: 10000, MaxIdleTimeout: time.Minute}),
 		//client.WithMiddleware(mw.CommonMiddleware),
 		//client.WithInstanceMW(mw.ClientMiddleware),
-		client.WithMuxConnection(1),                       // mux
-		client.WithRPCTimeout(3*time.Second),              // rpc timeout
-		client.WithConnectTimeout(50*time.Millisecond),    // conn timeout
+		// client.WithMuxConnection(1),                       // mux
+		client.WithRPCTimeout(consts.RPCTimeout),          // rpc timeout
+		client.WithConnectTimeout(consts.ConnectTimeout),  // conn timeout
 		client.WithFailureRetry(retry.NewFailurePolicy()), // retry
 		client.WithSuite(trace.NewDefaultClientSuite()),   // tracer
 		client.WithResolver(r),                            // resolver

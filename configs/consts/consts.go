@@ -15,4 +15,6 @@ const (
 	RedisPassword     = "redis"
 	OrderDelayTime    = time.Minute * 3
 	RedisLockTimeOut  = time.Second * 5
+	RPCTimeout        = 10 * time.Second
+	ConnectTimeout    = 5 * time.Second
 )
