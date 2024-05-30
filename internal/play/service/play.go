@@ -11,12 +11,12 @@ import (
 	"TTMS/kitex_gen/ticket/ticketservice"
 	"context"
 	"errors"
+	"log"
+
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/retry"
 	etcd "github.com/kitex-contrib/registry-etcd"
 	trace "github.com/kitex-contrib/tracer-opentracing"
-	"log"
-	"time"
 )
 
 var studioClient studioservice.Client
@@ -32,9 +32,9 @@ func InitStudioRPC() {
 		consts.StudioServiceName,
 		//client.WithMiddleware(mw.CommonMiddleware),
 		//client.WithInstanceMW(mw.ClientMiddleware),
-		client.WithMuxConnection(1),                       // mux
-		client.WithRPCTimeout(3*time.Second),              // rpc timeout
-		client.WithConnectTimeout(50*time.Millisecond),    // conn timeout
+		// client.WithMuxConnection(1),                       // mux
+		client.WithRPCTimeout(consts.RPCTimeout),          // rpc timeout
+		client.WithConnectTimeout(consts.ConnectTimeout),  // conn timeout
 		client.WithFailureRetry(retry.NewFailurePolicy()), // retry
 		client.WithSuite(trace.NewDefaultClientSuite()),   // tracer
 		client.WithResolver(r),                            // resolver
@@ -52,9 +52,9 @@ func InitTicketRPC() {
 
 	c, err := ticketservice.NewClient(
 		consts.TicketServiceName,
-		client.WithMuxConnection(1),                       // mux
-		client.WithRPCTimeout(3*time.Second),              // rpc timeout
-		client.WithConnectTimeout(50*time.Millisecond),    // conn timeout
+		// client.WithMuxConnection(1),                       // mux
+		client.WithRPCTimeout(consts.RPCTimeout),          // rpc timeout
+		client.WithConnectTimeout(consts.ConnectTimeout),  // conn timeout
 		client.WithFailureRetry(retry.NewFailurePolicy()), // retry
 		client.WithSuite(trace.NewDefaultClientSuite()),   // tracer
 		client.WithResolver(r),                            // resolver
@@ -123,6 +123,7 @@ func GetAllPlayService(ctx context.Context, req *play.GetAllPlayRequest) (resp *
 func AddScheduleService(ctx context.Context, req *play.AddScheduleRequest) (resp *play.AddScheduleResponse, err error) {
 	resp = &play.AddScheduleResponse{BaseResp: &play.BaseResp{}}
 	resp0, err := studioClient.GetStudio(ctx, &studio.GetStudioRequest{Id: req.StudioId})
+	log.Printf("resp0=%v,err=%v", resp0, err)
 	if resp0.Result.Id == 0 { //判断演出厅是否存在
 		resp.BaseResp.StatusCode = 1
 		resp.BaseResp.StatusMessage = errors.New("计划中的演出厅不存在").Error()

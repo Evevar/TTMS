@@ -5,11 +5,12 @@ import (
 	"TTMS/kitex_gen/ticket"
 	"TTMS/kitex_gen/ticket/ticketservice"
 	"context"
+	"time"
+
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/connpool"
 	"github.com/cloudwego/kitex/pkg/retry"
 	etcd "github.com/kitex-contrib/registry-etcd"
-	"time"
 )
 
 var ticketClient ticketservice.Client
@@ -25,8 +26,8 @@ func InitTicketRPC() {
 		//client.WithShortConnection(),
 		client.WithLongConnection(connpool.IdleConfig{MinIdlePerAddress: 3, MaxIdlePerAddress: 100, MaxIdleGlobal: 10000, MaxIdleTimeout: time.Minute}),
 		//client.WithMuxConnection(1),                       // mux
-		client.WithRPCTimeout(3*time.Second),              // rpc timeout
-		client.WithConnectTimeout(50*time.Millisecond),    // conn timeout
+		client.WithRPCTimeout(consts.RPCTimeout),          // rpc timeout
+		client.WithConnectTimeout(consts.ConnectTimeout),  // conn timeout
 		client.WithFailureRetry(retry.NewFailurePolicy()), // retry
 		//client.WithSuite(trace.NewDefaultClientSuite()),   // tracer
 		client.WithResolver(r), // resolver

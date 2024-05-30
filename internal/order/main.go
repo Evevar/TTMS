@@ -6,12 +6,14 @@ import (
 	"TTMS/internal/order/mw"
 	"TTMS/internal/order/service"
 	order "TTMS/kitex_gen/order/orderservice"
+	"net"
+	"time"
+
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/limit"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
 	etcd "github.com/kitex-contrib/registry-etcd"
-	"net"
 )
 
 func main() {
@@ -25,6 +27,7 @@ func main() {
 	}
 	svr := order.NewServer(new(OrderServiceImpl),
 		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: consts.OrderServiceName}), // server name
+		server.WithReadWriteTimeout(10*time.Second),
 		server.WithServiceAddr(addr),                                         // address
 		server.WithLimit(&limit.Option{MaxConnections: 10000, MaxQPS: 5000}), // limit
 		//server.WithMuxTransport(),                                            // Multiplex，win不支持

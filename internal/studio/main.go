@@ -4,8 +4,10 @@ import (
 	"TTMS/configs/consts"
 	"TTMS/internal/studio/dao"
 	studio "TTMS/kitex_gen/studio/studioservice"
-	"github.com/cloudwego/kitex/pkg/limit"
 	"net"
+	"time"
+
+	"github.com/cloudwego/kitex/pkg/limit"
 
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
@@ -24,6 +26,7 @@ func main() {
 	}
 	svr := studio.NewServer(new(StudioServiceImpl),
 		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: consts.StudioServiceName}), // server name
+		server.WithReadWriteTimeout(10*time.Second),
 		//server.WithMiddleware(mw.CommonMiddleware),                                          // middleWare
 		//server.WithMiddleware(mw.ServerMiddleware),
 		server.WithServiceAddr(addr),                                         // address
