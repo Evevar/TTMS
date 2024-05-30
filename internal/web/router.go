@@ -3,14 +3,13 @@ package main
 import (
 	"TTMS/internal/web/api"
 	"TTMS/pkg/jwt"
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
 func InitRouter() *gin.Engine {
 	r := gin.Default()
-	r.Use(cors.Default())
+	r.Use(Cors())
 	baseGroup := r.Group("/ttms")
 
 	baseGroup.POST("/user/create/", api.CreateUser)
