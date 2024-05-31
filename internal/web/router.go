@@ -9,7 +9,7 @@ import (
 
 func InitRouter() *gin.Engine {
 	r := gin.Default()
-	r.Use(Cors())
+	//r.Use(Cors())
 	baseGroup := r.Group("/ttms")
 
 	baseGroup.POST("/user/create/", api.CreateUser)
@@ -24,8 +24,8 @@ func InitRouter() *gin.Engine {
 	baseGroup.POST("/user/bind/", AuthMiddleware(), api.BindEmail)
 
 	studioGroup := baseGroup.Group("/studio", AuthMiddleware())
-	studioGroup.POST("/add/", api.AddStudio)
-	studioGroup.GET("/all/", api.GetAllStudio)
+	studioGroup.POST("/add", api.AddStudio)
+	studioGroup.GET("/all", api.GetAllStudio)
 	studioGroup.GET("/info/", api.GetStudio)
 	studioGroup.POST("/update/", api.UpdateStudio)
 	studioGroup.POST("/delete/", api.DeleteStudio)

@@ -347,46 +347,6 @@ func (x *GetAllOrderRequest) fastReadField2(buf []byte, _type int8) (offset int,
 	return offset, err
 }
 
-func (x *GetAllOrderResponseData) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
-	switch number {
-	case 1:
-		offset, err = x.fastReadField1(buf, _type)
-		if err != nil {
-			goto ReadFieldError
-		}
-	case 2:
-		offset, err = x.fastReadField2(buf, _type)
-		if err != nil {
-			goto ReadFieldError
-		}
-	default:
-		offset, err = fastpb.Skip(buf, _type, number)
-		if err != nil {
-			goto SkipFieldError
-		}
-	}
-	return offset, nil
-SkipFieldError:
-	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
-ReadFieldError:
-	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_GetAllOrderResponseData[number], err)
-}
-
-func (x *GetAllOrderResponseData) fastReadField1(buf []byte, _type int8) (offset int, err error) {
-	x.Total, offset, err = fastpb.ReadInt64(buf, _type)
-	return offset, err
-}
-
-func (x *GetAllOrderResponseData) fastReadField2(buf []byte, _type int8) (offset int, err error) {
-	var v Order
-	offset, err = fastpb.ReadMessage(buf, _type, &v)
-	if err != nil {
-		return offset, err
-	}
-	x.List = append(x.List, &v)
-	return offset, nil
-}
-
 func (x *GetAllOrderResponse) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
 	switch number {
 	case 1:
@@ -423,12 +383,12 @@ func (x *GetAllOrderResponse) fastReadField1(buf []byte, _type int8) (offset int
 }
 
 func (x *GetAllOrderResponse) fastReadField2(buf []byte, _type int8) (offset int, err error) {
-	var v GetAllOrderResponseData
+	var v Order
 	offset, err = fastpb.ReadMessage(buf, _type, &v)
 	if err != nil {
 		return offset, err
 	}
-	x.Data = &v
+	x.List = append(x.List, &v)
 	return offset, nil
 }
 
@@ -854,33 +814,6 @@ func (x *GetAllOrderRequest) fastWriteField2(buf []byte) (offset int) {
 	return offset
 }
 
-func (x *GetAllOrderResponseData) FastWrite(buf []byte) (offset int) {
-	if x == nil {
-		return offset
-	}
-	offset += x.fastWriteField1(buf[offset:])
-	offset += x.fastWriteField2(buf[offset:])
-	return offset
-}
-
-func (x *GetAllOrderResponseData) fastWriteField1(buf []byte) (offset int) {
-	if x.Total == 0 {
-		return offset
-	}
-	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetTotal())
-	return offset
-}
-
-func (x *GetAllOrderResponseData) fastWriteField2(buf []byte) (offset int) {
-	if x.List == nil {
-		return offset
-	}
-	for i := range x.GetList() {
-		offset += fastpb.WriteMessage(buf[offset:], 2, x.GetList()[i])
-	}
-	return offset
-}
-
 func (x *GetAllOrderResponse) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
@@ -899,10 +832,12 @@ func (x *GetAllOrderResponse) fastWriteField1(buf []byte) (offset int) {
 }
 
 func (x *GetAllOrderResponse) fastWriteField2(buf []byte) (offset int) {
-	if x.Data == nil {
+	if x.List == nil {
 		return offset
 	}
-	offset += fastpb.WriteMessage(buf[offset:], 2, x.GetData())
+	for i := range x.GetList() {
+		offset += fastpb.WriteMessage(buf[offset:], 2, x.GetList()[i])
+	}
 	return offset
 }
 
@@ -1282,33 +1217,6 @@ func (x *GetAllOrderRequest) sizeField2() (n int) {
 	return n
 }
 
-func (x *GetAllOrderResponseData) Size() (n int) {
-	if x == nil {
-		return n
-	}
-	n += x.sizeField1()
-	n += x.sizeField2()
-	return n
-}
-
-func (x *GetAllOrderResponseData) sizeField1() (n int) {
-	if x.Total == 0 {
-		return n
-	}
-	n += fastpb.SizeInt64(1, x.GetTotal())
-	return n
-}
-
-func (x *GetAllOrderResponseData) sizeField2() (n int) {
-	if x.List == nil {
-		return n
-	}
-	for i := range x.GetList() {
-		n += fastpb.SizeMessage(2, x.GetList()[i])
-	}
-	return n
-}
-
 func (x *GetAllOrderResponse) Size() (n int) {
 	if x == nil {
 		return n
@@ -1327,10 +1235,12 @@ func (x *GetAllOrderResponse) sizeField1() (n int) {
 }
 
 func (x *GetAllOrderResponse) sizeField2() (n int) {
-	if x.Data == nil {
+	if x.List == nil {
 		return n
 	}
-	n += fastpb.SizeMessage(2, x.GetData())
+	for i := range x.GetList() {
+		n += fastpb.SizeMessage(2, x.GetList()[i])
+	}
 	return n
 }
 
@@ -1506,14 +1416,9 @@ var fieldIDToName_GetAllOrderRequest = map[int32]string{
 	2: "OrderType",
 }
 
-var fieldIDToName_GetAllOrderResponseData = map[int32]string{
-	1: "Total",
-	2: "List",
-}
-
 var fieldIDToName_GetAllOrderResponse = map[int32]string{
 	1: "BaseResp",
-	2: "Data",
+	2: "List",
 }
 
 var fieldIDToName_OrderAnalysis = map[int32]string{
