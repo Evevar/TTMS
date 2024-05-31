@@ -13,7 +13,7 @@ func InitRouter() *gin.Engine {
 	baseGroup := r.Group("/ttms")
 
 	baseGroup.POST("/user/create/", api.CreateUser)
-	baseGroup.POST("/user/login/", api.UserLogin)
+	baseGroup.POST("/user/login", api.UserLogin)
 	baseGroup.POST("/user/verify/", api.GetVerification)
 	baseGroup.POST("/user/forget/", api.ForgetPassword)
 	//以上内容不需要Token鉴权
@@ -63,9 +63,6 @@ func InitRouter() *gin.Engine {
 func Cors() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		method := c.Request.Method
-		if method == "OPTIONS" {
-			c.AbortWithStatus(http.StatusNoContent)
-		}
 
 		c.Header("Access-Control-Allow-Origin", "*")
 		c.Header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, UPDATE")
@@ -73,6 +70,9 @@ func Cors() gin.HandlerFunc {
 		c.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Cache-Control, Content-Language, Content-Type")
 		c.Header("Access-Control-Allow-Credentials", "true")
 
+		if method == "OPTIONS" {
+			c.AbortWithStatus(http.StatusNoContent)
+		}
 		c.Next()
 	}
 }
