@@ -19,7 +19,7 @@ func UpdateTicket(c *gin.Context) {
 	resp, err := rpc.UpdateTicket(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
-		log.Fatalln(err)
+		log.Println(err)
 	}
 	c.JSON(http.StatusOK, resp)
 }
@@ -33,7 +33,7 @@ func GetAllTicket(c *gin.Context) {
 	resp, err := rpc.GetAllTicket(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
-		log.Fatalln(err)
+		log.Println(err)
 	}
 	c.JSON(http.StatusOK, resp)
 }
@@ -49,7 +49,7 @@ func BuyTicket(c *gin.Context) {
 	resp, err := rpc.BuyTicket(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
-		log.Fatalln(err)
+		log.Println(err)
 	}
 	c.JSON(http.StatusOK, resp)
 }
@@ -65,7 +65,7 @@ func ReturnTicket(c *gin.Context) {
 	resp, err := rpc.ReturnTicket(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
-		log.Fatalln(err)
+		log.Println(err)
 	}
 	c.JSON(http.StatusOK, resp)
 }
