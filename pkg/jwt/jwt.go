@@ -13,9 +13,7 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-const TokenExpireDuration = JWTOverTime
-
-var MySecret = []byte(JWTSecret)
+var MySecret = []byte(consts.JWTSecret)
 
 var Client *redis.Client
 
@@ -32,7 +30,7 @@ func GenToken(userInfo *user.User) (string, error) {
 		userInfo.Id,
 		userInfo.Type,
 		jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(TokenExpireDuration).Unix(),
+			ExpiresAt: time.Now().Add(consts.JWTOverTime).Unix(),
 			Issuer:    "kangning",
 		},
 	}
@@ -74,7 +72,7 @@ func DiscardToken(id int, tokenString string) {
 	//用户更改密码之后强制用户重新登录-->右边为之前不太恰当的一个想法，原因请查看两行后的注释 （此时，将用户添加到黑名单中，用户重新登陆之后，把用户从黑名单中移除）
 	_, err := Client.HSet(context.Background(), "black", strconv.Itoa(id), tokenString).Result()
 	//为黑名单添加过期时间，因为用户重新登录之后，之前的token还不能从黑名单中取出来，否则之前过期的token就又可以重新使用了（这种情况不允许）
-	err = Client.Expire(context.Background(), "black", JWTOverTime).Err()
+	err = Client.Expire(context.Background(), "black", consts.JWTOverTime).Err()
 	if err != nil {
 		log.Println(err)
 	}
