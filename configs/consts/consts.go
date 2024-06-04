@@ -18,6 +18,7 @@ const (
 	TicketServiceName = "ticketSvr"
 	OrderServiceName  = "orderSvr"
 
+	TicketCacheTime  = time.Hour * 24  //票缓存时间
 	OrderDelayTime   = time.Minute * 3 //订单超时时间
 	RedisLockTimeOut = time.Second * 5 //redis锁超时时间
 

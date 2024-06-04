@@ -94,8 +94,8 @@ func toTargetQueue(ctx context.Context) {
 			// 处理错误
 			panic(err)
 		}
-		len := len(result)
-		if len == 0 {
+
+		if len(result) == 0 {
 			// 延迟队列中没有数据，等待一段时间后再次查询
 			time.Sleep(time.Second)
 			continue
