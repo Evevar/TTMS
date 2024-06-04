@@ -28,9 +28,9 @@ var Loc *time.Location
 
 func InitRedis() {
 	client = redis.NewClient(&redis.Options{
-		Addr:     "localhost:6378",
+		Addr:     consts.RedisAddress,
 		Password: consts.RedisPassword,
-		DB:       1,
+		DB:       consts.RedisTicketDB,
 	})
 	ctx := context.Background()
 	go toTargetQueue(ctx)

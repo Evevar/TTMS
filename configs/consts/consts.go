@@ -6,7 +6,10 @@ const (
 	EtcdAddress     = "127.0.0.1:2379"
 	NatsAddress     = "nats://127.0.0.1:4222"
 	MySQLDefaultDSN = "TTMS:TTMS@tcp(localhost:3307)/TTMS?charset=utf8mb4&parseTime=True"
+	RedisAddress    = "localhost:6378"
 	RedisPassword   = "redis"
+	RedisDB         = 0
+	RedisTicketDB   = 1
 	WebServerPort   = "8080"
 
 	UserServiceName   = "userSvr"
