@@ -95,8 +95,12 @@ func ChangeUserPassword(c *gin.Context) {
 		log.Println(err)
 		return
 	}
-	Token, _ := c.Get("Token")
-	jwt.DiscardToken(int(req.UserId), Token.(string))
+	log.Println("user resp=", resp)
+	if resp.BaseResp.StatusCode == 0 {
+		Token, _ := c.Get("Token")
+		jwt.DiscardToken(int(req.UserId), Token.(string))
+	}
+	log.Println("web resp=", resp)
 	c.JSON(http.StatusOK, resp)
 }
 func DeleteUser(c *gin.Context) {
