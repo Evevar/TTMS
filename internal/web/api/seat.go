@@ -21,7 +21,7 @@ func AddSeat(c *gin.Context) {
 	resp, err := rpc.AddSeat(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
-		log.Fatalln(err)
+		log.Println(err)
 	}
 	c.JSON(http.StatusOK, resp)
 }
@@ -36,7 +36,7 @@ func GetAllSeat(c *gin.Context) {
 	resp, err := rpc.GetAllSeat(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
-		log.Fatalln(err)
+		log.Println(err)
 	}
 	c.JSON(http.StatusOK, resp)
 }
@@ -51,7 +51,7 @@ func UpdateSeat(c *gin.Context) {
 	resp, err := rpc.UpdateSeat(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
-		log.Fatalln(err)
+		log.Println(err)
 	}
 	c.JSON(http.StatusOK, resp)
 }
@@ -66,7 +66,7 @@ func DeleteSeat(c *gin.Context) {
 	resp, err := rpc.DeleteSeat(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
-		log.Fatalln(err)
+		log.Println(err)
 	}
 	c.JSON(http.StatusOK, resp)
 }

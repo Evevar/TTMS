@@ -21,7 +21,7 @@ func AddStudio(c *gin.Context) {
 	resp, err := rpc.AddStudio(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
-		log.Fatalln(err)
+		log.Println(err)
 	}
 	c.JSON(http.StatusOK, resp)
 }
@@ -35,7 +35,7 @@ func GetAllStudio(c *gin.Context) {
 	resp, err := rpc.GetAllStudio(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
-		log.Fatalln(err)
+		log.Println(err)
 	}
 	c.JSON(http.StatusOK, resp)
 }
@@ -49,7 +49,7 @@ func GetStudio(c *gin.Context) {
 	resp, err := rpc.GetStudio(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
-		log.Fatalln(err)
+		log.Println(err)
 	}
 	c.JSON(http.StatusOK, resp)
 }
@@ -63,7 +63,7 @@ func UpdateStudio(c *gin.Context) {
 	resp, err := rpc.UpdateStudio(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
-		log.Fatalln(err)
+		log.Println(err)
 	}
 	c.JSON(http.StatusOK, resp)
 }
@@ -78,7 +78,7 @@ func DeleteStudio(c *gin.Context) {
 	resp, err := rpc.DeleteStudio(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
-		log.Fatalln(err)
+		log.Println(err)
 	}
 	c.JSON(http.StatusOK, resp)
 }
