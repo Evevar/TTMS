@@ -48,7 +48,7 @@ export default function () {
         },
         {
             label: (
-                <a href='http://116.204.90.27:82/' target="_blank" rel="noopener noreferrer">
+                <a href='http://127.0.0.1:82/' target="_blank" rel="noopener noreferrer">
                     进入购票页面
                 </a>
             ),
