@@ -26,7 +26,8 @@ func GetAllOrder(c *gin.Context) {
 	resp, err := rpc.GetAllOrder(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
-		log.Fatalln(err)
+		log.Println(err)
+		return
 	}
 	c.JSON(http.StatusOK, resp)
 }
@@ -41,7 +42,8 @@ func GetOrderAnalysis(c *gin.Context) {
 	resp, err := rpc.GetOrderAnalysis(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
-		log.Fatalln(err)
+		log.Println(err)
+		return
 	}
 	c.JSON(http.StatusOK, resp)
 }
@@ -58,7 +60,8 @@ func CommitOrder(c *gin.Context) {
 	resp, err := rpc.CommitOrder(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
-		log.Fatalln(err)
+		log.Println(err)
+		return
 	}
 	c.JSON(http.StatusOK, resp)
 }

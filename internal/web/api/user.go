@@ -31,7 +31,8 @@ func CreateUser(c *gin.Context) {
 	resp, err := rpc.CreateUser(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
-		log.Fatalln(err)
+		log.Println(err)
+		return
 	}
 	c.JSON(http.StatusOK, resp)
 }
@@ -46,7 +47,8 @@ func UserLogin(c *gin.Context) {
 	resp, err := rpc.UserLogin(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
-		log.Fatalln(err)
+		log.Println(err)
+		return
 	}
 	if resp.BaseResp.StatusCode == 0 {
 		Token, err := jwt.GenToken(resp.UserInfo)
@@ -72,7 +74,8 @@ func GetAllUser(c *gin.Context) {
 	resp, err := rpc.GetAllUser(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
-		log.Fatalln(err)
+		log.Println(err)
+		return
 	}
 	c.JSON(http.StatusOK, resp)
 }
@@ -89,10 +92,15 @@ func ChangeUserPassword(c *gin.Context) {
 	resp, err := rpc.ChangeUserPassword(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
-		log.Fatalln(err)
+		log.Println(err)
+		return
 	}
-	Token, _ := c.Get("Token")
-	jwt.DiscardToken(int(req.UserId), Token.(string))
+	log.Println("user resp=", resp)
+	if resp.BaseResp.StatusCode == 0 {
+		Token, _ := c.Get("Token")
+		jwt.DiscardToken(int(req.UserId), Token.(string))
+	}
+	log.Println("web resp=", resp)
 	c.JSON(http.StatusOK, resp)
 }
 func DeleteUser(c *gin.Context) {
@@ -106,7 +114,8 @@ func DeleteUser(c *gin.Context) {
 	resp, err := rpc.DeleteUser(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
-		log.Fatalln(err)
+		log.Println(err)
+		return
 	}
 	Token, _ := c.Get("Token")
 	jwt.DiscardToken(int(req.UserId), Token.(string))
@@ -125,7 +134,8 @@ func GetUserInfo(c *gin.Context) {
 	resp, err := rpc.GetUserInfo(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
-		log.Fatalln(err)
+		log.Println(err)
+		return
 	}
 	c.JSON(http.StatusOK, resp)
 }
@@ -186,7 +196,8 @@ func BindEmail(c *gin.Context) {
 		resp, err = rpc.BindEmail(context.Background(), req)
 		if err != nil {
 			c.JSON(http.StatusServiceUnavailable, err)
-			log.Fatalln(err)
+			log.Println(err)
+			return
 		}
 	}
 	c.JSON(http.StatusOK, resp)
@@ -207,7 +218,8 @@ func ForgetPassword(c *gin.Context) {
 		resp, err = rpc.ForgetPassword(context.Background(), req)
 		if err != nil {
 			c.JSON(http.StatusServiceUnavailable, err)
-			log.Fatalln(err)
+			log.Println(err)
+			return
 		}
 	}
 	c.JSON(http.StatusOK, resp)

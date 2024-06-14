@@ -15,9 +15,9 @@ var redisClient *redis.Client
 
 func Init() {
 	redisClient = redis.NewClient(&redis.Options{
-		Addr:     "localhost:6378",
+		Addr:     consts.RedisAddress,
 		Password: consts.RedisPassword,
-		DB:       1,
+		DB:       consts.RedisTicketDB,
 	})
 	//err := InitAllTicket(context.Background())
 	//if err != nil {
@@ -44,13 +44,13 @@ func InitAllTicket(ctx context.Context) error {
 // AddTicket 添加票缓存
 func AddTicket(ScheduleId, Row, Col int, price int32) {
 	ctx := context.Background()
-	redisClient.Set(ctx, fmt.Sprintf("%d;%d;%d", ScheduleId, Row, Col), 0, time.Hour)
+	redisClient.Set(ctx, fmt.Sprintf("%d;%d;%d", ScheduleId, Row, Col), 0, consts.TicketCacheTime)
 	redisClient.Set(ctx, fmt.Sprintf("%d;price", ScheduleId), price, 0)
 }
 
 // AcquireLock 分布式锁，加锁
 func AcquireLock(lockKey string) bool {
-	result, err := redisClient.SetNX(context.Background(), lockKey, 1, time.Duration(consts.RedisLockTimeOut)).Result()
+	result, err := redisClient.SetNX(context.Background(), lockKey, 1, consts.RedisLockTimeOut).Result()
 	if err != nil || !result {
 		return false
 	}
@@ -89,9 +89,7 @@ func ReleaseLock(lockKey string) bool {
 //}
 
 func TicketIsExist(key string) (bool, error) {
-	//fmt.Println("key = ", key)
 	value, err := redisClient.Get(context.Background(), key).Result()
-	//fmt.Println("value = ", value, " err = ", err)
 	if err == redis.Nil {
 		return false, nil
 	}
@@ -103,13 +101,22 @@ func TicketIsExist(key string) (bool, error) {
 }
 
 func BuyTicket(ctx context.Context, key string) {
-	redisClient.Set(ctx, key, "9", time.Hour)
+	ttl := TicketTTL(ctx, key)
+	if ttl > 0 {
+		redisClient.Set(ctx, key, "9", ttl)
+	}
 }
-func ReturnTicket(ctx context.Context, key string, expire time.Duration) {
-	redisClient.Set(ctx, key, "0", expire)
+func ReturnTicket(ctx context.Context, key string) {
+	ttl := TicketTTL(ctx, key)
+	if ttl > 0 {
+		redisClient.Set(ctx, key, "0", ttl)
+	}
 }
 func CommitTicket(ctx context.Context, key string) {
-	redisClient.Set(ctx, key, "1", time.Hour)
+	ttl := TicketTTL(ctx, key)
+	if ttl > 0 {
+		redisClient.Set(ctx, key, "1", ttl)
+	}
 }
 func GetTicketPrice(ctx context.Context, key string) string {
 	price, err := redisClient.Get(ctx, key).Result()

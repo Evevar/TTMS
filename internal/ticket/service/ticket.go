@@ -207,9 +207,7 @@ func BuyTicketService(ctx context.Context, req *ticket.BuyTicketRequest) (resp *
 }
 
 func ReturnTicket(ctx context.Context, ScheduleId int64, SeatRow int32, SeatCol int32) {
-	if ttl := redis.TicketTTL(ctx, fmt.Sprintf("%d;%d;%d", ScheduleId, SeatRow, SeatCol)); ttl > 0 {
-		redis.ReturnTicket(ctx, fmt.Sprintf("%d;%d;%d", ScheduleId, SeatRow, SeatCol), ttl)
-	}
+	redis.ReturnTicket(ctx, fmt.Sprintf("%d;%d;%d", ScheduleId, SeatRow, SeatCol))
 	go dao.ReturnTicket(ctx, ScheduleId, SeatRow, SeatCol)
 }
 func ReturnTicketService(ctx context.Context, req *ticket.ReturnTicketRequest) (resp *ticket.ReturnTicketResponse, err error) {

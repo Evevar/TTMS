@@ -20,7 +20,8 @@ func AddPlay(c *gin.Context) {
 	resp, err := rpc.AddPlay(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
-		log.Fatalln(err)
+		log.Println(err)
+		return
 	}
 	c.JSON(http.StatusOK, resp)
 }
@@ -34,7 +35,8 @@ func UpdatePlay(c *gin.Context) {
 	resp, err := rpc.UpdatePlay(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
-		log.Fatalln(err)
+		log.Println(err)
+		return
 	}
 	c.JSON(http.StatusOK, resp)
 }
@@ -48,7 +50,8 @@ func DeletePlay(c *gin.Context) {
 	resp, err := rpc.DeletePlay(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
-		log.Fatalln(err)
+		log.Println(err)
+		return
 	}
 	c.JSON(http.StatusOK, resp)
 }
@@ -62,7 +65,8 @@ func GetAllPlay(c *gin.Context) {
 	resp, err := rpc.GetAllPlay(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
-		log.Fatalln(err)
+		log.Println(err)
+		return
 	}
 	c.JSON(http.StatusOK, resp)
 }
@@ -76,7 +80,8 @@ func AddSchedule(c *gin.Context) {
 	resp, err := rpc.AddSchedule(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
-		log.Fatalln(err)
+		log.Println(err)
+		return
 	}
 	c.JSON(http.StatusOK, resp)
 }
@@ -90,7 +95,8 @@ func UpdateSchedule(c *gin.Context) {
 	resp, err := rpc.UpdateSchedule(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
-		log.Fatalln(err)
+		log.Println(err)
+		return
 	}
 	c.JSON(http.StatusOK, resp)
 }
@@ -104,7 +110,8 @@ func DeleteSchedule(c *gin.Context) {
 	resp, err := rpc.DeleteSchedule(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
-		log.Fatalln(err)
+		log.Println(err)
+		return
 	}
 	c.JSON(http.StatusOK, resp)
 }
@@ -118,7 +125,8 @@ func GetAllSchedule(c *gin.Context) {
 	resp, err := rpc.GetAllSchedule(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, err)
-		log.Fatalln(err)
+		log.Println(err)
+		return
 	}
 	c.JSON(http.StatusOK, resp)
 }
