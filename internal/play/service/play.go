@@ -67,6 +67,7 @@ func InitTicketRPC() {
 func AddPlayService(ctx context.Context, req *play.AddPlayRequest) (resp *play.AddPlayResponse, err error) {
 	PlayInfo := &play.Play{Name: req.Name, Type: req.Type, Area: req.Area,
 		Rating: req.Rating, Duration: req.Duration, StartDate: req.StartDate, EndDate: req.EndDate, Price: req.Price}
+	log.Println("playInfo=", PlayInfo)
 	err = dao.AddPlay(ctx, PlayInfo)
 	resp = &play.AddPlayResponse{BaseResp: &play.BaseResp{}}
 	if err != nil {
