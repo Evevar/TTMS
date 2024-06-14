@@ -20,12 +20,23 @@ export default function Seat() {
     // })
     // console.log(getId)
     let [selectchage, setselectchage] = useState(1)
+    let [options, setoptions] = useState([])
     //座位演出厅选择
     const handleChange = async (value) => {
         // console.log(`selected ${value}`);
+
         loadList()
         setselectchage(parseInt(`${value}`))
     };
+    const onFinish = async (values) => {
+        const studio = await $studio(values)
+        const options = studio.Data.List
+        setoptions(options)
+        console.log(options)
+    }
+    useEffect(() => {
+        onFinish()
+    }, ['1号演出厅'])
 
     //总数量
     let [count, setCount] = useState(1)
@@ -68,6 +79,7 @@ export default function Seat() {
     // let studiodata = $studio()
     // console.log(studiodata)
     useEffect(() => {
+        onFinish()
         loadList()
     }, [Current, selectchage])
     const columns = [
@@ -134,51 +146,60 @@ export default function Seat() {
                     key: r.Id
                 }
             })
-
+            setoptions(options)
             setStudioList(dataList)
             // const talcut = parseInt(data.length / 10 + 1)
             setCount(count)
 
+
         })
     };
+
 
     return (
         <> {contextHolder}
             <Select
                 className='myselect'
-                defaultValue="1"
+                defaultValue="2号演出厅"
                 size='small'
                 style={{
                     float: 'left',
                     width: 150,
                 }}
                 onChange={handleChange}
-                options={[
-                    // {
-                    //     value: 'jack',
-                    //     label: 12,
-                    // },
-                    { value: 4, label: 4 },
+                onFinish={onFinish}
+            // options={[
+            //     // {
+            //     //     value: 'jack',
+            //     //     label: 12,
+            //     // },
+            //     { value: 4, label: 4 },
 
-                    { value: 5, label: 5 },
+            //     { value: 5, label: 5 },
 
-                    { value: 6, label: 6 },
+            //     { value: 6, label: 6 },
 
-                    { value: 25, label: 25 },
+            //     { value: 25, label: 25 },
 
-                    { value: 26, label: 26 },
+            //     { value: 26, label: 26 },
 
-                    { value: 27, label: 27 },
+            //     { value: 27, label: 27 },
 
-                    { value: 28, label: 28 },
+            //     { value: 28, label: 28 },
 
-                    { value: 29, label: 29 },
+            //     { value: 29, label: 29 },
 
-                    { value: 30, label: 30 },
+            //     { value: 30, label: 30 },
 
-                    { value: 31, label: 31 }
-                ]}
-            />
+            //     { value: 31, label: 31 }
+            // ]}
+            >
+                {options.map(option => (
+                    <Select.Option key={option.Id} value={option.Id}>
+                        {option.Name}
+                    </Select.Option>
+                ))}
+            </Select>
 
 
             <div className='search'>
